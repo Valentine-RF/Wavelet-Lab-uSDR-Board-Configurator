@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      
+      .slide-container {
+        width: 1280px;
+        min-height: 720px;
+        background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+        position: relative;
+        overflow: hidden;
+        font-family: 'Space Grotesk', sans-serif;
+        color: #e0e6ed;
+      }
+      
+      .grid-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+          linear-gradient(rgba(0, 212, 255, 0.02) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 212, 255, 0.02) 1px, transparent 1px);
+        background-size: 40px 40px;
+        pointer-events: none;
+      }
+      
+      .page-title {
+        position: absolute;
+        top: 40px;
+        left: 80px;
+        font-size: 36px;
+        font-weight: 700;
+        color: #00d4ff;
+        z-index: 20;
+      }
+      
+      .content {
+        position: relative;
+        z-index: 10;
+        min-height: 720px;
+        padding-top: 120px;
+        padding-left: 80px;
+        padding-right: 80px;
+      }
+      
+      .intro-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 40px;
+      }
+      
+      .intro-text {
+        font-size: 18px;
+        line-height: 1.6;
+        color: #e0e6ed;
+        max-width: 700px;
+      }
+      
+      .template-count {
+        font-size: 48px;
+        font-weight: 700;
+        color: #00d4ff;
+        font-family: 'IBM Plex Mono', monospace;
+        text-align: right;
+      }
+      
+      .count-label {
+        font-size: 14px;
+        color: #0088cc;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-top: 5px;
+      }
+      
+      .search-bar-demo {
+        width: 100%;
+        height: 50px;
+        background: #0d1117;
+        border: 2px solid #0088cc;
+        display: flex;
+        align-items: center;
+        padding-left: 20px;
+        padding-right: 20px;
+        margin-bottom: 30px;
+      }
+      
+      .search-icon {
+        color: #0088cc;
+        font-size: 18px;
+        margin-right: 15px;
+      }
+      
+      .search-placeholder {
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 14px;
+        color: #6a737d;
+      }
+      
+      .categories-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 30px;
+        min-height: 380px;
+      }
+      
+      .category-section {
+        background: rgba(0, 136, 204, 0.05);
+        border-left: 3px solid;
+        padding-top: 20px;
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+      
+      .category-monitoring { border-left-color: #0088cc; }
+      .category-testing { border-left-color: #00d4ff; }
+      .category-analysis { border-left-color: #0088cc; }
+      .category-communication { border-left-color: #00d4ff; }
+      
+      .category-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 18px;
+      }
+      
+      .category-icon {
+        font-size: 20px;
+        color: #00d4ff;
+        width: 24px;
+      }
+      
+      .category-name {
+        font-size: 18px;
+        font-weight: 600;
+        color: #00d4ff;
+      }
+      
+      .template-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      
+      .template-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 14px;
+        color: #e0e6ed;
+      }
+      
+      .template-bullet {
+        width: 4px;
+        height: 4px;
+        background: #0088cc;
+        flex-shrink: 0;
+      }
+      
+      .template-name {
+        font-family: 'IBM Plex Mono', monospace;
+      }
+      
+      .features-bar {
+        position: absolute;
+        bottom: 60px;
+        left: 80px;
+        right: 80px;
+        display: flex;
+        justify-content: space-between;
+        gap: 40px;
+      }
+      
+      .feature-badge {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: rgba(0, 136, 204, 0.1);
+        padding-top: 12px;
+        padding-right: 20px;
+        padding-left: 20px;
+        border-left: 3px solid #0088cc;
+      }
+      
+      .feature-icon {
+        font-size: 18px;
+        color: #00d4ff;
+      }
+      
+      .feature-text {
+        font-size: 14px;
+        font-family: 'IBM Plex Mono', monospace;
+        color: #e0e6ed;
+      }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="grid-overlay"></div>
+        
+        <h1 class="page-title">30+ Pre-Configured Command Templates</h1>
+        
+        <div class="content">
+            <div class="intro-section">
+                <p class="intro-text">
+                    Ready-to-use configurations for common SDR applications eliminate manual parameter entry. Each template is optimized for specific use cases with validated frequency ranges, gain settings, and sample rates.
+                </p>
+                <div>
+                    <div class="template-count">30+</div>
+                    <div class="count-label">Templates</div>
+                </div>
+            </div>
+            
+            <div class="search-bar-demo">
+                <i class="fas fa-search search-icon"></i>
+                <span class="search-placeholder">Search templates by name, description, or tags...</span>
+            </div>
+            
+            <div class="categories-grid">
+                <div class="category-section category-monitoring">
+                    <div class="category-header">
+                        <i class="fas fa-satellite-dish category-icon"></i>
+                        <h3 class="category-name">Monitoring</h3>
+                    </div>
+                    <div class="template-list">
+                        <div class="template-item">
+                            <div class="template-bullet"></div>
+                            <span class="template-name">WiFi Band Monitor (2.4 GHz)</span>
+                        </div>
+                        <div class="template-item">
+                            <div class="template-bullet"></div>
+                            <span class="template-name">LTE Band 7 Analysis</span>
+                        </div>
+                        <div class="template-item">
+                            <div class="template-bullet"></div>
+                            <span class="template-name">GPS L1 Reception (1575 MHz)</span>
+                        </div>
+                        <div class="template-item">
+                            <div class="template-bullet"></div>
+                            <span class="template-name">Weather Satellite (137 MHz)</span>
+                        </div>
+                        <div class="template-item">
+                            <div class="template-bullet"></div>
+                            <span class="template-name">Marine VHF Monitor</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="category-section category-testing">
+                    <div class="category-header">
+                        <i class="fas fa-vial category-icon"></i>
+                        <h3 class="category-name">Testing</h3>
+                    </div>
+                    <div class="template-list">
+                        <div class="template-item">
+                            <div class="template-bullet"></div>
+                            <span class="template-name">Signal Generator Test</span>
+                        </div>
+                        <div class="template-item">
+                            <div class="template-bullet"></div>
+                            <span class="template-name">Calibration Sweep</span>
+                        </div>
+                        <div class="template-item">
+                            <div class="template-bullet"></div>
+                            <span class="template-name">Interference Detection</span>
+                        </div>
+                        <div class="template-item">
+                            <div class="template-bullet"></div>
+                            <span class="template-name">Noise Floor Measurement</span>
+                        </div>
+                        <div class="template-item">
+                            <div class="template-bullet"></div>
+                            <span class="template-name">Dynamic Range Test</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="category-section category-analysis">
+                    <div class="category-header">
+                        <i class="fas fa-chart-line category-icon"></i>
+                        <h3 class="category-name">Analysis</h3>
+                    </div>
+                    <div class="template-list">
+                        <div class="template-item">
+                            <div class="template-bullet"></div>
+                            <span class="template-name">Wideband Spectrum Scan</span>
+                        </div>
+                        <div class="template-item">
+                            <div class="template-bullet"></div>
+                            <span class="template-name">Signal Characterization</span>
+                        </div>
+                        <div class="template-item">
+                            <div class="template-bullet"></div>
+                            <span class="template-name">Modulation Analysis</span>
+                        </div>
+                        <div class="template-item">
+                            <div class="template-bullet"></div>
+                            <span class="template-name">Frequency Hopping Detection</span>
+                        </div>
+                        <div class="template-item">
+                            <div class="template-bullet"></div>
+                            <span class="template-name">Occupancy Measurement</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="category-section category-communication">
+                    <div class="category-header">
+                        <i class="fas fa-broadcast-tower category-icon"></i>
+                        <h3 class="category-name">Communication</h3>
+                    </div>
+                    <div class="template-list">
+                        <div class="template-item">
+                            <div class="template-bullet"></div>
+                            <span class="template-name">LoRa Gateway (915 MHz)</span>
+                        </div>
+                        <div class="template-item">
+                            <div class="template-bullet"></div>
+                            <span class="template-name">Zigbee Network (2.4 GHz)</span>
+                        </div>
+                        <div class="template-item">
+                            <div class="template-bullet"></div>
+                            <span class="template-name">Amateur Radio 2m Band</span>
+                        </div>
+                        <div class="template-item">
+                            <div class="template-bullet"></div>
+                            <span class="template-name">ISM Band 433 MHz</span>
+                        </div>
+                        <div class="template-item">
+                            <div class="template-bullet"></div>
+                            <span class="template-name">Bluetooth LE Scanner</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="features-bar">
+            <div class="feature-badge">
+                <i class="fas fa-search feature-icon"></i>
+                <span class="feature-text">Searchable by name and tags</span>
+            </div>
+            <div class="feature-badge">
+                <i class="fas fa-star feature-icon"></i>
+                <span class="feature-text">Favorite templates system</span>
+            </div>
+            <div class="feature-badge">
+                <i class="fas fa-mouse-pointer feature-icon"></i>
+                <span class="feature-text">One-click application</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

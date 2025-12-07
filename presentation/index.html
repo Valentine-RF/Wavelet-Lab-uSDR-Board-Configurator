@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uSDR Dashboard Presentation - Wavelet Lab</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            color: #e0e6ed;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+        
+        .container {
+            max-width: 900px;
+            width: 100%;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: #1a1f3a;
+            border: 3px solid #0088cc;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: 700;
+            color: #00d4ff;
+            font-family: 'IBM Plex Mono', monospace;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            font-size: 42px;
+            font-weight: 700;
+            color: #00d4ff;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 18px;
+            color: #0088cc;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .info-box {
+            background: rgba(0, 136, 204, 0.05);
+            border-left: 4px solid #0088cc;
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .info-box h2 {
+            font-size: 20px;
+            color: #00d4ff;
+            margin-bottom: 15px;
+        }
+        
+        .info-box p {
+            line-height: 1.8;
+            color: #e0e6ed;
+            margin-bottom: 10px;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            background: rgba(0, 136, 204, 0.1);
+            border: 2px solid #0088cc;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            font-family: 'IBM Plex Mono', monospace;
+            color: #00d4ff;
+            margin-bottom: 8px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #0088cc;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: #0088cc;
+            color: #ffffff;
+            font-size: 18px;
+            font-weight: 600;
+            padding: 18px 40px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s;
+            text-align: center;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        
+        .cta-button:hover {
+            background: #00d4ff;
+        }
+        
+        .slide-list {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            margin-top: 30px;
+        }
+        
+        .slide-list h3 {
+            font-size: 18px;
+            color: #00d4ff;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .slide-links {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        
+        .slide-link {
+            display: block;
+            padding: 12px 16px;
+            background: rgba(0, 136, 204, 0.1);
+            border-left: 3px solid #0088cc;
+            color: #e0e6ed;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .slide-link:hover {
+            background: rgba(0, 136, 204, 0.2);
+            border-left-color: #00d4ff;
+            color: #00d4ff;
+        }
+        
+        .slide-number {
+            font-family: 'IBM Plex Mono', monospace;
+            color: #0088cc;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">W</div>
+            <h1>uSDR Dashboard Presentation</h1>
+            <p class="subtitle">Feature Showcase</p>
+        </div>
+        
+        <div class="info-box">
+            <h2>About This Presentation</h2>
+            <p>A comprehensive 16-slide showcase of the uSDR Development Board Dashboard, featuring dual API support, command templates, real-time validation, and enterprise-grade security.</p>
+            <p>Designed in Wavelet Lab's signature cyberpunk technical aesthetic with electric cyan accents and geometric layouts.</p>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-value">16</div>
+                <div class="stat-label">Slides</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">95%</div>
+                <div class="stat-label">Deployment Ready</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">A+</div>
+                <div class="stat-label">Security Rating</div>
+            </div>
+        </div>
+        
+        <a href="title.html" class="cta-button">▶ Start Presentation</a>
+        
+        <div class="slide-list">
+            <h3>Jump to Slide</h3>
+            <div class="slide-links">
+                <a href="title.html" class="slide-link"><span class="slide-number">01</span>Title</a>
+                <a href="overview.html" class="slide-link"><span class="slide-number">02</span>Overview</a>
+                <a href="dual_api.html" class="slide-link"><span class="slide-number">03</span>Dual API Support</a>
+                <a href="rf_config.html" class="slide-link"><span class="slide-number">04</span>RF Configuration</a>
+                <a href="gain_control.html" class="slide-link"><span class="slide-number">05</span>Gain Control</a>
+                <a href="templates.html" class="slide-link"><span class="slide-number">06</span>Command Templates</a>
+                <a href="validation.html" class="slide-link"><span class="slide-number">07</span>Validation Engine</a>
+                <a href="command_preview.html" class="slide-link"><span class="slide-number">08</span>Command Preview</a>
+                <a href="presets.html" class="slide-link"><span class="slide-number">09</span>Presets & History</a>
+                <a href="import_export.html" class="slide-link"><span class="slide-number">10</span>Import/Export</a>
+                <a href="security_headers.html" class="slide-link"><span class="slide-number">11</span>Security Headers</a>
+                <a href="oauth_auth.html" class="slide-link"><span class="slide-number">12</span>OAuth Authentication</a>
+                <a href="database_backups.html" class="slide-link"><span class="slide-number">13</span>Database Backups</a>
+                <a href="retention_comparison.html" class="slide-link"><span class="slide-number">14</span>Retention Comparison</a>
+                <a href="security.html" class="slide-link"><span class="slide-number">15</span>Production Security</a>
+                <a href="closing.html" class="slide-link"><span class="slide-number">16</span>Closing</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

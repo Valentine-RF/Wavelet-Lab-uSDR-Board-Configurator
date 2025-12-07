@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      
+      .slide-container {
+        width: 1280px;
+        min-height: 720px;
+        background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+        position: relative;
+        overflow: hidden;
+        font-family: 'Space Grotesk', sans-serif;
+        color: #e0e6ed;
+      }
+      
+      .grid-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+          linear-gradient(rgba(0, 212, 255, 0.02) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 212, 255, 0.02) 1px, transparent 1px);
+        background-size: 40px 40px;
+        pointer-events: none;
+      }
+      
+      .page-title {
+        position: absolute;
+        top: 40px;
+        left: 80px;
+        font-size: 36px;
+        font-weight: 700;
+        color: #00d4ff;
+        z-index: 20;
+      }
+      
+      .content {
+        position: relative;
+        z-index: 10;
+        min-height: 720px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding-top: 100px;
+        padding-left: 80px;
+        padding-right: 80px;
+      }
+      
+      .preview-panel {
+        width: 1000px;
+        background: #0d1117;
+        border: 3px solid #0088cc;
+        margin-bottom: 40px;
+        position: relative;
+      }
+      
+      .panel-header {
+        height: 50px;
+        background: #1a1f3a;
+        border-bottom: 2px solid #0088cc;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-left: 25px;
+        padding-right: 25px;
+      }
+      
+      .panel-title {
+        font-size: 16px;
+        font-family: 'IBM Plex Mono', monospace;
+        color: #00d4ff;
+        font-weight: 600;
+        letter-spacing: 1px;
+      }
+      
+      .api-indicator {
+        font-size: 12px;
+        font-family: 'IBM Plex Mono', monospace;
+        background: #0088cc;
+        color: #ffffff;
+        padding-top: 4px;
+        padding-right: 12px;
+        padding-left: 12px;
+        font-weight: 600;
+      }
+      
+      .code-content {
+        padding-top: 30px;
+        padding-right: 30px;
+        padding-left: 30px;
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 15px;
+        line-height: 2;
+        min-height: 220px;
+      }
+      
+      .code-line {
+        margin-bottom: 8px;
+      }
+      
+      .syntax-command {
+        color: #00d4ff;
+        font-weight: 600;
+      }
+      
+      .syntax-flag {
+        color: #0088cc;
+      }
+      
+      .syntax-value {
+        color: #e0e6ed;
+      }
+      
+      .syntax-backslash {
+        color: #6a737d;
+      }
+      
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 40px;
+        width: 1000px;
+      }
+      
+      .feature-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+      
+      .feature-icon {
+        width: 70px;
+        height: 70px;
+        background: rgba(0, 136, 204, 0.15);
+        border: 2px solid #0088cc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+      }
+      
+      .feature-icon i {
+        font-size: 32px;
+        color: #00d4ff;
+      }
+      
+      .feature-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #00d4ff;
+        margin-bottom: 10px;
+      }
+      
+      .feature-desc {
+        font-size: 14px;
+        line-height: 1.6;
+        color: #e0e6ed;
+      }
+      
+      .legend {
+        position: absolute;
+        bottom: 40px;
+        right: 80px;
+        display: flex;
+        gap: 30px;
+        font-size: 12px;
+        font-family: 'IBM Plex Mono', monospace;
+      }
+      
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      
+      .legend-color {
+        width: 16px;
+        height: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+      
+      .color-command {
+        background: #00d4ff;
+      }
+      
+      .color-flag {
+        background: #0088cc;
+      }
+      
+      .color-value {
+        background: #e0e6ed;
+      }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="grid-overlay"></div>
+        
+        <h1 class="page-title">Command Generation with Syntax Highlighting</h1>
+        
+        <div class="content">
+            <div class="preview-panel">
+                <div class="panel-header">
+                    <div class="panel-title">TERMINAL</div>
+                    <div class="api-indicator">libusdr</div>
+                </div>
+                <div class="code-content">
+                    <div class="code-line">
+                        <span class="syntax-command">usdr_dm_create</span>
+                        <span class="syntax-flag"> -D</span>
+                        <span class="syntax-value"> trx1200_2100</span>
+                        <span class="syntax-backslash"> \</span>
+                    </div>
+                    <div class="code-line">
+                        <span class="syntax-flag">  -f</span>
+                        <span class="syntax-value"> 2450e6</span>
+                        <span class="syntax-backslash"> \</span>
+                    </div>
+                    <div class="code-line">
+                        <span class="syntax-flag">  -s</span>
+                        <span class="syntax-value"> 40e6</span>
+                        <span class="syntax-backslash"> \</span>
+                    </div>
+                    <div class="code-line">
+                        <span class="syntax-flag">  -b</span>
+                        <span class="syntax-value"> 20e6</span>
+                        <span class="syntax-backslash"> \</span>
+                    </div>
+                    <div class="code-line">
+                        <span class="syntax-flag">  -g</span>
+                        <span class="syntax-value"> 33</span>
+                        <span class="syntax-backslash"> \</span>
+                    </div>
+                    <div class="code-line">
+                        <span class="syntax-flag">  -C</span>
+                        <span class="syntax-value"> 0</span>
+                        <span class="syntax-backslash"> \</span>
+                    </div>
+                    <div class="code-line">
+                        <span class="syntax-flag">  -S</span>
+                        <span class="syntax-value"> 8192</span>
+                        <span class="syntax-backslash"> \</span>
+                    </div>
+                    <div class="code-line">
+                        <span class="syntax-flag">  -t</span>
+                        <span class="syntax-value"> sigmf</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-copy"></i>
+                    </div>
+                    <div class="feature-title">Copy Command</div>
+                    <div class="feature-desc">
+                        One-click copy to clipboard for immediate use in terminal or scripts
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-file-export"></i>
+                    </div>
+                    <div class="feature-title">Export Script</div>
+                    <div class="feature-desc">
+                        Generate executable bash script with comments and metadata
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-terminal"></i>
+                    </div>
+                    <div class="feature-title">Terminal Execution</div>
+                    <div class="feature-desc">
+                        Launch command directly in system terminal for instant testing
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color color-command"></div>
+                <span>Command</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color color-flag"></div>
+                <span>Flags</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color color-value"></div>
+                <span>Values</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

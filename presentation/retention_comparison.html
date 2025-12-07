@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      
+      .slide-container {
+        width: 1280px;
+        min-height: 720px;
+        background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+        position: relative;
+        overflow: hidden;
+        font-family: 'Space Grotesk', sans-serif;
+        color: #e0e6ed;
+      }
+      
+      .grid-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+          linear-gradient(rgba(0, 212, 255, 0.02) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 212, 255, 0.02) 1px, transparent 1px);
+        background-size: 40px 40px;
+        pointer-events: none;
+      }
+      
+      .page-title {
+        position: absolute;
+        top: 40px;
+        left: 80px;
+        font-size: 36px;
+        font-weight: 700;
+        color: #00d4ff;
+        z-index: 20;
+      }
+      
+      .content {
+        position: relative;
+        z-index: 10;
+        min-height: 720px;
+        padding-top: 120px;
+        padding-left: 80px;
+        padding-right: 80px;
+      }
+      
+      .comparison-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+        margin-bottom: 16px; /* reduced from 30px to save height */
+      }
+      
+      .strategy-column {
+        display: flex;
+        flex-direction: column;
+        gap: 14px; /* reduced from 20px */
+      }
+      
+      .strategy-header {
+        background: rgba(0, 136, 204, 0.1);
+        border-left: 4px solid #0088cc;
+        padding-top: 12px; /* reduced from 15px */
+        padding-right: 20px;
+        padding-left: 20px;
+        min-height: 70px; /* reduced from 80px */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      
+      .strategy-title {
+        font-size: 28px;
+        font-weight: 700;
+        font-family: 'IBM Plex Mono', monospace;
+        color: #00d4ff;
+        margin-bottom: 5px;
+      }
+      
+      .strategy-subtitle {
+        font-size: 14px;
+        color: #0088cc;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      
+      .timeline-viz {
+        background: rgba(0, 0, 0, 0.3);
+        padding-top: 18px; /* reduced from 25px */
+        padding-right: 20px;
+        padding-left: 20px;
+        min-height: 100px; /* reduced from 120px */
+        position: relative;
+      }
+      
+      .timeline-label {
+        font-size: 12px;
+        color: #0088cc;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 10px; /* reduced from 15px */
+      }
+      
+      .timeline-track {
+        position: relative;
+        height: 32px; /* reduced from 40px */
+        margin-bottom: 10px; /* reduced from 15px */
+      }
+      
+      .timeline-bar {
+        position: absolute;
+        top: 14px; /* adjusted from 18px to center in shorter track */
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(to right, #0088cc, #00d4ff);
+      }
+      
+      .backup-point {
+        position: absolute;
+        top: 8px; /* adjusted from 10px for shorter track */
+        width: 20px;
+        height: 20px;
+        background: #00d4ff;
+        border: 3px solid #0a0e27;
+        transform: translateX(-10px);
+      }
+      
+      .point-label {
+        position: absolute;
+        top: 30px; /* reduced from 35px for shorter track */
+        font-size: 10px;
+        font-family: 'IBM Plex Mono', monospace;
+        color: #0088cc;
+        transform: translateX(-50%);
+        white-space: nowrap;
+      }
+      
+      .metrics-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px; /* reduced from 12px */
+      }
+      
+      .metric-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 6px; /* reduced from 10px */
+        border-top: 1px solid rgba(0, 136, 204, 0.2);
+      }
+      
+      .metric-label {
+        font-size: 13px;
+        color: rgba(224, 230, 237, 0.7);
+      }
+      
+      .metric-value {
+        font-size: 16px;
+        font-weight: 600;
+        font-family: 'IBM Plex Mono', monospace;
+        color: #00d4ff;
+      }
+      
+      .use-cases {
+        background: rgba(0, 136, 204, 0.05);
+        padding-top: 12px; /* reduced from 15px */
+        padding-right: 15px;
+        padding-left: 15px;
+        min-height: 100px; /* reduced from 110px */
+      }
+      
+      .use-case-title {
+        font-size: 13px;
+        color: #0088cc;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 10px;
+      }
+      
+      .use-case-list {
+        display: flex;
+        flex-direction: column;
+        gap: 4px; /* reduced from 6px */
+      }
+      
+      .use-case-item {
+        display: flex;
+        gap: 8px;
+        font-size: 13px;
+        line-height: 1.4;
+        color: #e0e6ed;
+      }
+      
+      .use-case-bullet {
+        color: #0088cc;
+        flex-shrink: 0;
+      }
+      
+      .comparison-table {
+        background: rgba(0, 212, 255, 0.05);
+        border-top: 3px solid #00d4ff;
+        padding-top: 12px; /* reduced from 20px */
+        padding-left: 30px;
+        padding-right: 30px;
+        min-height: 90px; /* reduced from 100px */
+      }
+      
+      .table-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #00d4ff;
+        margin-bottom: 8px; /* reduced from 12px */
+        text-align: center;
+      }
+      
+      .comparison-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 20px;
+        align-items: center;
+      }
+      
+      .comparison-cell {
+        text-align: center;
+      }
+      
+      .cell-label {
+        font-size: 12px;
+        color: #0088cc;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 5px;
+      }
+      
+      .cell-value {
+        font-size: 15px;
+        font-weight: 600;
+        font-family: 'IBM Plex Mono', monospace;
+        color: #e0e6ed;
+      }
+      
+      .recommendation-badge {
+        display: inline-block;
+        padding-top: 2px; /* reduced from 4px */
+        padding-right: 12px;
+        padding-left: 12px;
+        background: rgba(0, 136, 204, 0.2);
+        border: 1px solid #0088cc;
+        font-size: 11px;
+        font-weight: 600;
+        color: #00d4ff;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-top: 2px; /* reduced from 5px */
+      }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="grid-overlay"></div>
+        
+        <h1 class="page-title">Backup Retention Strategy Comparison</h1>
+        
+        <div class="content">
+            <div class="comparison-grid">
+                <!-- 7-Day Strategy -->
+                <div class="strategy-column">
+                    <div class="strategy-header">
+                        <div class="strategy-title">7-Day Retention</div>
+                        <div class="strategy-subtitle">Current Implementation</div>
+                    </div>
+                    
+                    <div class="timeline-viz">
+                        <div class="timeline-label">Backup Timeline</div>
+                        <div class="timeline-track">
+                            <div class="timeline-bar"></div>
+                            <div class="backup-point" style="left: 0%;"></div>
+                            <div class="point-label" style="left: 0%;">Day 0</div>
+                            <div class="backup-point" style="left: 16.67%;"></div>
+                            <div class="point-label" style="left: 16.67%;">Day 1</div>
+                            <div class="backup-point" style="left: 50%;"></div>
+                            <div class="point-label" style="left: 50%;">Day 3</div>
+                            <div class="backup-point" style="left: 83.33%;"></div>
+                            <div class="point-label" style="left: 83.33%;">Day 5</div>
+                            <div class="backup-point" style="left: 100%;"></div>
+                            <div class="point-label" style="left: 100%;">Day 7</div>
+                        </div>
+                    </div>
+                    
+                    <div class="metrics-list">
+                        <div class="metric-item">
+                            <span class="metric-label">Storage Required</span>
+                            <span class="metric-value">~7x DB Size</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">Recovery Window</span>
+                            <span class="metric-value">7 Days</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">Monthly Cost</span>
+                            <span class="metric-value">Baseline</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">Backup Count</span>
+                            <span class="metric-value">7 Snapshots</span>
+                        </div>
+                    </div>
+                    
+                    <div class="use-cases">
+                        <div class="use-case-title">Best For</div>
+                        <div class="use-case-list">
+                            <div class="use-case-item">
+                                <span class="use-case-bullet">•</span>
+                                <span>Development and testing environments</span>
+                            </div>
+                            <div class="use-case-item">
+                                <span class="use-case-bullet">•</span>
+                                <span>Rapid iteration projects with frequent changes</span>
+                            </div>
+                            <div class="use-case-item">
+                                <span class="use-case-bullet">•</span>
+                                <span>Cost-sensitive deployments</span>
+                            </div>
+                            <div class="use-case-item">
+                                <span class="use-case-bullet">•</span>
+                                <span>Short-term data retention requirements</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 30-Day Strategy -->
+                <div class="strategy-column">
+                    <div class="strategy-header">
+                        <div class="strategy-title">30-Day Retention</div>
+                        <div class="strategy-subtitle">Extended Protection</div>
+                    </div>
+                    
+                    <div class="timeline-viz">
+                        <div class="timeline-label">Backup Timeline</div>
+                        <div class="timeline-track">
+                            <div class="timeline-bar"></div>
+                            <div class="backup-point" style="left: 0%;"></div>
+                            <div class="point-label" style="left: 0%;">Day 0</div>
+                            <div class="backup-point" style="left: 16.67%;"></div>
+                            <div class="point-label" style="left: 16.67%;">Day 5</div>
+                            <div class="backup-point" style="left: 50%;"></div>
+                            <div class="point-label" style="left: 50%;">Day 15</div>
+                            <div class="backup-point" style="left: 83.33%;"></div>
+                            <div class="point-label" style="left: 83.33%;">Day 25</div>
+                            <div class="backup-point" style="left: 100%;"></div>
+                            <div class="point-label" style="left: 100%;">Day 30</div>
+                        </div>
+                    </div>
+                    
+                    <div class="metrics-list">
+                        <div class="metric-item">
+                            <span class="metric-label">Storage Required</span>
+                            <span class="metric-value">~30x DB Size</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">Recovery Window</span>
+                            <span class="metric-value">30 Days</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">Monthly Cost</span>
+                            <span class="metric-value">~4.3x Higher</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">Backup Count</span>
+                            <span class="metric-value">30 Snapshots</span>
+                        </div>
+                    </div>
+                    
+                    <div class="use-cases">
+                        <div class="use-case-title">Best For</div>
+                        <div class="use-case-list">
+                            <div class="use-case-item">
+                                <span class="use-case-bullet">•</span>
+                                <span>Production systems with compliance requirements</span>
+                            </div>
+                            <div class="use-case-item">
+                                <span class="use-case-bullet">•</span>
+                                <span>Financial or healthcare applications (audit trails)</span>
+                            </div>
+                            <div class="use-case-item">
+                                <span class="use-case-bullet">•</span>
+                                <span>Long-term data corruption detection</span>
+                            </div>
+                            <div class="use-case-item">
+                                <span class="use-case-bullet">•</span>
+                                <span>Mission-critical systems requiring extended recovery</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Comparison Summary -->
+            <div class="comparison-table">
+                <div class="table-title">Decision Matrix</div>
+                <div class="comparison-row">
+                    <div class="comparison-cell">
+                        <div class="cell-label">Development Phase</div>
+                        <div class="cell-value">7-Day Retention</div>
+                        <div class="recommendation-badge">Recommended</div>
+                    </div>
+                    <div class="comparison-cell">
+                        <div class="cell-label">Production Deployment</div>
+                        <div class="cell-value">Evaluate Based on Compliance</div>
+                    </div>
+                    <div class="comparison-cell">
+                        <div class="cell-label">Regulated Industries</div>
+                        <div class="cell-value">30-Day Retention</div>
+                        <div class="recommendation-badge">Required</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

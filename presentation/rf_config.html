@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      
+      .slide-container {
+        width: 1280px;
+        min-height: 720px;
+        background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+        position: relative;
+        overflow: hidden;
+        font-family: 'Space Grotesk', sans-serif;
+        color: #e0e6ed;
+      }
+      
+      .grid-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+          linear-gradient(rgba(0, 212, 255, 0.02) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 212, 255, 0.02) 1px, transparent 1px);
+        background-size: 40px 40px;
+        pointer-events: none;
+      }
+      
+      .page-title {
+        position: absolute;
+        top: 40px;
+        left: 80px;
+        font-size: 36px;
+        font-weight: 700;
+        color: #00d4ff;
+        z-index: 20;
+      }
+      
+      .content {
+        position: relative;
+        z-index: 10;
+        min-height: 720px;
+        padding-top: 130px;
+        padding-left: 80px;
+        padding-right: 80px;
+      }
+      
+      .modes-section {
+        display: flex;
+        gap: 30px;
+        margin-bottom: 40px;
+      }
+      
+      .mode-box {
+        flex: 1;
+        background: rgba(0, 136, 204, 0.1);
+        border: 2px solid #0088cc;
+        padding-top: 20px;
+        padding-right: 25px;
+        padding-left: 25px;
+        min-height: 120px;
+      }
+      
+      .mode-label {
+        font-size: 24px;
+        font-weight: 600;
+        color: #00d4ff;
+        margin-bottom: 12px;
+        font-family: 'IBM Plex Mono', monospace;
+      }
+      
+      .mode-description {
+        font-size: 15px;
+        line-height: 1.6;
+        color: #e0e6ed;
+      }
+      
+      .spectrum-section {
+        margin-top: 30px; /* reduced from 50 to save 20px */
+      }
+      
+      .spectrum-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: #00d4ff;
+        margin-bottom: 20px; /* reduced from 30 to save 10px */
+        font-family: 'IBM Plex Mono', monospace;
+      }
+      
+      .frequency-axis {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px; /* reduced from 15 to save 5px */
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+      
+      .freq-marker {
+        font-size: 13px;
+        font-family: 'IBM Plex Mono', monospace;
+        color: #0088cc;
+      }
+      
+      .rf-paths {
+        display: flex;
+        flex-direction: column;
+        gap: 12px; /* reduced from 20 to save 24px over 3 gaps */
+      }
+      
+      .rf-path-row {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+      
+      .path-name {
+        width: 180px;
+        font-size: 16px;
+        font-family: 'IBM Plex Mono', monospace;
+        font-weight: 600;
+        color: #00d4ff;
+        flex-shrink: 0;
+      }
+      
+      .path-bar-container {
+        flex: 1;
+        height: 42px; /* reduced from 50 to save 32px over 4 rows */
+        background: rgba(0, 136, 204, 0.05);
+        position: relative;
+      }
+      
+      .path-bar {
+        position: absolute;
+        height: 100%;
+        background: linear-gradient(90deg, #0088cc, #00d4ff);
+        border: 2px solid #00d4ff;
+      }
+      
+      .path-range {
+        width: 140px;
+        font-size: 13px;
+        font-family: 'IBM Plex Mono', monospace;
+        color: #e0e6ed;
+        text-align: right;
+        flex-shrink: 0;
+      }
+      
+      .validation-section {
+        margin-top: 24px; /* reduced from 50 to save 26px */
+        background: rgba(0, 212, 255, 0.05);
+        border-left: 4px solid #00d4ff;
+        padding-top: 12px; /* reduced from 25 to save 13px */
+        padding-right: 30px;
+        padding-left: 30px;
+        min-height: 100px;
+      }
+      
+      .validation-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #00d4ff;
+        margin-bottom: 10px; /* reduced from 15 to save 5px */
+      }
+      
+      .validation-features {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px; /* reduced from 15 to save 7px */
+      }
+      
+      .validation-item {
+        display: flex;
+        align-items: center;
+        gap: 8px; /* reduced from 12 */
+        font-size: 15px;
+        color: #e0e6ed;
+      }
+      
+      .check-mark {
+        width: 6px;
+        height: 6px;
+        background: #00d4ff;
+        flex-shrink: 0;
+      }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="grid-overlay"></div>
+        
+        <h1 class="page-title">Comprehensive RF Path Configuration</h1>
+        
+        <div class="content">
+            <!-- Operation Modes -->
+            <div class="modes-section">
+                <div class="mode-box">
+                    <div class="mode-label">RX</div>
+                    <p class="mode-description">Receive-only mode for signal monitoring, spectrum analysis, and passive listening applications</p>
+                </div>
+                
+                <div class="mode-box">
+                    <div class="mode-label">TX</div>
+                    <p class="mode-description">Transmit-only mode for signal generation, testing, and broadcasting applications</p>
+                </div>
+                
+                <div class="mode-box">
+                    <div class="mode-label">TRX</div>
+                    <p class="mode-description">Full-duplex transceiver mode for bidirectional communication and interactive protocols</p>
+                </div>
+            </div>
+            
+            <!-- Frequency Spectrum -->
+            <div class="spectrum-section">
+                <h2 class="spectrum-title">RF Path Frequency Coverage: 700 MHz - 6 GHz</h2>
+                
+                <div class="frequency-axis">
+                    <span class="freq-marker">700 MHz</span>
+                    <span class="freq-marker">1.5 GHz</span>
+                    <span class="freq-marker">2.5 GHz</span>
+                    <span class="freq-marker">4.0 GHz</span>
+                    <span class="freq-marker">6.0 GHz</span>
+                </div>
+                
+                <div class="rf-paths">
+                    <div class="rf-path-row">
+                        <div class="path-name">trx700_900</div>
+                        <div class="path-bar-container">
+                            <div class="path-bar" style="left: 0%; width: 4%;"></div>
+                        </div>
+                        <div class="path-range">700-900 MHz</div>
+                    </div>
+                    
+                    <div class="rf-path-row">
+                        <div class="path-name">trx1200_2100</div>
+                        <div class="path-bar-container">
+                            <div class="path-bar" style="left: 9%; width: 17%;"></div>
+                        </div>
+                        <div class="path-range">1200-2100 MHz</div>
+                    </div>
+                    
+                    <div class="rf-path-row">
+                        <div class="path-name">trx2300_2900</div>
+                        <div class="path-bar-container">
+                            <div class="path-bar" style="left: 30%; width: 11%;"></div>
+                        </div>
+                        <div class="path-range">2300-2900 MHz</div>
+                    </div>
+                    
+                    <div class="rf-path-row">
+                        <div class="path-name">trx3000_6000</div>
+                        <div class="path-bar-container">
+                            <div class="path-bar" style="left: 43%; width: 57%;"></div>
+                        </div>
+                        <div class="path-range">3000-6000 MHz</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Intelligent Validation -->
+            <div class="validation-section">
+                <h3 class="validation-title">Intelligent Path Validation</h3>
+                <div class="validation-features">
+                    <div class="validation-item">
+                        <div class="check-mark"></div>
+                        <span>Automatic frequency range checking</span>
+                    </div>
+                    <div class="validation-item">
+                        <div class="check-mark"></div>
+                        <span>Path recommendation based on target frequency</span>
+                    </div>
+                    <div class="validation-item">
+                        <div class="check-mark"></div>
+                        <span>Real-time compatibility warnings</span>
+                    </div>
+                    <div class="validation-item">
+                        <div class="check-mark"></div>
+                        <span>Optimal path selection suggestions</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

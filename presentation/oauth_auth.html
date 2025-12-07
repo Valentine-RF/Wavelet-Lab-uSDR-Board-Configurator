@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      
+      .slide-container {
+        width: 1280px;
+        min-height: 720px;
+        background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+        position: relative;
+        overflow: hidden;
+        font-family: 'Space Grotesk', sans-serif;
+        color: #e0e6ed;
+      }
+      
+      .grid-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+          linear-gradient(rgba(0, 212, 255, 0.02) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 212, 255, 0.02) 1px, transparent 1px);
+        background-size: 40px 40px;
+        pointer-events: none;
+      }
+      
+      .page-title {
+        position: absolute;
+        top: 40px;
+        left: 80px;
+        font-size: 36px;
+        font-weight: 700;
+        color: #00d4ff;
+        z-index: 20;
+      }
+      
+      .content {
+        position: relative;
+        z-index: 10;
+        min-height: 720px;
+        padding-top: 120px;
+        padding-left: 80px;
+        padding-right: 80px;
+      }
+      
+      .oauth-flow {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 35px;
+        min-height: 140px;
+      }
+      
+      .flow-step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        width: 160px;
+      }
+      
+      .step-box {
+        width: 140px;
+        height: 100px;
+        background: rgba(0, 136, 204, 0.1);
+        border: 3px solid #0088cc;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+      
+      .step-icon {
+        font-size: 32px;
+        color: #00d4ff;
+      }
+      
+      .step-label {
+        font-size: 15px;
+        font-weight: 600;
+        color: #e0e6ed;
+        text-align: center;
+      }
+      
+      .step-detail {
+        font-size: 12px;
+        font-family: 'IBM Plex Mono', monospace;
+        color: #0088cc;
+        text-align: center;
+      }
+      
+      .flow-arrow {
+        font-size: 24px;
+        color: #0088cc;
+        margin-top: -30px;
+      }
+      
+      .features-section {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        margin-bottom: 30px;
+      }
+      
+      .feature-panel {
+        background: rgba(0, 136, 204, 0.05);
+        border-left: 3px solid #0088cc;
+        padding-top: 20px;
+        padding-right: 25px;
+        padding-left: 25px;
+        min-height: 180px;
+      }
+      
+      .panel-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 15px;
+      }
+      
+      .panel-icon {
+        font-size: 22px;
+        color: #00d4ff;
+      }
+      
+      .panel-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: #00d4ff;
+      }
+      
+      .feature-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      
+      .feature-item {
+        display: flex;
+        gap: 12px;
+      }
+      
+      .feature-bullet {
+        width: 6px;
+        height: 6px;
+        background: #0088cc;
+        margin-top: 8px;
+        flex-shrink: 0;
+      }
+      
+      .feature-content {
+        flex: 1;
+      }
+      
+      .feature-name {
+        font-size: 15px;
+        font-weight: 600;
+        color: #e0e6ed;
+        margin-bottom: 4px;
+      }
+      
+      .feature-desc {
+        font-size: 13px;
+        line-height: 1.5;
+        color: rgba(224, 230, 237, 0.75);
+      }
+      
+      .rbac-section {
+        background: rgba(0, 212, 255, 0.05);
+        border-top: 3px solid #00d4ff;
+        padding-top: 20px;
+        padding-left: 30px;
+        padding-right: 30px;
+        min-height: 120px;
+      }
+      
+      .rbac-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #00d4ff;
+        margin-bottom: 15px;
+        text-align: center;
+      }
+      
+      .roles-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+      }
+      
+      .role-card {
+        display: flex;
+        gap: 15px;
+      }
+      
+      .role-badge {
+        width: 60px;
+        height: 60px;
+        background: rgba(0, 136, 204, 0.15);
+        border: 2px solid #0088cc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      
+      .role-badge i {
+        font-size: 28px;
+        color: #00d4ff;
+      }
+      
+      .role-content {
+        flex: 1;
+      }
+      
+      .role-name {
+        font-size: 16px;
+        font-weight: 600;
+        font-family: 'IBM Plex Mono', monospace;
+        color: #00d4ff;
+        margin-bottom: 8px;
+      }
+      
+      .role-permissions {
+        font-size: 13px;
+        line-height: 1.5;
+        color: #e0e6ed;
+      }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="grid-overlay"></div>
+        
+        <h1 class="page-title">Manus OAuth Authentication System</h1>
+        
+        <div class="content">
+            <!-- OAuth Flow -->
+            <div class="oauth-flow">
+                <div class="flow-step">
+                    <div class="step-box">
+                        <i class="fas fa-user step-icon"></i>
+                        <div class="step-label">User Access</div>
+                    </div>
+                    <div class="step-detail">Unauthenticated</div>
+                </div>
+                
+                <div class="flow-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+                
+                <div class="flow-step">
+                    <div class="step-box">
+                        <i class="fas fa-sign-in-alt step-icon"></i>
+                        <div class="step-label">OAuth Login</div>
+                    </div>
+                    <div class="step-detail">Manus Portal</div>
+                </div>
+                
+                <div class="flow-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+                
+                <div class="flow-step">
+                    <div class="step-box">
+                        <i class="fas fa-exchange-alt step-icon"></i>
+                        <div class="step-label">Callback</div>
+                    </div>
+                    <div class="step-detail">/api/oauth/callback</div>
+                </div>
+                
+                <div class="flow-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+                
+                <div class="flow-step">
+                    <div class="step-box">
+                        <i class="fas fa-key step-icon"></i>
+                        <div class="step-label">JWT Token</div>
+                    </div>
+                    <div class="step-detail">Signed & Issued</div>
+                </div>
+                
+                <div class="flow-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+                
+                <div class="flow-step">
+                    <div class="step-box">
+                        <i class="fas fa-cookie-bite step-icon"></i>
+                        <div class="step-label">Session</div>
+                    </div>
+                    <div class="step-detail">httpOnly Cookie</div>
+                </div>
+            </div>
+            
+            <!-- Security Features -->
+            <div class="features-section">
+                <div class="feature-panel">
+                    <div class="panel-header">
+                        <i class="fas fa-lock panel-icon"></i>
+                        <h3 class="panel-title">Session Security</h3>
+                    </div>
+                    <div class="feature-list">
+                        <div class="feature-item">
+                            <div class="feature-bullet"></div>
+                            <div class="feature-content">
+                                <div class="feature-name">JWT Token Signing</div>
+                                <div class="feature-desc">Tokens signed with JWT_SECRET environment variable for tamper-proof authentication</div>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet"></div>
+                            <div class="feature-content">
+                                <div class="feature-name">httpOnly Cookies</div>
+                                <div class="feature-desc">Session cookies inaccessible to JavaScript preventing XSS token theft</div>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet"></div>
+                            <div class="feature-content">
+                                <div class="feature-name">Secure Flag</div>
+                                <div class="feature-desc">Cookies transmitted only over HTTPS in production environments</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="feature-panel">
+                    <div class="panel-header">
+                        <i class="fas fa-shield-alt panel-icon"></i>
+                        <h3 class="panel-title">Attack Prevention</h3>
+                    </div>
+                    <div class="feature-list">
+                        <div class="feature-item">
+                            <div class="feature-bullet"></div>
+                            <div class="feature-content">
+                                <div class="feature-name">CSRF Protection</div>
+                                <div class="feature-desc">Cross-Site Request Forgery tokens validate all state-changing operations</div>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet"></div>
+                            <div class="feature-content">
+                                <div class="feature-name">Session Validation</div>
+                                <div class="feature-desc">Every request validates session integrity and expiration timestamps</div>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-bullet"></div>
+                            <div class="feature-content">
+                                <div class="feature-name">Secure Logout</div>
+                                <div class="feature-desc">Complete session termination with cookie clearing and token invalidation</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- RBAC Section -->
+            <div class="rbac-section">
+                <h3 class="rbac-title">Role-Based Access Control (RBAC)</h3>
+                <div class="roles-grid">
+                    <div class="role-card">
+                        <div class="role-badge">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <div class="role-content">
+                            <div class="role-name">admin</div>
+                            <div class="role-permissions">
+                                Full system access including user management, configuration changes, template deletion, and administrative procedures
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="role-card">
+                        <div class="role-badge">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="role-content">
+                            <div class="role-name">user</div>
+                            <div class="role-permissions">
+                                Standard access for device configuration, template usage, preset management, and command execution
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

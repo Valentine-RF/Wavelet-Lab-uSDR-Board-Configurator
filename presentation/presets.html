@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      
+      .slide-container {
+        width: 1280px;
+        min-height: 720px;
+        background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+        position: relative;
+        overflow: hidden;
+        font-family: 'Space Grotesk', sans-serif;
+        color: #e0e6ed;
+      }
+      
+      .grid-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+          linear-gradient(rgba(0, 212, 255, 0.02) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 212, 255, 0.02) 1px, transparent 1px);
+        background-size: 40px 40px;
+        pointer-events: none;
+      }
+      
+      .page-title {
+        position: absolute;
+        top: 40px;
+        left: 80px;
+        font-size: 36px;
+        font-weight: 700;
+        color: #00d4ff;
+        z-index: 20;
+      }
+      
+      .content {
+        position: relative;
+        z-index: 10;
+        min-height: 720px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 50px;
+        padding-top: 140px;
+        padding-left: 80px;
+        padding-right: 80px;
+      }
+      
+      .section {
+        display: flex;
+        flex-direction: column;
+      }
+      
+      .section-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 25px;
+      }
+      
+      .section-icon {
+        font-size: 24px;
+        color: #00d4ff;
+      }
+      
+      .section-title {
+        font-size: 22px;
+        font-weight: 600;
+        color: #00d4ff;
+      }
+      
+      .presets-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+      
+      .preset-item {
+        background: rgba(0, 136, 204, 0.08);
+        border-left: 3px solid #0088cc;
+        padding-top: 18px;
+        padding-right: 20px;
+        padding-left: 20px;
+        min-height: 85px;
+      }
+      
+      .preset-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+      
+      .preset-name {
+        font-size: 16px;
+        font-weight: 600;
+        color: #e0e6ed;
+        font-family: 'IBM Plex Mono', monospace;
+      }
+      
+      .preset-date {
+        font-size: 11px;
+        font-family: 'IBM Plex Mono', monospace;
+        color: #6a737d;
+      }
+      
+      .preset-details {
+        display: flex;
+        gap: 20px;
+        font-size: 12px;
+        font-family: 'IBM Plex Mono', monospace;
+        color: rgba(224, 230, 237, 0.7);
+      }
+      
+      .preset-detail {
+        display: flex;
+        gap: 6px;
+      }
+      
+      .detail-label {
+        color: #0088cc;
+      }
+      
+      .history-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+      
+      .history-item {
+        background: rgba(0, 0, 0, 0.3);
+        border-left: 3px solid;
+        padding-top: 15px;
+        padding-right: 18px;
+        padding-left: 18px;
+        min-height: 80px;
+      }
+      
+      .history-libusdr {
+        border-left-color: #0088cc;
+      }
+      
+      .history-soapysdr {
+        border-left-color: #cc3333;
+      }
+      
+      .history-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+      
+      .api-badge {
+        font-size: 10px;
+        font-family: 'IBM Plex Mono', monospace;
+        font-weight: 600;
+        padding-top: 4px;
+        padding-right: 10px;
+        padding-left: 10px;
+        letter-spacing: 1px;
+        color: #ffffff;
+      }
+      
+      .badge-libusdr {
+        background: #0088cc;
+      }
+      
+      .badge-soapysdr {
+        background: #cc3333;
+      }
+      
+      .history-time {
+        font-size: 11px;
+        font-family: 'IBM Plex Mono', monospace;
+        color: #6a737d;
+      }
+      
+      .history-command {
+        font-size: 13px;
+        font-family: 'IBM Plex Mono', monospace;
+        color: #e0e6ed;
+        margin-bottom: 8px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      
+      .history-actions {
+        display: flex;
+        gap: 15px;
+        font-size: 11px;
+        font-family: 'IBM Plex Mono', monospace;
+      }
+      
+      .action-link {
+        color: #0088cc;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+      
+      .action-icon {
+        font-size: 10px;
+      }
+      
+      .features-bar {
+        position: absolute;
+        bottom: 60px;
+        left: 80px;
+        right: 80px;
+        display: flex;
+        justify-content: space-between;
+        gap: 30px;
+      }
+      
+      .feature-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: rgba(0, 136, 204, 0.1);
+        padding-top: 15px;
+        padding-right: 25px;
+        padding-left: 25px;
+        border-left: 3px solid #0088cc;
+        flex: 1;
+      }
+      
+      .feature-icon {
+        font-size: 20px;
+        color: #00d4ff;
+        flex-shrink: 0;
+      }
+      
+      .feature-text {
+        font-size: 14px;
+        color: #e0e6ed;
+      }
+      
+      .divider {
+        position: absolute;
+        left: 50%;
+        top: 140px;
+        bottom: 160px;
+        width: 2px;
+        background: linear-gradient(to bottom, transparent, rgba(0, 136, 204, 0.3) 20%, rgba(0, 136, 204, 0.3) 80%, transparent);
+        transform: translateX(-50%);
+      }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="grid-overlay"></div>
+        <div class="divider"></div>
+        
+        <h1 class="page-title">Configuration Presets and History</h1>
+        
+        <div class="content">
+            <!-- Presets Section -->
+            <div class="section">
+                <div class="section-header">
+                    <i class="fas fa-bookmark section-icon"></i>
+                    <h2 class="section-title">Saved Presets</h2>
+                </div>
+                
+                <div class="presets-list">
+                    <div class="preset-item">
+                        <div class="preset-header">
+                            <div class="preset-name">WiFi_2.4GHz_Monitor</div>
+                            <div class="preset-date">2025-12-06</div>
+                        </div>
+                        <div class="preset-details">
+                            <div class="preset-detail">
+                                <span class="detail-label">Freq:</span>
+                                <span>2450 MHz</span>
+                            </div>
+                            <div class="preset-detail">
+                                <span class="detail-label">SR:</span>
+                                <span>40 MHz</span>
+                            </div>
+                            <div class="preset-detail">
+                                <span class="detail-label">Gain:</span>
+                                <span>33 dB</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="preset-item">
+                        <div class="preset-header">
+                            <div class="preset-name">LTE_Band7_Analysis</div>
+                            <div class="preset-date">2025-12-05</div>
+                        </div>
+                        <div class="preset-details">
+                            <div class="preset-detail">
+                                <span class="detail-label">Freq:</span>
+                                <span>2600 MHz</span>
+                            </div>
+                            <div class="preset-detail">
+                                <span class="detail-label">SR:</span>
+                                <span>30.72 MHz</span>
+                            </div>
+                            <div class="preset-detail">
+                                <span class="detail-label">Gain:</span>
+                                <span>40 dB</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="preset-item">
+                        <div class="preset-header">
+                            <div class="preset-name">GPS_L1_Reception</div>
+                            <div class="preset-date">2025-12-04</div>
+                        </div>
+                        <div class="preset-details">
+                            <div class="preset-detail">
+                                <span class="detail-label">Freq:</span>
+                                <span>1575.42 MHz</span>
+                            </div>
+                            <div class="preset-detail">
+                                <span class="detail-label">SR:</span>
+                                <span>4 MHz</span>
+                            </div>
+                            <div class="preset-detail">
+                                <span class="detail-label">Gain:</span>
+                                <span>50 dB</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="preset-item">
+                        <div class="preset-header">
+                            <div class="preset-name">Wideband_Spectrum_Scan</div>
+                            <div class="preset-date">2025-12-03</div>
+                        </div>
+                        <div class="preset-details">
+                            <div class="preset-detail">
+                                <span class="detail-label">Freq:</span>
+                                <span>3500 MHz</span>
+                            </div>
+                            <div class="preset-detail">
+                                <span class="detail-label">SR:</span>
+                                <span>61.44 MHz</span>
+                            </div>
+                            <div class="preset-detail">
+                                <span class="detail-label">Gain:</span>
+                                <span>25 dB</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- History Section -->
+            <div class="section">
+                <div class="section-header">
+                    <i class="fas fa-history section-icon"></i>
+                    <h2 class="section-title">Command History</h2>
+                </div>
+                
+                <div class="history-list">
+                    <div class="history-item history-libusdr">
+                        <div class="history-header">
+                            <div class="api-badge badge-libusdr">libusdr</div>
+                            <div class="history-time">14:32:18</div>
+                        </div>
+                        <div class="history-command">usdr_dm_create -D trx1200_2100 -f 2450e6 -s 40e6 -g 33</div>
+                        <div class="history-actions">
+                            <div class="action-link">
+                                <i class="fas fa-redo action-icon"></i>
+                                <span>Re-run</span>
+                            </div>
+                            <div class="action-link">
+                                <i class="fas fa-copy action-icon"></i>
+                                <span>Copy</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="history-item history-soapysdr">
+                        <div class="history-header">
+                            <div class="api-badge badge-soapysdr">SoapySDR</div>
+                            <div class="history-time">13:45:02</div>
+                        </div>
+                        <div class="history-command">sdr->setFrequency(SOAPY_SDR_RX, 0, 2600e6);</div>
+                        <div class="history-actions">
+                            <div class="action-link">
+                                <i class="fas fa-redo action-icon"></i>
+                                <span>Re-run</span>
+                            </div>
+                            <div class="action-link">
+                                <i class="fas fa-copy action-icon"></i>
+                                <span>Copy</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="history-item history-libusdr">
+                        <div class="history-header">
+                            <div class="api-badge badge-libusdr">libusdr</div>
+                            <div class="history-time">12:18:45</div>
+                        </div>
+                        <div class="history-command">usdr_dm_create -D trx1200_2100 -f 1575.42e6 -s 4e6 -g 50</div>
+                        <div class="history-actions">
+                            <div class="action-link">
+                                <i class="fas fa-redo action-icon"></i>
+                                <span>Re-run</span>
+                            </div>
+                            <div class="action-link">
+                                <i class="fas fa-copy action-icon"></i>
+                                <span>Copy</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="history-item history-libusdr">
+                        <div class="history-header">
+                            <div class="api-badge badge-libusdr">libusdr</div>
+                            <div class="history-time">11:05:33</div>
+                        </div>
+                        <div class="history-command">usdr_dm_create -D trx3000_6000 -f 3500e6 -s 61.44e6 -g 25</div>
+                        <div class="history-actions">
+                            <div class="action-link">
+                                <i class="fas fa-redo action-icon"></i>
+                                <span>Re-run</span>
+                            </div>
+                            <div class="action-link">
+                                <i class="fas fa-copy action-icon"></i>
+                                <span>Copy</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="features-bar">
+            <div class="feature-item">
+                <i class="fas fa-save feature-icon"></i>
+                <div class="feature-text">Save complete configurations with custom names</div>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-clock feature-icon"></i>
+                <div class="feature-text">Automatic timestamp tracking for all commands</div>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-bolt feature-icon"></i>
+                <div class="feature-text">One-click re-run of previous configurations</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      
+      .slide-container {
+        width: 1280px;
+        min-height: 720px;
+        background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+        position: relative;
+        overflow: hidden;
+        font-family: 'Space Grotesk', sans-serif;
+        color: #e0e6ed;
+      }
+      
+      .grid-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+          linear-gradient(rgba(0, 212, 255, 0.02) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 212, 255, 0.02) 1px, transparent 1px);
+        background-size: 40px 40px;
+        pointer-events: none;
+      }
+      
+      .page-title {
+        position: absolute;
+        top: 40px;
+        left: 80px;
+        font-size: 36px;
+        font-weight: 700;
+        color: #00d4ff;
+        z-index: 20;
+      }
+      
+      .content {
+        position: relative;
+        z-index: 10;
+        min-height: 720px;
+        padding-top: 105px; /* reduced from 130 to reclaim 25px */
+        padding-left: 80px;
+        padding-right: 80px;
+      }
+      
+      .workflow-section {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 30px; /* reduced from 40 to reclaim 10px */
+        min-height: 150px; /* reduced from 180 to reclaim 30px */
+      }
+      
+      .workflow-step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+        width: 200px;
+      }
+      
+      .step-icon-box {
+        width: 80px;
+        height: 80px;
+        background: rgba(0, 136, 204, 0.15);
+        border: 3px solid #0088cc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      .step-icon {
+        font-size: 36px;
+        color: #00d4ff;
+      }
+      
+      .step-label {
+        font-size: 16px;
+        font-weight: 600;
+        color: #e0e6ed;
+        text-align: center;
+        line-height: 1.4;
+      }
+      
+      .workflow-arrow {
+        font-size: 28px;
+        color: #0088cc;
+        margin-top: -60px;
+      }
+      
+      .json-section {
+        display: grid;
+        grid-template-columns: 580px 1fr;
+        gap: 40px;
+        margin-bottom: 30px; /* reduced from 40 to reclaim 10px */
+      }
+      
+      .json-preview {
+        background: #0d1117;
+        border: 2px solid #0088cc;
+        padding-top: 10px; /* reduced from 20 to reclaim 10px */
+        padding-right: 20px;
+        padding-left: 20px;
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 13px;
+        line-height: 1.5; /* reduced from 1.8 to tighten vertical spacing */
+        min-height: 240px;
+      }
+      
+      .json-line {
+        margin-bottom: 2px; /* reduced from 4 to reclaim 30px across lines */
+      }
+      
+      .json-key { color: #0088cc; }
+      .json-string { color: #88cc88; }
+      .json-number { color: #00d4ff; }
+      .json-bracket { color: #e0e6ed; }
+      
+      .features-list {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 18px; /* reduced from 25 to reclaim vertical space */
+      }
+      
+      .feature-item { display: flex; gap: 15px; }
+      
+      .feature-icon {
+        width: 40px;
+        height: 40px;
+        background: rgba(0, 136, 204, 0.15);
+        border: 2px solid #0088cc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      
+      .feature-icon i { font-size: 18px; color: #00d4ff; }
+      
+      .feature-content { flex: 1; }
+      
+      .feature-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #00d4ff;
+        margin-bottom: 4px; /* reduced from 6 */
+      }
+      
+      .feature-desc {
+        font-size: 14px;
+        line-height: 1.5;
+        color: #e0e6ed;
+      }
+      
+      .benefits-bar {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 30px;
+        background: rgba(0, 212, 255, 0.05);
+        border-top: 3px solid #00d4ff;
+        padding-top: 15px; /* reduced from 25 to reclaim 10px */
+        padding-left: 30px;
+        padding-right: 30px;
+        min-height: 80px; /* reduced from 100 to reclaim 20px */
+      }
+      
+      .benefit-item { display: flex; align-items: center; gap: 12px; }
+      
+      .benefit-check {
+        width: 24px;
+        height: 24px;
+        background: #0088cc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      
+      .benefit-check i { font-size: 12px; color: #ffffff; }
+      
+      .benefit-text { font-size: 15px; color: #e0e6ed; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="grid-overlay"></div>
+        
+        <h1 class="page-title">Import/Export for Team Collaboration</h1>
+        
+        <div class="content">
+            <!-- Workflow Steps -->
+            <div class="workflow-section">
+                <div class="workflow-step">
+                    <div class="step-icon-box">
+                        <i class="fas fa-cog step-icon"></i>
+                    </div>
+                    <div class="step-label">Configure<br>Dashboard</div>
+                </div>
+                
+                <div class="workflow-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+                
+                <div class="workflow-step">
+                    <div class="step-icon-box">
+                        <i class="fas fa-file-export step-icon"></i>
+                    </div>
+                    <div class="step-label">Export to<br>JSON</div>
+                </div>
+                
+                <div class="workflow-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+                
+                <div class="workflow-step">
+                    <div class="step-icon-box">
+                        <i class="fas fa-code-branch step-icon"></i>
+                    </div>
+                    <div class="step-label">Version<br>Control</div>
+                </div>
+                
+                <div class="workflow-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+                
+                <div class="workflow-step">
+                    <div class="step-icon-box">
+                        <i class="fas fa-users step-icon"></i>
+                    </div>
+                    <div class="step-label">Team<br>Import</div>
+                </div>
+                
+                <div class="workflow-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+                
+                <div class="workflow-step">
+                    <div class="step-icon-box">
+                        <i class="fas fa-check-circle step-icon"></i>
+                    </div>
+                    <div class="step-label">Validate &<br>Apply</div>
+                </div>
+            </div>
+            
+            <!-- JSON Preview and Features -->
+            <div class="json-section">
+                <div class="json-preview">
+                    <div class="json-line"><span class="json-bracket">{</span></div>
+                    <div class="json-line">  <span class="json-key">"version"</span>: <span class="json-string">"1.0"</span>,</div>
+                    <div class="json-line">  <span class="json-key">"name"</span>: <span class="json-string">"WiFi Monitor Config"</span>,</div>
+                    <div class="json-line">  <span class="json-key">"api"</span>: <span class="json-string">"libusdr"</span>,</div>
+                    <div class="json-line">  <span class="json-key">"rfPath"</span>: <span class="json-string">"trx1200_2100"</span>,</div>
+                    <div class="json-line">  <span class="json-key">"frequency"</span>: <span class="json-number">2450000000</span>,</div>
+                    <div class="json-line">  <span class="json-key">"sampleRate"</span>: <span class="json-number">40000000</span>,</div>
+                    <div class="json-line">  <span class="json-key">"bandwidth"</span>: <span class="json-number">20000000</span>,</div>
+                    <div class="json-line">  <span class="json-key">"rxGain"</span>: <span class="json-bracket">{</span></div>
+                    <div class="json-line">    <span class="json-key">"lna"</span>: <span class="json-number">15</span>,</div>
+                    <div class="json-line">    <span class="json-key">"pga"</span>: <span class="json-number">12</span>,</div>
+                    <div class="json-line">    <span class="json-key">"vga"</span>: <span class="json-number">6</span></div>
+                    <div class="json-line">  <span class="json-bracket">}</span>,</div>
+                    <div class="json-line">  <span class="json-key">"timestamp"</span>: <span class="json-string">"2025-12-06T19:45:00Z"</span></div>
+                    <div class="json-line"><span class="json-bracket">}</span></div>
+                </div>
+                
+                <div class="features-list">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-code-compare"></i>
+                        </div>
+                        <div class="feature-content">
+                            <div class="feature-title">Version Compatibility</div>
+                            <div class="feature-desc">Automatic checking ensures imported configurations match dashboard version</div>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="feature-content">
+                            <div class="feature-title">Import Validation</div>
+                            <div class="feature-desc">Full parameter validation before applying to prevent invalid configurations</div>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-git-alt"></i>
+                        </div>
+                        <div class="feature-content">
+                            <div class="feature-title">VCS Integration</div>
+                            <div class="feature-desc">JSON format enables seamless Git tracking, branching, and merge workflows</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Benefits Bar -->
+            <div class="benefits-bar">
+                <div class="benefit-item">
+                    <div class="benefit-check">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="benefit-text">Share configurations across teams instantly</div>
+                </div>
+                
+                <div class="benefit-item">
+                    <div class="benefit-check">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="benefit-text">Track configuration changes over time</div>
+                </div>
+                
+                <div class="benefit-item">
+                    <div class="benefit-check">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="benefit-text">Standardize setups across deployments</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

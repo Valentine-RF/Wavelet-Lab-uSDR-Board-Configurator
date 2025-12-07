@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      
+      .slide-container {
+        width: 1280px;
+        min-height: 720px;
+        background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+        position: relative;
+        overflow: hidden;
+        font-family: 'Space Grotesk', sans-serif;
+        color: #e0e6ed;
+      }
+      
+      .grid-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+          linear-gradient(rgba(0, 212, 255, 0.02) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 212, 255, 0.02) 1px, transparent 1px);
+        background-size: 40px 40px;
+        pointer-events: none;
+      }
+      
+      .page-title {
+        position: absolute;
+        top: 40px;
+        left: 80px;
+        font-size: 36px;
+        font-weight: 700;
+        color: #00d4ff;
+        z-index: 20;
+      }
+      
+      .content {
+        position: relative;
+        z-index: 10;
+        min-height: 720px;
+        padding-top: 140px;
+        padding-left: 80px;
+        padding-right: 80px;
+      }
+      
+      .gain-flow {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 60px;
+      }
+      
+      .gain-stage {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+        width: 200px;
+      }
+      
+      .stage-label {
+        font-size: 14px;
+        font-family: 'IBM Plex Mono', monospace;
+        color: #0088cc;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+      
+      .stage-box {
+        width: 180px;
+        height: 140px;
+        background: rgba(0, 136, 204, 0.1);
+        border: 3px solid #0088cc;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+      
+      .stage-value {
+        font-size: 42px;
+        font-weight: 700;
+        font-family: 'IBM Plex Mono', monospace;
+        color: #00d4ff;
+      }
+      
+      .stage-unit {
+        font-size: 18px;
+        font-family: 'IBM Plex Mono', monospace;
+        color: #e0e6ed;
+      }
+      
+      .stage-range {
+        font-size: 13px;
+        font-family: 'IBM Plex Mono', monospace;
+        color: #6a737d;
+        margin-top: 5px;
+      }
+      
+      .flow-arrow {
+        font-size: 32px;
+        color: #0088cc;
+        margin-top: 40px;
+      }
+      
+      .total-gain-section {
+        background: rgba(0, 212, 255, 0.05);
+        border-top: 3px solid #00d4ff;
+        padding-top: 30px;
+        padding-right: 40px;
+        padding-left: 40px;
+        margin-bottom: 40px;
+        min-height: 120px;
+      }
+      
+      .total-label {
+        font-size: 16px;
+        font-family: 'IBM Plex Mono', monospace;
+        color: #0088cc;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-bottom: 15px;
+      }
+      
+      .total-calculation {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 24px;
+        margin-bottom: 20px;
+      }
+      
+      .calc-part {
+        color: #e0e6ed;
+      }
+      
+      .calc-operator {
+        color: #0088cc;
+        font-weight: 600;
+      }
+      
+      .calc-result {
+        color: #00d4ff;
+        font-weight: 700;
+        font-size: 32px;
+        margin-left: 10px;
+      }
+      
+      .features-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 30px;
+      }
+      
+      .feature-box {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      
+      .feature-icon {
+        font-size: 24px;
+        color: #0088cc;
+        margin-bottom: 5px;
+      }
+      
+      .feature-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #00d4ff;
+      }
+      
+      .feature-desc {
+        font-size: 14px;
+        line-height: 1.5;
+        color: #e0e6ed;
+      }
+      
+      .warning-box {
+        background: rgba(204, 51, 51, 0.1);
+        border-left: 4px solid #cc3333;
+        padding-top: 15px;
+        padding-right: 20px;
+        padding-left: 20px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        min-height: 60px;
+      }
+      
+      .warning-icon {
+        font-size: 24px;
+        color: #cc3333;
+        flex-shrink: 0;
+      }
+      
+      .warning-text {
+        font-size: 14px;
+        font-family: 'IBM Plex Mono', monospace;
+        color: #e0e6ed;
+      }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="grid-overlay"></div>
+        
+        <h1 class="page-title">Precision Gain Control Across All Stages</h1>
+        
+        <div class="content">
+            <!-- Gain Stage Flow -->
+            <div class="gain-flow">
+                <div class="gain-stage">
+                    <div class="stage-label">RX LNA</div>
+                    <div class="stage-box">
+                        <div class="stage-value">15</div>
+                        <div class="stage-unit">dB</div>
+                        <div class="stage-range">0-15 dB</div>
+                    </div>
+                </div>
+                
+                <div class="flow-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+                
+                <div class="gain-stage">
+                    <div class="stage-label">RX PGA</div>
+                    <div class="stage-box">
+                        <div class="stage-value">12</div>
+                        <div class="stage-unit">dB</div>
+                        <div class="stage-range">0-19 dB</div>
+                    </div>
+                </div>
+                
+                <div class="flow-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+                
+                <div class="gain-stage">
+                    <div class="stage-label">RX VGA</div>
+                    <div class="stage-box">
+                        <div class="stage-value">6</div>
+                        <div class="stage-unit">dB</div>
+                        <div class="stage-range">0-15 dB</div>
+                    </div>
+                </div>
+                
+                <div class="flow-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+                
+                <div class="gain-stage">
+                    <div class="stage-label">TX Gain</div>
+                    <div class="stage-box">
+                        <div class="stage-value">-10</div>
+                        <div class="stage-unit">dB</div>
+                        <div class="stage-range">-30-0 dB</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Total Gain Calculation -->
+            <div class="total-gain-section">
+                <div class="total-label">Total RX Gain Calculation</div>
+                <div class="total-calculation">
+                    <span class="calc-part">15</span>
+                    <span class="calc-operator">+</span>
+                    <span class="calc-part">12</span>
+                    <span class="calc-operator">+</span>
+                    <span class="calc-part">6</span>
+                    <span class="calc-operator">=</span>
+                    <span class="calc-result">33 dB</span>
+                </div>
+                
+                <div class="warning-box">
+                    <i class="fas fa-exclamation-triangle warning-icon"></i>
+                    <div class="warning-text">
+                        Saturation warning: Total gain &gt; 30 dB may cause signal clipping at high input levels
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Features Grid -->
+            <div class="features-grid">
+                <div class="feature-box">
+                    <i class="fas fa-sliders-h feature-icon"></i>
+                    <div class="feature-title">Real-Time Updates</div>
+                    <div class="feature-desc">
+                        Instant total gain calculation as you adjust individual stage values
+                    </div>
+                </div>
+                
+                <div class="feature-box">
+                    <i class="fas fa-chart-line feature-icon"></i>
+                    <div class="feature-title">Dynamic Range Optimization</div>
+                    <div class="feature-desc">
+                        Intelligent suggestions for optimal gain distribution across stages
+                    </div>
+                </div>
+                
+                <div class="feature-box">
+                    <i class="fas fa-shield-alt feature-icon"></i>
+                    <div class="feature-title">Saturation Protection</div>
+                    <div class="feature-desc">
+                        Automatic warnings when gain settings risk signal clipping or distortion
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

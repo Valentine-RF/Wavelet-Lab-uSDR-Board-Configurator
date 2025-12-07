@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      
+      .slide-container {
+        width: 1280px;
+        min-height: 720px;
+        background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+        position: relative;
+        overflow: hidden;
+        font-family: 'Space Grotesk', sans-serif;
+        color: #e0e6ed;
+      }
+      
+      /* Grid pattern overlay */
+      .grid-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+          linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+        background-size: 40px 40px;
+        pointer-events: none;
+      }
+      
+      /* Geometric accent shapes */
+      .accent-shape {
+        position: absolute;
+        border: 2px solid rgba(0, 136, 204, 0.3);
+      }
+      
+      .shape-1 {
+        width: 300px;
+        height: 300px;
+        top: -100px;
+        right: 200px;
+        transform: rotate(45deg);
+      }
+      
+      .shape-2 {
+        width: 200px;
+        height: 200px;
+        bottom: 50px;
+        right: -50px;
+        transform: rotate(25deg);
+        border-color: rgba(0, 212, 255, 0.2);
+      }
+      
+      /* Content container */
+      .content {
+        position: relative;
+        z-index: 10;
+        min-height: 720px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding-top: 80px;
+        padding-left: 100px;
+      }
+      
+      /* Logo */
+      .logo-container {
+        margin-bottom: 60px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+      
+      .logo-box {
+        width: 120px;
+        height: 120px;
+        background: #1a1f3a;
+        border: 3px solid #0088cc;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 0 30px rgba(0, 136, 204, 0.4);
+      }
+      
+      .logo-text {
+        font-size: 48px;
+        font-weight: 700;
+        color: #00d4ff;
+        font-family: 'IBM Plex Mono', monospace;
+        letter-spacing: -2px;
+      }
+      
+      .wavelet-text {
+        font-size: 24px;
+        color: #0088cc;
+        font-weight: 600;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+      }
+      
+      /* Main title */
+      .main-title {
+        font-size: 56px;
+        font-weight: 700;
+        color: #00d4ff;
+        line-height: 1.2;
+        margin-bottom: 20px;
+        max-width: 700px;
+        text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+      }
+      
+      .subtitle {
+        font-size: 28px;
+        font-family: 'IBM Plex Mono', monospace;
+        color: #e0e6ed;
+        margin-bottom: 30px;
+        max-width: 650px;
+        font-weight: 400;
+      }
+      
+      .tagline {
+        font-size: 18px;
+        color: #0088cc;
+        font-family: 'IBM Plex Mono', monospace;
+        letter-spacing: 1px;
+        padding-top: 10px;
+        border-top: 2px solid rgba(0, 136, 204, 0.3);
+        max-width: 600px;
+      }
+      
+      /* Waveform visualization */
+      .waveform {
+        position: absolute;
+        right: 80px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 400px;
+        height: 400px;
+        opacity: 0.15;
+      }
+      
+      .wave-line {
+        stroke: #00d4ff;
+        stroke-width: 3;
+        fill: none;
+        stroke-linecap: round;
+      }
+      
+      /* Spectrum bars */
+      .spectrum {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 500px;
+        height: 150px;
+        display: flex;
+        align-items: flex-end;
+        gap: 8px;
+        padding-right: 40px;
+        padding-bottom: 40px;
+        opacity: 0.2;
+      }
+      
+      .spectrum-bar {
+        flex: 1;
+        background: linear-gradient(to top, #0088cc, #00d4ff);
+        border-radius: 2px 2px 0 0;
+      }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="grid-overlay"></div>
+        <div class="accent-shape shape-1"></div>
+        <div class="accent-shape shape-2"></div>
+        
+        <div class="content">
+            <div class="logo-container">
+                <div class="logo-box">
+                    <span class="logo-text">W</span>
+                </div>
+                <div class="wavelet-text">Wavelet Lab</div>
+            </div>
+            
+            <h1 class="main-title">uSDR Development Board Dashboard</h1>
+            <p class="subtitle">High-Performance SDR Configuration</p>
+            <p class="tagline">Professional web interface for software-defined radio control</p>
+        </div>
+        
+        <!-- Waveform SVG -->
+        <svg class="waveform" viewBox="0 0 400 400">
+            <path class="wave-line" d="M 0,200 Q 50,100 100,200 T 200,200 T 300,200 T 400,200" />
+            <path class="wave-line" d="M 0,220 Q 50,280 100,220 T 200,220 T 300,220 T 400,220" opacity="0.6" />
+            <path class="wave-line" d="M 0,180 Q 50,120 100,180 T 200,180 T 300,180 T 400,180" opacity="0.4" />
+        </svg>
+        
+        <!-- Spectrum visualization -->
+        <div class="spectrum">
+            <div class="spectrum-bar" style="height: 40%;"></div>
+            <div class="spectrum-bar" style="height: 65%;"></div>
+            <div class="spectrum-bar" style="height: 85%;"></div>
+            <div class="spectrum-bar" style="height: 55%;"></div>
+            <div class="spectrum-bar" style="height: 75%;"></div>
+            <div class="spectrum-bar" style="height: 95%;"></div>
+            <div class="spectrum-bar" style="height: 70%;"></div>
+            <div class="spectrum-bar" style="height: 45%;"></div>
+            <div class="spectrum-bar" style="height: 60%;"></div>
+            <div class="spectrum-bar" style="height: 80%;"></div>
+        </div>
+    </div>
+</body>
+</html>

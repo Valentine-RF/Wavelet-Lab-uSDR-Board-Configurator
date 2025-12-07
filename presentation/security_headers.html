@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      
+      .slide-container {
+        width: 1280px;
+        min-height: 720px;
+        background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+        position: relative;
+        overflow: hidden;
+        font-family: 'Space Grotesk', sans-serif;
+        color: #e0e6ed;
+      }
+      
+      .grid-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+          linear-gradient(rgba(0, 212, 255, 0.02) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 212, 255, 0.02) 1px, transparent 1px);
+        background-size: 40px 40px;
+        pointer-events: none;
+      }
+      
+      .page-title {
+        position: absolute;
+        top: 40px;
+        left: 80px;
+        font-size: 36px;
+        font-weight: 700;
+        color: #00d4ff;
+        z-index: 20;
+      }
+      
+      .content {
+        position: relative;
+        z-index: 10;
+        min-height: 720px;
+        padding-top: 120px;
+        padding-left: 80px;
+        padding-right: 80px;
+      }
+      
+      .intro-text {
+        font-size: 16px;
+        line-height: 1.6;
+        color: #e0e6ed;
+        margin-bottom: 30px;
+        max-width: 1000px;
+      }
+      
+      .headers-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 25px;
+      }
+      
+      .header-card {
+        background: rgba(0, 136, 204, 0.05);
+        border-left: 3px solid #0088cc;
+        padding-top: 18px;
+        padding-right: 20px;
+        padding-left: 20px;
+        min-height: 140px;
+      }
+      
+      .header-name {
+        font-size: 18px;
+        font-weight: 600;
+        color: #00d4ff;
+        font-family: 'IBM Plex Mono', monospace;
+        margin-bottom: 10px;
+      }
+      
+      .header-value {
+        font-size: 12px;
+        font-family: 'IBM Plex Mono', monospace;
+        color: rgba(136, 204, 136, 0.9);
+        background: rgba(0, 0, 0, 0.3);
+        padding-top: 8px;
+        padding-right: 12px;
+        padding-left: 12px;
+        margin-bottom: 12px;
+        line-height: 1.6;
+        min-height: 45px;
+        display: flex;
+        align-items: center;
+      }
+      
+      .header-protection {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 8px;
+      }
+      
+      .shield-icon {
+        font-size: 14px;
+        color: #0088cc;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+      
+      .protection-text {
+        font-size: 14px;
+        line-height: 1.5;
+        color: #e0e6ed;
+      }
+      
+      .protection-label {
+        font-size: 11px;
+        color: #0088cc;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 6px;
+      }
+      
+      .compliance-footer {
+        position: absolute;
+        bottom: 50px;
+        left: 80px;
+        right: 80px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(0, 212, 255, 0.05);
+        border-top: 3px solid #00d4ff;
+        padding-top: 20px;
+        padding-left: 30px;
+        padding-right: 30px;
+        min-height: 80px;
+      }
+      
+      .compliance-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      
+      .compliance-icon {
+        font-size: 24px;
+        color: #00d4ff;
+      }
+      
+      .compliance-content {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      
+      .compliance-label {
+        font-size: 12px;
+        color: #0088cc;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      
+      .compliance-value {
+        font-size: 18px;
+        font-weight: 600;
+        color: #e0e6ed;
+        font-family: 'IBM Plex Mono', monospace;
+      }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="grid-overlay"></div>
+        
+        <h1 class="page-title">OWASP Security Headers Implementation</h1>
+        
+        <div class="content">
+            <p class="intro-text">
+                Comprehensive HTTP security headers implementing OWASP Top 10 best practices to protect against common web vulnerabilities including XSS, clickjacking, MIME-type confusion, and man-in-the-middle attacks.
+            </p>
+            
+            <div class="headers-grid">
+                <!-- Content-Security-Policy -->
+                <div class="header-card">
+                    <div class="header-name">Content-Security-Policy</div>
+                    <div class="header-value">
+                        default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; frame-ancestors 'none'
+                    </div>
+                    <div class="protection-label">Protects Against</div>
+                    <div class="header-protection">
+                        <i class="fas fa-shield-alt shield-icon"></i>
+                        <div class="protection-text">
+                            Cross-site scripting (XSS), code injection, unauthorized resource loading, and data exfiltration attacks
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- X-Frame-Options -->
+                <div class="header-card">
+                    <div class="header-name">X-Frame-Options</div>
+                    <div class="header-value">DENY</div>
+                    <div class="protection-label">Protects Against</div>
+                    <div class="header-protection">
+                        <i class="fas fa-shield-alt shield-icon"></i>
+                        <div class="protection-text">
+                            Clickjacking attacks by preventing the page from being embedded in iframes, frames, or objects
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- X-Content-Type-Options -->
+                <div class="header-card">
+                    <div class="header-name">X-Content-Type-Options</div>
+                    <div class="header-value">nosniff</div>
+                    <div class="protection-label">Protects Against</div>
+                    <div class="header-protection">
+                        <i class="fas fa-shield-alt shield-icon"></i>
+                        <div class="protection-text">
+                            MIME-type confusion attacks by preventing browsers from interpreting files as a different MIME type
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Strict-Transport-Security -->
+                <div class="header-card">
+                    <div class="header-name">Strict-Transport-Security</div>
+                    <div class="header-value">max-age=31536000; includeSubDomains</div>
+                    <div class="protection-label">Protects Against</div>
+                    <div class="header-protection">
+                        <i class="fas fa-shield-alt shield-icon"></i>
+                        <div class="protection-text">
+                            Man-in-the-middle attacks by forcing all connections to use HTTPS for one year including subdomains
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Referrer-Policy -->
+                <div class="header-card">
+                    <div class="header-name">Referrer-Policy</div>
+                    <div class="header-value">strict-origin-when-cross-origin</div>
+                    <div class="protection-label">Protects Against</div>
+                    <div class="header-protection">
+                        <i class="fas fa-shield-alt shield-icon"></i>
+                        <div class="protection-text">
+                            Information leakage by controlling referrer information sent with cross-origin requests
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Permissions-Policy -->
+                <div class="header-card">
+                    <div class="header-name">Permissions-Policy</div>
+                    <div class="header-value">camera=(), microphone=(), geolocation=()</div>
+                    <div class="protection-label">Protects Against</div>
+                    <div class="header-protection">
+                        <i class="fas fa-shield-alt shield-icon"></i>
+                        <div class="protection-text">
+                            Unauthorized access to device APIs including camera, microphone, and geolocation features
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="compliance-footer">
+            <div class="compliance-item">
+                <i class="fas fa-check-circle compliance-icon"></i>
+                <div class="compliance-content">
+                    <div class="compliance-label">OWASP Compliance</div>
+                    <div class="compliance-value">Top 10 Coverage</div>
+                </div>
+            </div>
+            
+            <div class="compliance-item">
+                <i class="fas fa-award compliance-icon"></i>
+                <div class="compliance-content">
+                    <div class="compliance-label">Security Rating</div>
+                    <div class="compliance-value">A+ Grade</div>
+                </div>
+            </div>
+            
+            <div class="compliance-item">
+                <i class="fas fa-code compliance-icon"></i>
+                <div class="compliance-content">
+                    <div class="compliance-label">Implementation</div>
+                    <div class="compliance-value">Express Middleware</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

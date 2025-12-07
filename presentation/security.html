@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      
+      .slide-container {
+        width: 1280px;
+        min-height: 720px;
+        background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+        position: relative;
+        overflow: hidden;
+        font-family: 'Space Grotesk', sans-serif;
+        color: #e0e6ed;
+      }
+      
+      .grid-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+          linear-gradient(rgba(0, 212, 255, 0.02) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 212, 255, 0.02) 1px, transparent 1px);
+        background-size: 40px 40px;
+        pointer-events: none;
+      }
+      
+      .page-title {
+        position: absolute;
+        top: 40px;
+        left: 80px;
+        font-size: 36px;
+        font-weight: 700;
+        color: #00d4ff;
+        z-index: 20;
+      }
+      
+      .content {
+        position: relative;
+        z-index: 10;
+        min-height: 720px;
+        padding-top: 140px;
+        padding-left: 80px;
+        padding-right: 80px;
+      }
+      
+      .security-sections {
+        display: flex;
+        flex-direction: column;
+        gap: 35px;
+      }
+      
+      .security-section {
+        background: rgba(0, 136, 204, 0.05);
+        border-left: 4px solid #0088cc;
+        padding-top: 25px;
+        padding-right: 30px;
+        padding-left: 30px;
+        min-height: 140px;
+        display: flex;
+        gap: 30px;
+      }
+      
+      .section-icon {
+        width: 80px;
+        height: 80px;
+        background: rgba(0, 136, 204, 0.15);
+        border: 2px solid #0088cc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      
+      .section-icon i {
+        font-size: 36px;
+        color: #00d4ff;
+      }
+      
+      .section-content {
+        flex: 1;
+      }
+      
+      .section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 15px;
+      }
+      
+      .section-title {
+        font-size: 22px;
+        font-weight: 600;
+        color: #00d4ff;
+      }
+      
+      .compliance-badge {
+        font-size: 11px;
+        font-family: 'IBM Plex Mono', monospace;
+        font-weight: 600;
+        background: #00d4ff;
+        color: #0a0e27;
+        padding-top: 6px;
+        padding-right: 12px;
+        padding-left: 12px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+      
+      .section-description {
+        font-size: 15px;
+        line-height: 1.6;
+        color: #e0e6ed;
+        margin-bottom: 15px;
+      }
+      
+      .features-list {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+      
+      .feature-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 14px;
+        font-family: 'IBM Plex Mono', monospace;
+        color: #e0e6ed;
+      }
+      
+      .feature-check {
+        width: 6px;
+        height: 6px;
+        background: #00d4ff;
+        flex-shrink: 0;
+      }
+      
+      .metrics-bar {
+        position: absolute;
+        bottom: 60px;
+        left: 80px;
+        right: 80px;
+        height: 100px;
+        background: rgba(0, 212, 255, 0.05);
+        border-top: 3px solid #00d4ff;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+      }
+      
+      .metric-item {
+        text-align: center;
+      }
+      
+      .metric-value {
+        font-size: 36px;
+        font-weight: 700;
+        font-family: 'IBM Plex Mono', monospace;
+        color: #00d4ff;
+        margin-bottom: 8px;
+      }
+      
+      .metric-label {
+        font-size: 13px;
+        color: rgba(224, 230, 237, 0.7);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      
+      .shield-accent {
+        position: absolute;
+        top: 50px;
+        right: 100px;
+        font-size: 180px;
+        color: rgba(0, 136, 204, 0.08);
+        z-index: 5;
+      }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="grid-overlay"></div>
+        <i class="fas fa-shield-alt shield-accent"></i>
+        
+        <h1 class="page-title">Production-Ready Security</h1>
+        
+        <div class="content">
+            <div class="security-sections">
+                <!-- OWASP Security Headers -->
+                <div class="security-section">
+                    <div class="section-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <div class="section-content">
+                        <div class="section-header">
+                            <h2 class="section-title">OWASP-Compliant Security Headers</h2>
+                            <span class="compliance-badge">Enterprise Grade</span>
+                        </div>
+                        <p class="section-description">
+                            Comprehensive HTTP security headers implementing OWASP best practices to protect against common web vulnerabilities and attacks.
+                        </p>
+                        <div class="features-list">
+                            <div class="feature-item">
+                                <div class="feature-check"></div>
+                                <span>Content-Security-Policy (CSP)</span>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-check"></div>
+                                <span>X-Frame-Options (DENY)</span>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-check"></div>
+                                <span>X-Content-Type-Options (nosniff)</span>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-check"></div>
+                                <span>Strict-Transport-Security (HSTS)</span>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-check"></div>
+                                <span>Referrer-Policy (strict-origin)</span>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-check"></div>
+                                <span>Permissions-Policy restrictions</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- OAuth Authentication -->
+                <div class="security-section">
+                    <div class="section-icon">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <div class="section-content">
+                        <div class="section-header">
+                            <h2 class="section-title">Manus OAuth Authentication</h2>
+                            <span class="compliance-badge">Secure Access</span>
+                        </div>
+                        <p class="section-description">
+                            Industry-standard OAuth 2.0 authentication with session-based access control, role-based permissions, and secure cookie management.
+                        </p>
+                        <div class="features-list">
+                            <div class="feature-item">
+                                <div class="feature-check"></div>
+                                <span>OAuth 2.0 protocol compliance</span>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-check"></div>
+                                <span>Session-based authentication</span>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-check"></div>
+                                <span>Role-based access control (RBAC)</span>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-check"></div>
+                                <span>Secure httpOnly cookies</span>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-check"></div>
+                                <span>JWT token signing with secrets</span>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-check"></div>
+                                <span>CSRF protection enabled</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Database Backups -->
+                <div class="security-section">
+                    <div class="section-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <div class="section-content">
+                        <div class="section-header">
+                            <h2 class="section-title">Automated Database Backups</h2>
+                            <span class="compliance-badge">Data Protection</span>
+                        </div>
+                        <p class="section-description">
+                            Daily automated backups with 7-day retention, point-in-time recovery, and AES-256 encryption for comprehensive data protection and disaster recovery.
+                        </p>
+                        <div class="features-list">
+                            <div class="feature-item">
+                                <div class="feature-check"></div>
+                                <span>Daily automated backups</span>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-check"></div>
+                                <span>7-day retention policy</span>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-check"></div>
+                                <span>Point-in-time recovery</span>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-check"></div>
+                                <span>AES-256 encryption at rest</span>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-check"></div>
+                                <span>TLS 1.3 encryption in transit</span>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-check"></div>
+                                <span>Manual backup export available</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="metrics-bar">
+            <div class="metric-item">
+                <div class="metric-value">A+</div>
+                <div class="metric-label">Security Rating</div>
+            </div>
+            <div class="metric-item">
+                <div class="metric-value">99.9%</div>
+                <div class="metric-label">Uptime SLA</div>
+            </div>
+            <div class="metric-item">
+                <div class="metric-value">7 Days</div>
+                <div class="metric-label">Backup Retention</div>
+            </div>
+            <div class="metric-item">
+                <div class="metric-value">AES-256</div>
+                <div class="metric-label">Encryption</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

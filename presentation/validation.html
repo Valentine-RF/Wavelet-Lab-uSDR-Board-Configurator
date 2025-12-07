@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      
+      .slide-container {
+        width: 1280px;
+        min-height: 720px;
+        background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+        position: relative;
+        overflow: hidden;
+        font-family: 'Space Grotesk', sans-serif;
+        color: #e0e6ed;
+      }
+      
+      .grid-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+          linear-gradient(rgba(0, 212, 255, 0.02) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 212, 255, 0.02) 1px, transparent 1px);
+        background-size: 40px 40px;
+        pointer-events: none;
+      }
+      
+      .page-title {
+        position: absolute;
+        top: 40px;
+        left: 80px;
+        font-size: 36px;
+        font-weight: 700;
+        color: #00d4ff;
+        z-index: 20;
+      }
+      
+      .content {
+        position: relative;
+        z-index: 10;
+        min-height: 720px;
+        display: grid;
+        grid-template-columns: 480px 1fr;
+        gap: 50px;
+        padding-top: 140px;
+        padding-left: 80px;
+        padding-right: 80px;
+      }
+      
+      .left-section {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+      }
+      
+      .section-label {
+        font-size: 14px;
+        font-family: 'IBM Plex Mono', monospace;
+        color: #0088cc;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+      }
+      
+      .validation-checks {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      }
+      
+      .check-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 15px;
+      }
+      
+      .check-icon {
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        font-size: 12px;
+        margin-top: 2px;
+      }
+      
+      .icon-check {
+        color: #00d4ff;
+      }
+      
+      .check-content {
+        flex: 1;
+      }
+      
+      .check-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #e0e6ed;
+        margin-bottom: 5px;
+      }
+      
+      .check-desc {
+        font-size: 14px;
+        line-height: 1.5;
+        color: rgba(224, 230, 237, 0.7);
+      }
+      
+      .right-section {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+      
+      .examples-label {
+        font-size: 14px;
+        font-family: 'IBM Plex Mono', monospace;
+        color: #0088cc;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+      }
+      
+      .validation-message {
+        display: flex;
+        gap: 15px;
+        padding-top: 18px;
+        padding-right: 20px;
+        padding-left: 20px;
+        background: rgba(0, 0, 0, 0.3);
+        border-left: 4px solid;
+        min-height: 90px;
+      }
+      
+      .msg-error {
+        border-left-color: #ff4444;
+      }
+      
+      .msg-warning {
+        border-left-color: #ffaa00;
+      }
+      
+      .msg-info {
+        border-left-color: #0088cc;
+      }
+      
+      .msg-icon {
+        font-size: 20px;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+      
+      .icon-error {
+        color: #ff4444;
+      }
+      
+      .icon-warning {
+        color: #ffaa00;
+      }
+      
+      .icon-info {
+        color: #0088cc;
+      }
+      
+      .msg-content {
+        flex: 1;
+      }
+      
+      .msg-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 8px;
+      }
+      
+      .msg-severity {
+        font-size: 11px;
+        font-family: 'IBM Plex Mono', monospace;
+        font-weight: 600;
+        padding-top: 4px;
+        padding-right: 8px;
+        padding-left: 8px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+      
+      .severity-error {
+        background: #ff4444;
+        color: #ffffff;
+      }
+      
+      .severity-warning {
+        background: #ffaa00;
+        color: #000000;
+      }
+      
+      .severity-info {
+        background: #0088cc;
+        color: #ffffff;
+      }
+      
+      .msg-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: #e0e6ed;
+      }
+      
+      .msg-text {
+        font-size: 14px;
+        line-height: 1.5;
+        color: rgba(224, 230, 237, 0.8);
+        margin-bottom: 8px;
+      }
+      
+      .msg-suggestion {
+        font-size: 13px;
+        font-family: 'IBM Plex Mono', monospace;
+        color: #00d4ff;
+        margin-top: 8px;
+      }
+      
+      .stats-bar {
+        position: absolute;
+        bottom: 60px;
+        left: 80px;
+        right: 80px;
+        display: flex;
+        justify-content: space-around;
+        gap: 40px;
+      }
+      
+      .stat-item {
+        text-align: center;
+      }
+      
+      .stat-value {
+        font-size: 32px;
+        font-weight: 700;
+        font-family: 'IBM Plex Mono', monospace;
+        color: #00d4ff;
+        margin-bottom: 5px;
+      }
+      
+      .stat-label {
+        font-size: 12px;
+        color: rgba(224, 230, 237, 0.6);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="grid-overlay"></div>
+        
+        <h1 class="page-title">Real-Time Validation Engine</h1>
+        
+        <div class="content">
+            <div class="left-section">
+                <div class="section-label">Validation Checks</div>
+                
+                <div class="validation-checks">
+                    <div class="check-item">
+                        <div class="check-icon icon-check">
+                            <i class="fas fa-signal"></i>
+                        </div>
+                        <div class="check-content">
+                            <div class="check-title">RF Path Frequency Compatibility</div>
+                            <div class="check-desc">Validates frequency ranges against selected RF path capabilities (700-900 MHz, 1200-2100 MHz, 2400-6000 MHz)</div>
+                        </div>
+                    </div>
+                    
+                    <div class="check-item">
+                        <div class="check-icon icon-check">
+                            <i class="fas fa-wave-square"></i>
+                        </div>
+                        <div class="check-content">
+                            <div class="check-title">Sample Rate vs Bandwidth</div>
+                            <div class="check-desc">Ensures sample rate meets Nyquist criterion and bandwidth doesn't exceed hardware limits</div>
+                        </div>
+                    </div>
+                    
+                    <div class="check-item">
+                        <div class="check-icon icon-check">
+                            <i class="fas fa-sliders-h"></i>
+                        </div>
+                        <div class="check-content">
+                            <div class="check-title">Gain Saturation Warnings</div>
+                            <div class="check-desc">Detects excessive gain settings that may cause saturation and suggests optimal distribution</div>
+                        </div>
+                    </div>
+                    
+                    <div class="check-item">
+                        <div class="check-icon icon-check">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <div class="check-content">
+                            <div class="check-title">Buffer Size Optimization</div>
+                            <div class="check-desc">Calculates required buffer sizes based on sample rate and warns about throughput constraints</div>
+                        </div>
+                    </div>
+                    
+                    <div class="check-item">
+                        <div class="check-icon icon-check">
+                            <i class="fas fa-layer-group"></i>
+                        </div>
+                        <div class="check-content">
+                            <div class="check-title">Channel Configuration</div>
+                            <div class="check-desc">Validates channel masks and ensures selected channels are supported by hardware</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="right-section">
+                <div class="examples-label">Example Validation Messages</div>
+                
+                <div class="validation-message msg-error">
+                    <div class="msg-icon icon-error">
+                        <i class="fas fa-exclamation-circle"></i>
+                    </div>
+                    <div class="msg-content">
+                        <div class="msg-header">
+                            <span class="msg-severity severity-error">Error</span>
+                            <span class="msg-title">RF Path Frequency Mismatch</span>
+                        </div>
+                        <div class="msg-text">
+                            Frequency 2450 MHz is outside the valid range for RF path trx700_900 (700-900 MHz)
+                        </div>
+                        <div class="msg-suggestion">→ Suggestion: Switch to trx1200_2100 or trx2400_6000 path</div>
+                    </div>
+                </div>
+                
+                <div class="validation-message msg-warning">
+                    <div class="msg-icon icon-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="msg-content">
+                        <div class="msg-header">
+                            <span class="msg-severity severity-warning">Warning</span>
+                            <span class="msg-title">High Gain May Cause Saturation</span>
+                        </div>
+                        <div class="msg-text">
+                            Total RX gain of 75 dB may saturate the receiver with strong signals
+                        </div>
+                        <div class="msg-suggestion">→ Suggestion: Reduce LNA gain to 20 dB or lower PGA/VGA</div>
+                    </div>
+                </div>
+                
+                <div class="validation-message msg-info">
+                    <div class="msg-icon icon-info">
+                        <i class="fas fa-info-circle"></i>
+                    </div>
+                    <div class="msg-content">
+                        <div class="msg-header">
+                            <span class="msg-severity severity-info">Info</span>
+                            <span class="msg-title">Buffer Size Recommendation</span>
+                        </div>
+                        <div class="msg-text">
+                            At 40 MHz sample rate, recommended buffer size is 16384 samples for optimal throughput
+                        </div>
+                        <div class="msg-suggestion">→ Current: 8192 samples (acceptable but may drop data)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-value">15+</div>
+                <div class="stat-label">Validation Rules</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">&lt;10ms</div>
+                <div class="stat-label">Response Time</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">100%</div>
+                <div class="stat-label">Real-Time</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
