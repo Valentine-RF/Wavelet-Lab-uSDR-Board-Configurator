@@ -1,7 +1,7 @@
 # uSDR Development Board Dashboard
-LIBUSDR
+LIBUSDR MODE
 <img width="1213" height="960" alt="image" src="https://github.com/user-attachments/assets/db7dad6e-5ed6-4f1e-bc54-f943767deeb0" />
-SoapySDR
+SoapySDR Ivan Mode
 <img width="1213" height="960" alt="image" src="https://github.com/user-attachments/assets/a524321c-b2e5-42e2-b85c-eb8dabedaca2" />
 
 A professional web-based configuration dashboard for the Wavelet Lab uSDR Development Board, featuring dual API support (libusdr CLI and SoapySDR C++), real-time validation, command templates, and comprehensive device control.
