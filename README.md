@@ -1,5 +1,5 @@
 # uSDR Development Board Dashboard
-libusdr
+LIBUSDR
 <img width="1213" height="960" alt="image" src="https://github.com/user-attachments/assets/db7dad6e-5ed6-4f1e-bc54-f943767deeb0" />
 SoapySDR
 <img width="1213" height="960" alt="image" src="https://github.com/user-attachments/assets/a524321c-b2e5-42e2-b85c-eb8dabedaca2" />
