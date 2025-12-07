@@ -1,0 +1,417 @@
+{
+  "$schema": "https://design-tokens.github.io/community-group/format.json",
+  "devolution-detect": {
+    "color": {
+      "background": {
+        "dark": {
+          "$type": "color",
+          "$value": "#0a0e14",
+          "$description": "Text areas, cards, input backgrounds"
+        },
+        "medium": {
+          "$type": "color",
+          "$value": "#1a1f2e",
+          "$description": "Dialogs, panels, main backgrounds"
+        },
+        "light": {
+          "$type": "color",
+          "$value": "#2a3040",
+          "$description": "Hover states, elevated surfaces"
+        }
+      },
+      "border": {
+        "default": {
+          "$type": "color",
+          "$value": "#333333",
+          "$description": "Default borders"
+        },
+        "active": {
+          "$type": "color",
+          "$value": "#33ff77",
+          "$description": "Focused borders, active states"
+        },
+        "hover": {
+          "$type": "color",
+          "$value": "#55ffaa",
+          "$description": "Hover states for borders"
+        }
+      },
+      "text": {
+        "primary": {
+          "$type": "color",
+          "$value": "#e0e0e0",
+          "$description": "Main text content"
+        },
+        "secondary": {
+          "$type": "color",
+          "$value": "#999999",
+          "$description": "Metadata, timestamps, secondary info"
+        },
+        "tertiary": {
+          "$type": "color",
+          "$value": "#666666",
+          "$description": "Disabled text, placeholders"
+        },
+        "inverse": {
+          "$type": "color",
+          "$value": "#ffffff",
+          "$description": "Text on colored backgrounds"
+        }
+      },
+      "accent": {
+        "green": {
+          "base": {
+            "$type": "color",
+            "$value": "#33ff77",
+            "$description": "Primary actions, success states"
+          },
+          "hover": {
+            "$type": "color",
+            "$value": "#55ffaa",
+            "$description": "Hover state for green accent"
+          },
+          "active": {
+            "$type": "color",
+            "$value": "#22dd66",
+            "$description": "Active state for green accent"
+          }
+        },
+        "orange": {
+          "base": {
+            "$type": "color",
+            "$value": "#ff6b35",
+            "$description": "Quick Rollback, warnings"
+          },
+          "hover": {
+            "$type": "color",
+            "$value": "#ff8555",
+            "$description": "Hover state for orange accent"
+          },
+          "active": {
+            "$type": "color",
+            "$value": "#dd5525",
+            "$description": "Active state for orange accent"
+          }
+        },
+        "red": {
+          "base": {
+            "$type": "color",
+            "$value": "#ff0000",
+            "$description": "Errors, critical warnings"
+          },
+          "hover": {
+            "$type": "color",
+            "$value": "#ff3333",
+            "$description": "Hover state for red accent"
+          }
+        },
+        "yellow": {
+          "base": {
+            "$type": "color",
+            "$value": "#ffd700",
+            "$description": "Cautions, tradeoffs"
+          },
+          "hover": {
+            "$type": "color",
+            "$value": "#ffed33",
+            "$description": "Hover state for yellow accent"
+          }
+        },
+        "blue": {
+          "base": {
+            "$type": "color",
+            "$value": "#1e90ff",
+            "$description": "Links, informational"
+          },
+          "hover": {
+            "$type": "color",
+            "$value": "#4da6ff",
+            "$description": "Hover state for blue accent"
+          }
+        }
+      },
+      "status": {
+        "applied": {
+          "$type": "color",
+          "$value": "#33ff77",
+          "$description": "Applied status badge"
+        },
+        "reverted": {
+          "$type": "color",
+          "$value": "#999999",
+          "$description": "Reverted status badge"
+        },
+        "active": {
+          "$type": "color",
+          "$value": "#1e90ff",
+          "$description": "Active status badge"
+        },
+        "critical": {
+          "$type": "color",
+          "$value": "#ff6b35",
+          "$description": "Critical severity badge"
+        },
+        "warning": {
+          "$type": "color",
+          "$value": "#ffd700",
+          "$description": "Warning severity badge"
+        },
+        "info": {
+          "$type": "color",
+          "$value": "#1e90ff",
+          "$description": "Info severity badge"
+        }
+      }
+    },
+    "typography": {
+      "fontFamily": {
+        "display": {
+          "$type": "fontFamily",
+          "$value": ["Space Grotesk", "sans-serif"],
+          "$description": "Headers, titles"
+        },
+        "mono": {
+          "$type": "fontFamily",
+          "$value": ["IBM Plex Mono", "monospace"],
+          "$description": "Body text, code, numbers"
+        },
+        "system": {
+          "$type": "fontFamily",
+          "$value": ["-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "sans-serif"],
+          "$description": "System fallback"
+        }
+      },
+      "fontSize": {
+        "xs": {
+          "$type": "dimension",
+          "$value": "11px",
+          "$description": "Badges, tiny labels"
+        },
+        "sm": {
+          "$type": "dimension",
+          "$value": "12px",
+          "$description": "Metadata, timestamps"
+        },
+        "base": {
+          "$type": "dimension",
+          "$value": "14px",
+          "$description": "Body text, buttons"
+        },
+        "md": {
+          "$type": "dimension",
+          "$value": "16px",
+          "$description": "Section headers"
+        },
+        "lg": {
+          "$type": "dimension",
+          "$value": "18px",
+          "$description": "Dialog/panel titles"
+        },
+        "xl": {
+          "$type": "dimension",
+          "$value": "24px",
+          "$description": "Large headings"
+        }
+      },
+      "fontWeight": {
+        "regular": {
+          "$type": "fontWeight",
+          "$value": "400"
+        },
+        "medium": {
+          "$type": "fontWeight",
+          "$value": "500"
+        },
+        "semibold": {
+          "$type": "fontWeight",
+          "$value": "600"
+        },
+        "bold": {
+          "$type": "fontWeight",
+          "$value": "700"
+        }
+      },
+      "lineHeight": {
+        "tight": {
+          "$type": "number",
+          "$value": 1.2
+        },
+        "normal": {
+          "$type": "number",
+          "$value": 1.5
+        },
+        "relaxed": {
+          "$type": "number",
+          "$value": 1.75
+        }
+      }
+    },
+    "spacing": {
+      "1": {
+        "$type": "dimension",
+        "$value": "4px"
+      },
+      "2": {
+        "$type": "dimension",
+        "$value": "8px"
+      },
+      "3": {
+        "$type": "dimension",
+        "$value": "12px"
+      },
+      "4": {
+        "$type": "dimension",
+        "$value": "16px"
+      },
+      "5": {
+        "$type": "dimension",
+        "$value": "20px"
+      },
+      "6": {
+        "$type": "dimension",
+        "$value": "24px"
+      },
+      "8": {
+        "$type": "dimension",
+        "$value": "32px"
+      },
+      "10": {
+        "$type": "dimension",
+        "$value": "40px"
+      },
+      "12": {
+        "$type": "dimension",
+        "$value": "48px"
+      }
+    },
+    "borderRadius": {
+      "sm": {
+        "$type": "dimension",
+        "$value": "4px",
+        "$description": "Buttons, inputs, text areas"
+      },
+      "md": {
+        "$type": "dimension",
+        "$value": "6px",
+        "$description": "Cards, change entries"
+      },
+      "lg": {
+        "$type": "dimension",
+        "$value": "8px",
+        "$description": "Dialogs, panels"
+      },
+      "pill": {
+        "$type": "dimension",
+        "$value": "12px",
+        "$description": "Badges, pills"
+      },
+      "full": {
+        "$type": "dimension",
+        "$value": "9999px",
+        "$description": "Circular elements"
+      }
+    },
+    "borderWidth": {
+      "default": {
+        "$type": "dimension",
+        "$value": "1px"
+      },
+      "thick": {
+        "$type": "dimension",
+        "$value": "2px"
+      }
+    },
+    "shadow": {
+      "sm": {
+        "$type": "shadow",
+        "$value": {
+          "offsetX": "0px",
+          "offsetY": "1px",
+          "blur": "3px",
+          "spread": "0px",
+          "color": "rgba(0, 0, 0, 0.3)"
+        }
+      },
+      "md": {
+        "$type": "shadow",
+        "$value": {
+          "offsetX": "0px",
+          "offsetY": "4px",
+          "blur": "6px",
+          "spread": "0px",
+          "color": "rgba(0, 0, 0, 0.4)"
+        }
+      },
+      "lg": {
+        "$type": "shadow",
+        "$value": {
+          "offsetX": "0px",
+          "offsetY": "10px",
+          "blur": "20px",
+          "spread": "0px",
+          "color": "rgba(0, 0, 0, 0.5)"
+        }
+      },
+      "xl": {
+        "$type": "shadow",
+        "$value": {
+          "offsetX": "0px",
+          "offsetY": "20px",
+          "blur": "40px",
+          "spread": "0px",
+          "color": "rgba(0, 0, 0, 0.6)"
+        }
+      }
+    },
+    "duration": {
+      "instant": {
+        "$type": "duration",
+        "$value": "50ms"
+      },
+      "fast": {
+        "$type": "duration",
+        "$value": "100ms"
+      },
+      "normal": {
+        "$type": "duration",
+        "$value": "200ms"
+      },
+      "slow": {
+        "$type": "duration",
+        "$value": "300ms"
+      },
+      "slower": {
+        "$type": "duration",
+        "$value": "500ms"
+      }
+    },
+    "cubicBezier": {
+      "easeIn": {
+        "$type": "cubicBezier",
+        "$value": [0.4, 0, 1, 1]
+      },
+      "easeOut": {
+        "$type": "cubicBezier",
+        "$value": [0, 0, 0.2, 1]
+      },
+      "easeInOut": {
+        "$type": "cubicBezier",
+        "$value": [0.4, 0, 0.2, 1]
+      }
+    },
+    "opacity": {
+      "disabled": {
+        "$type": "number",
+        "$value": 0.5
+      },
+      "hover": {
+        "$type": "number",
+        "$value": 0.8
+      },
+      "overlay": {
+        "$type": "number",
+        "$value": 0.7
+      }
+    }
+  }
+}

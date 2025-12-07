@@ -1,0 +1,353 @@
+syntax = "proto3";
+
+package sdr;
+
+// ============================================================================
+// Radio Control Service
+// Asynchronous control plane for runtime parameter updates
+// Matches the Holoscan gRPC integration pattern with atomic state variables
+// ============================================================================
+
+service RadioControl {
+  // Set center frequency for RX/TX
+  rpc SetFrequency (FrequencyRequest) returns (StatusReply);
+  
+  // Set gain parameters (LNA, PGA, VGA, TX)
+  rpc SetGain (GainRequest) returns (StatusReply);
+  
+  // Set sample rate and data format
+  rpc SetSampleRate (SampleRateRequest) returns (StatusReply);
+  
+  // Set RF path configuration
+  rpc SetRFPath (RFPathRequest) returns (StatusReply);
+  
+  // Set clock source and tuning
+  rpc SetClockConfig (ClockConfigRequest) returns (StatusReply);
+  
+  // Set buffer sizes
+  rpc SetBufferConfig (BufferConfigRequest) returns (StatusReply);
+  
+  // Set channel configuration
+  rpc SetChannelConfig (ChannelConfigRequest) returns (StatusReply);
+  
+  // Set sync type for timing synchronization
+  rpc SetSyncType (SyncTypeRequest) returns (StatusReply);
+  
+  // Set device parameters (LNA, PA, GPSDO, OSC)
+  rpc SetDeviceParams (DeviceParamsRequest) returns (StatusReply);
+  
+  // Get current device status and configuration
+  rpc GetStatus (Empty) returns (DeviceStatus);
+  
+  // Apply complete configuration atomically
+  rpc ApplyConfiguration (ConfigurationRequest) returns (StatusReply);
+}
+
+// ============================================================================
+// Stream Control Service
+// Manages data acquisition and streaming lifecycle
+// ============================================================================
+
+service StreamControl {
+  // Start streaming with specified configuration
+  rpc StartStream (StreamRequest) returns (StreamReply);
+  
+  // Stop active stream
+  rpc StopStream (StreamStopRequest) returns (StatusReply);
+  
+  // Get stream status and metrics
+  rpc GetStreamStatus (StreamStatusRequest) returns (StreamStatusReply);
+  
+  // Server-side streaming for real-time metrics
+  rpc StreamMetrics (StreamMetricsRequest) returns (stream MetricsUpdate);
+  
+  // Server-side streaming for I/Q data (for waterfall visualization)
+  rpc StreamIQData (IQStreamRequest) returns (stream IQDataChunk);
+}
+
+// ============================================================================
+// Configuration Management Service
+// Save/load/export device configurations
+// ============================================================================
+
+service ConfigurationService {
+  // Save current configuration as preset
+  rpc SavePreset (SavePresetRequest) returns (PresetReply);
+  
+  // Load preset by ID
+  rpc LoadPreset (LoadPresetRequest) returns (ConfigurationReply);
+  
+  // List all saved presets
+  rpc ListPresets (Empty) returns (PresetListReply);
+  
+  // Delete preset by ID
+  rpc DeletePreset (DeletePresetRequest) returns (StatusReply);
+}
+
+// ============================================================================
+// Message Definitions
+// ============================================================================
+
+message Empty {}
+
+// Frequency configuration
+message FrequencyRequest {
+  double rx_center_hz = 1;
+  double tx_center_hz = 2;
+  double rx_bandwidth_hz = 3;
+  double tx_bandwidth_hz = 4;
+}
+
+// Gain configuration
+message GainRequest {
+  int32 rx_lna_db = 1;  // 0-40 dB
+  int32 rx_pga_db = 2;  // 0-19 dB
+  int32 rx_vga_db = 3;  // 0-30 dB
+  int32 tx_gain_db = 4; // 0-89 dB
+}
+
+// Sample rate and data format
+message SampleRateRequest {
+  double sample_rate_hz = 1;
+  DataFormat data_format = 2;
+  ConnectionType connection_type = 3;
+  int32 block_size = 4;
+}
+
+enum DataFormat {
+  DATA_FORMAT_UNSPECIFIED = 0;
+  CI16 = 1;  // Complex Int16 (native wire format)
+  CI8 = 2;   // Complex Int8
+  CF32 = 3;  // Complex Float32 (requires conversion)
+}
+
+enum ConnectionType {
+  CONNECTION_TYPE_UNSPECIFIED = 0;
+  USB = 1;
+  PCIE = 2;
+}
+
+// RF path selection
+message RFPathRequest {
+  string rf_path = 1;  // e.g., "rxw", "txw", "rxl", "rxh", "trx1200_2100"
+}
+
+// Clock configuration
+message ClockConfigRequest {
+  ClockSource source = 1;
+  double external_frequency_hz = 2;
+  int32 dac_tuning = 3;
+}
+
+enum ClockSource {
+  CLOCK_SOURCE_UNSPECIFIED = 0;
+  INTERNAL = 1;
+  EXTERNAL = 2;
+  DEVBOARD = 3;
+}
+
+// Buffer configuration
+message BufferConfigRequest {
+  int32 rx_buffer_size = 1;
+  int32 tx_buffer_size = 2;
+}
+
+// Channel configuration
+message ChannelConfigRequest {
+  ChannelMode rx_mode = 1;
+  ChannelMode tx_mode = 2;
+  int32 rx_channel_mask = 3;  // Used when mode is MASK
+  int32 tx_channel_mask = 4;  // Used when mode is MASK
+  string rx_channel_list = 5; // Used when mode is LIST (comma-separated)
+  string tx_channel_list = 6; // Used when mode is LIST (comma-separated)
+}
+
+enum ChannelMode {
+  CHANNEL_MODE_UNSPECIFIED = 0;
+  AUTO = 1;
+  MASK = 2;
+  LIST = 3;
+}
+
+// Sync type configuration
+message SyncTypeRequest {
+  SyncType sync_type = 1;
+}
+
+enum SyncType {
+  SYNC_TYPE_UNSPECIFIED = 0;
+  SYNC_1PPS = 1;   // 1PPS GPS timing
+  SYNC_RX = 2;     // RX-based sync
+  SYNC_TX = 3;     // TX-based sync
+  SYNC_ANY = 4;    // Any available sync
+  SYNC_NONE = 5;   // No synchronization
+  SYNC_OFF = 6;    // Sync disabled
+}
+
+// Device parameters
+message DeviceParamsRequest {
+  bool lna_on = 1;
+  bool pa_on = 2;
+  bool gpsdo_on = 3;
+  bool osc_on = 4;
+  int32 dac_value = 5;
+}
+
+// Complete configuration
+message ConfigurationRequest {
+  OperationMode mode = 1;
+  string rf_path = 2;
+  FrequencyRequest frequency = 3;
+  GainRequest gain = 4;
+  ClockConfigRequest clock = 5;
+  SampleRateRequest sample_rate = 6;
+  BufferConfigRequest buffer = 7;
+  ChannelConfigRequest channels = 8;
+  SyncTypeRequest sync = 9;
+  DeviceParamsRequest device_params = 10;
+}
+
+enum OperationMode {
+  OPERATION_MODE_UNSPECIFIED = 0;
+  RX = 1;
+  TX = 2;
+  TRX = 3;
+}
+
+// Device status response
+message DeviceStatus {
+  bool ready = 1;
+  OperationMode mode = 2;
+  string rf_path = 3;
+  double rx_center_hz = 4;
+  double tx_center_hz = 5;
+  double sample_rate_hz = 6;
+  int32 total_rx_gain_db = 7;
+  bool streaming = 8;
+  int64 uptime_ms = 9;
+  repeated ValidationIssue validation_issues = 10;
+}
+
+message ValidationIssue {
+  ValidationSeverity severity = 1;
+  string field = 2;
+  string message = 3;
+  string suggestion = 4;
+}
+
+enum ValidationSeverity {
+  VALIDATION_SEVERITY_UNSPECIFIED = 0;
+  INFO = 1;
+  WARNING = 2;
+  ERROR = 3;
+}
+
+// Generic status reply
+message StatusReply {
+  bool success = 1;
+  string message = 2;
+  int32 error_code = 3;
+}
+
+// Stream control messages
+message StreamRequest {
+  string session_name = 1;
+  ConfigurationRequest configuration = 2;
+  int32 duration_seconds = 3;  // 0 = infinite
+}
+
+message StreamReply {
+  bool success = 1;
+  string session_id = 2;
+  string message = 3;
+}
+
+message StreamStopRequest {
+  string session_id = 1;
+}
+
+message StreamStatusRequest {
+  string session_id = 1;
+}
+
+message StreamStatusReply {
+  bool active = 1;
+  string session_id = 2;
+  int64 duration_ms = 3;
+  int64 samples_received = 4;
+  double throughput_mbps = 5;
+  int32 dropped_samples = 6;
+}
+
+message StreamMetricsRequest {
+  string session_id = 1;
+  int32 update_interval_ms = 2;  // How often to send updates
+}
+
+message MetricsUpdate {
+  int64 timestamp_ms = 1;
+  int64 samples_received = 2;
+  double throughput_mbps = 3;
+  int32 dropped_samples = 4;
+  double cpu_usage_percent = 5;
+  double gpu_usage_percent = 6;
+}
+
+// Configuration management messages
+message SavePresetRequest {
+  string name = 1;
+  string description = 2;
+  ConfigurationRequest configuration = 3;
+}
+
+message PresetReply {
+  bool success = 1;
+  string preset_id = 2;
+  string message = 3;
+}
+
+message LoadPresetRequest {
+  string preset_id = 1;
+}
+
+message ConfigurationReply {
+  bool success = 1;
+  ConfigurationRequest configuration = 2;
+  string message = 3;
+}
+
+message PresetListReply {
+  repeated PresetInfo presets = 1;
+}
+
+message PresetInfo {
+  string preset_id = 1;
+  string name = 2;
+  string description = 3;
+  int64 created_at = 4;
+  OperationMode mode = 5;
+  string rf_path = 6;
+}
+
+message DeletePresetRequest {
+  string preset_id = 1;
+}
+
+// ============================================================================
+// I/Q Data Streaming Messages
+// For waterfall visualization and spectrum analysis
+// ============================================================================
+
+message IQStreamRequest {
+  string session_id = 1;
+  int32 fft_size = 2;          // FFT size (256, 512, 1024, 2048, 4096)
+  int32 update_rate_ms = 3;    // Update rate in milliseconds
+}
+
+message IQDataChunk {
+  int64 timestamp_ms = 1;
+  double center_frequency_hz = 2;
+  double sample_rate_hz = 3;
+  int32 fft_size = 4;
+  repeated float fft_magnitudes = 5;  // FFT magnitude values in dB
+}

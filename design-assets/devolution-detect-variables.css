@@ -1,0 +1,336 @@
+/**
+ * Devolution Detect - Design System CSS Variables
+ * Control Drawer: Apply with Reason & Rollback History
+ * 
+ * This file contains all CSS custom properties (variables) for the
+ * Control Drawer components, derived from the UI/UX requirements.
+ * 
+ * Usage:
+ *   Import this file in your main stylesheet or component files.
+ *   Reference variables using var(--variable-name).
+ * 
+ * Author: Manus AI
+ * Date: November 2025
+ * Version: 1.0
+ */
+
+:root {
+  /* ========================================
+   * COLOR PALETTE
+   * ======================================== */
+  
+  /* Background Colors */
+  --dd-bg-dark: #0a0e14;           /* Text areas, cards, input backgrounds */
+  --dd-bg-medium: #1a1f2e;         /* Dialogs, panels, main backgrounds */
+  --dd-bg-light: #2a3040;          /* Hover states, elevated surfaces */
+  
+  /* Border Colors */
+  --dd-border-default: #333333;    /* Default borders */
+  --dd-border-active: #33ff77;     /* Focused borders, active states */
+  --dd-border-hover: #55ffaa;      /* Hover states for borders */
+  
+  /* Text Colors */
+  --dd-text-primary: #e0e0e0;      /* Main text content */
+  --dd-text-secondary: #999999;    /* Metadata, timestamps, secondary info */
+  --dd-text-tertiary: #666666;     /* Disabled text, placeholders */
+  --dd-text-inverse: #ffffff;      /* Text on colored backgrounds */
+  
+  /* Accent Colors */
+  --dd-accent-green: #33ff77;      /* Primary actions, success states */
+  --dd-accent-green-hover: #55ffaa;/* Hover state for green accent */
+  --dd-accent-green-active: #22dd66;/* Active state for green accent */
+  
+  --dd-accent-orange: #ff6b35;     /* Quick Rollback, warnings */
+  --dd-accent-orange-hover: #ff8555;/* Hover state for orange accent */
+  --dd-accent-orange-active: #dd5525;/* Active state for orange accent */
+  
+  --dd-accent-red: #ff0000;        /* Errors, critical warnings */
+  --dd-accent-red-hover: #ff3333;  /* Hover state for red accent */
+  
+  --dd-accent-yellow: #ffd700;     /* Cautions, tradeoffs */
+  --dd-accent-yellow-hover: #ffed33;/* Hover state for yellow accent */
+  
+  --dd-accent-blue: #1e90ff;       /* Links, informational */
+  --dd-accent-blue-hover: #4da6ff; /* Hover state for blue accent */
+  
+  /* Status Colors */
+  --dd-status-applied: #33ff77;    /* Applied status badge */
+  --dd-status-reverted: #999999;   /* Reverted status badge */
+  --dd-status-active: #1e90ff;     /* Active status badge */
+  --dd-status-critical: #ff6b35;   /* Critical severity badge */
+  --dd-status-warning: #ffd700;    /* Warning severity badge */
+  --dd-status-info: #1e90ff;       /* Info severity badge */
+  
+  /* Overlay Colors */
+  --dd-overlay-bg: rgba(10, 14, 20, 0.7); /* Modal overlay background */
+  
+  /* ========================================
+   * TYPOGRAPHY
+   * ======================================== */
+  
+  /* Font Families */
+  --dd-font-display: 'Space Grotesk', sans-serif;  /* Headers, titles */
+  --dd-font-mono: 'IBM Plex Mono', monospace;      /* Body text, code, numbers */
+  --dd-font-system: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  
+  /* Font Sizes */
+  --dd-font-size-xs: 11px;         /* Badges, tiny labels */
+  --dd-font-size-sm: 12px;         /* Metadata, timestamps */
+  --dd-font-size-base: 14px;       /* Body text, buttons */
+  --dd-font-size-md: 16px;         /* Section headers */
+  --dd-font-size-lg: 18px;         /* Dialog/panel titles */
+  --dd-font-size-xl: 24px;         /* Large headings */
+  
+  /* Font Weights */
+  --dd-font-weight-regular: 400;
+  --dd-font-weight-medium: 500;
+  --dd-font-weight-semibold: 600;
+  --dd-font-weight-bold: 700;
+  
+  /* Line Heights */
+  --dd-line-height-tight: 1.2;
+  --dd-line-height-normal: 1.5;
+  --dd-line-height-relaxed: 1.75;
+  
+  /* ========================================
+   * SPACING
+   * ======================================== */
+  
+  /* Base spacing unit: 4px */
+  --dd-space-1: 4px;
+  --dd-space-2: 8px;
+  --dd-space-3: 12px;
+  --dd-space-4: 16px;
+  --dd-space-5: 20px;
+  --dd-space-6: 24px;
+  --dd-space-8: 32px;
+  --dd-space-10: 40px;
+  --dd-space-12: 48px;
+  
+  /* Component-specific spacing */
+  --dd-dialog-padding: var(--dd-space-6);        /* 24px */
+  --dd-panel-padding: var(--dd-space-6);         /* 24px */
+  --dd-card-padding: var(--dd-space-4);          /* 16px */
+  --dd-button-padding-y: var(--dd-space-3);      /* 12px */
+  --dd-button-padding-x: var(--dd-space-6);      /* 24px */
+  --dd-input-padding: var(--dd-space-3);         /* 12px */
+  
+  /* Margins */
+  --dd-section-margin-bottom: var(--dd-space-5); /* 20px */
+  --dd-card-margin-bottom: var(--dd-space-3);    /* 12px */
+  --dd-button-margin: var(--dd-space-2);         /* 8px */
+  
+  /* ========================================
+   * SIZING
+   * ======================================== */
+  
+  /* Dialog Dimensions */
+  --dd-dialog-width: 560px;
+  --dd-dialog-width-min: 500px;
+  --dd-dialog-width-max: 600px;
+  --dd-dialog-height-min: 400px;
+  --dd-dialog-height-max: 80vh;
+  
+  /* Panel Dimensions */
+  --dd-panel-width: 360px;
+  --dd-panel-width-min: 320px;
+  --dd-panel-width-max: 400px;
+  --dd-panel-height: 100%;
+  
+  /* Control Drawer Dimensions */
+  --dd-drawer-width: 360px;
+  --dd-drawer-width-min: 320px;
+  --dd-drawer-width-max: 400px;
+  
+  /* Component Heights */
+  --dd-button-height: 40px;
+  --dd-button-height-sm: 32px;
+  --dd-button-height-lg: 48px;
+  --dd-input-height: 40px;
+  --dd-textarea-height-min: 100px;
+  --dd-textarea-height-max: 200px;
+  
+  /* ========================================
+   * BORDER RADIUS
+   * ======================================== */
+  
+  --dd-radius-sm: 4px;             /* Buttons, inputs, text areas */
+  --dd-radius-md: 6px;             /* Cards, change entries */
+  --dd-radius-lg: 8px;             /* Dialogs, panels */
+  --dd-radius-pill: 12px;          /* Badges, pills */
+  --dd-radius-full: 9999px;        /* Circular elements */
+  
+  /* ========================================
+   * BORDERS
+   * ======================================== */
+  
+  --dd-border-width: 1px;
+  --dd-border-width-thick: 2px;
+  
+  /* Border Styles */
+  --dd-border-default: var(--dd-border-width) solid var(--dd-border-default);
+  --dd-border-active: var(--dd-border-width) solid var(--dd-border-active);
+  --dd-border-hover: var(--dd-border-width) solid var(--dd-border-hover);
+  
+  /* ========================================
+   * SHADOWS
+   * ======================================== */
+  
+  --dd-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --dd-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
+  --dd-shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.5);
+  --dd-shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.6);
+  
+  /* ========================================
+   * TRANSITIONS & ANIMATIONS
+   * ======================================== */
+  
+  /* Durations */
+  --dd-duration-instant: 50ms;
+  --dd-duration-fast: 100ms;
+  --dd-duration-normal: 200ms;
+  --dd-duration-slow: 300ms;
+  --dd-duration-slower: 500ms;
+  
+  /* Easing Functions */
+  --dd-ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --dd-ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --dd-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Common Transitions */
+  --dd-transition-fast: all var(--dd-duration-fast) var(--dd-ease-out);
+  --dd-transition-normal: all var(--dd-duration-normal) var(--dd-ease-out);
+  --dd-transition-slow: all var(--dd-duration-slow) var(--dd-ease-out);
+  
+  /* Component-specific transitions */
+  --dd-transition-dialog-in: opacity var(--dd-duration-normal) var(--dd-ease-out);
+  --dd-transition-dialog-out: opacity 150ms var(--dd-ease-in);
+  --dd-transition-panel-in: transform 250ms var(--dd-ease-out);
+  --dd-transition-panel-out: transform var(--dd-duration-normal) var(--dd-ease-in);
+  --dd-transition-card-expand: height var(--dd-duration-normal) var(--dd-ease-out);
+  --dd-transition-card-collapse: height 150ms var(--dd-ease-in);
+  
+  /* ========================================
+   * Z-INDEX LAYERS
+   * ======================================== */
+  
+  --dd-z-base: 0;
+  --dd-z-dropdown: 1000;
+  --dd-z-drawer: 2000;
+  --dd-z-panel: 2100;
+  --dd-z-overlay: 3000;
+  --dd-z-dialog: 3100;
+  --dd-z-toast: 4000;
+  --dd-z-tooltip: 5000;
+  
+  /* ========================================
+   * OPACITY
+   * ======================================== */
+  
+  --dd-opacity-disabled: 0.5;
+  --dd-opacity-hover: 0.8;
+  --dd-opacity-overlay: 0.7;
+  
+  /* ========================================
+   * COMPONENT-SPECIFIC VARIABLES
+   * ======================================== */
+  
+  /* Apply with Reason Dialog */
+  --dd-awr-dialog-bg: var(--dd-bg-medium);
+  --dd-awr-dialog-border: var(--dd-border-active);
+  --dd-awr-dialog-width: var(--dd-dialog-width);
+  --dd-awr-textarea-bg: var(--dd-bg-dark);
+  --dd-awr-textarea-border: var(--dd-border-default);
+  --dd-awr-textarea-border-focus: var(--dd-border-active);
+  --dd-awr-button-primary-bg: var(--dd-accent-green);
+  --dd-awr-button-primary-bg-hover: var(--dd-accent-green-hover);
+  --dd-awr-button-secondary-bg: #666666;
+  --dd-awr-button-secondary-bg-hover: #888888;
+  
+  /* Rollback History Panel */
+  --dd-rbh-panel-bg: var(--dd-bg-medium);
+  --dd-rbh-panel-border: var(--dd-border-active);
+  --dd-rbh-panel-width: var(--dd-panel-width);
+  --dd-rbh-card-bg: var(--dd-bg-dark);
+  --dd-rbh-card-border: var(--dd-border-default);
+  --dd-rbh-card-border-hover: var(--dd-border-active);
+  --dd-rbh-scrollbar-track: var(--dd-bg-medium);
+  --dd-rbh-scrollbar-thumb: var(--dd-accent-green);
+  --dd-rbh-scrollbar-thumb-hover: var(--dd-accent-green-hover);
+  
+  /* Quick Rollback Button */
+  --dd-qrb-bg: var(--dd-accent-orange);
+  --dd-qrb-bg-hover: var(--dd-accent-orange-hover);
+  --dd-qrb-bg-active: var(--dd-accent-orange-active);
+  --dd-qrb-text: var(--dd-text-inverse);
+  --dd-qrb-height: var(--dd-button-height);
+  
+  /* Status Badges */
+  --dd-badge-applied-bg: var(--dd-status-applied);
+  --dd-badge-applied-text: var(--dd-bg-dark);
+  --dd-badge-reverted-bg: var(--dd-status-reverted);
+  --dd-badge-reverted-text: var(--dd-text-inverse);
+  --dd-badge-active-bg: var(--dd-status-active);
+  --dd-badge-active-text: var(--dd-text-inverse);
+  --dd-badge-critical-bg: var(--dd-status-critical);
+  --dd-badge-critical-text: var(--dd-text-inverse);
+  --dd-badge-warning-bg: var(--dd-status-warning);
+  --dd-badge-warning-text: var(--dd-bg-dark);
+  --dd-badge-info-bg: var(--dd-status-info);
+  --dd-badge-info-text: var(--dd-text-inverse);
+  
+  /* Toast Notifications */
+  --dd-toast-bg: var(--dd-bg-medium);
+  --dd-toast-border: var(--dd-border-active);
+  --dd-toast-success-accent: var(--dd-accent-green);
+  --dd-toast-error-accent: var(--dd-accent-red);
+  --dd-toast-warning-accent: var(--dd-accent-yellow);
+  --dd-toast-info-accent: var(--dd-accent-blue);
+}
+
+/* ========================================
+ * DARK THEME (DEFAULT)
+ * ======================================== */
+
+/* The default theme is dark, so no additional overrides needed */
+
+/* ========================================
+ * RESPONSIVE BREAKPOINTS
+ * ======================================== */
+
+/* These are not CSS variables but are documented here for reference */
+/* Use in media queries as needed */
+
+/*
+  --breakpoint-xs: 0px;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+*/
+
+/* ========================================
+ * UTILITY CLASSES (OPTIONAL)
+ * ======================================== */
+
+/* These utility classes can be used for rapid prototyping */
+
+.dd-text-primary { color: var(--dd-text-primary); }
+.dd-text-secondary { color: var(--dd-text-secondary); }
+.dd-text-tertiary { color: var(--dd-text-tertiary); }
+
+.dd-bg-dark { background-color: var(--dd-bg-dark); }
+.dd-bg-medium { background-color: var(--dd-bg-medium); }
+.dd-bg-light { background-color: var(--dd-bg-light); }
+
+.dd-border-default { border: var(--dd-border-default); }
+.dd-border-active { border: var(--dd-border-active); }
+
+.dd-radius-sm { border-radius: var(--dd-radius-sm); }
+.dd-radius-md { border-radius: var(--dd-radius-md); }
+.dd-radius-lg { border-radius: var(--dd-radius-lg); }
+
+.dd-transition-fast { transition: var(--dd-transition-fast); }
+.dd-transition-normal { transition: var(--dd-transition-normal); }
+.dd-transition-slow { transition: var(--dd-transition-slow); }

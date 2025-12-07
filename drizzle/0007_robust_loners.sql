@@ -1,0 +1,1 @@
+ALTER TABLE `command_history` ADD `apiType` enum('libusdr','soapysdr') DEFAULT 'libusdr' NOT NULL;

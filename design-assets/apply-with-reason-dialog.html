@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apply with Reason Dialog - Devolution Detect</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Design System CSS Variables -->
+  <link rel="stylesheet" href="devolution-detect-variables.css">
+  
+  <!-- Component Styles -->
+  <link rel="stylesheet" href="apply-with-reason-dialog.css">
+</head>
+<body>
+  <!-- Demo Page Container -->
+  <div class="demo-container">
+    <div class="demo-header">
+      <h1>Devolution Detect - Apply with Reason Dialog</h1>
+      <p>Click the button below to open the dialog</p>
+    </div>
+    
+    <button class="demo-trigger-button" onclick="openDialog()">
+      Open "Apply with Reason" Dialog
+    </button>
+    
+    <div class="demo-info">
+      <h2>Demo Information</h2>
+      <p>This dialog demonstrates the "Apply with Reason" mechanism for critical parameter changes in the Devolution Detect Control Drawer.</p>
+      <ul>
+        <li>Try typing a reason in the text area</li>
+        <li>Observe the character counter updating in real-time</li>
+        <li>Test keyboard navigation (Tab, Enter, Escape)</li>
+        <li>Click "Confirm and Apply" to see the success state</li>
+        <li>Click "Cancel" or press Escape to close without applying</li>
+      </ul>
+    </div>
+  </div>
+  
+  <!-- Modal Overlay -->
+  <div class="awr-overlay" id="awrOverlay" onclick="closeDialog()"></div>
+  
+  <!-- Apply with Reason Dialog -->
+  <div class="awr-dialog" id="awrDialog" role="dialog" aria-labelledby="awrDialogTitle" aria-describedby="awrParameterSummary">
+    
+    <!-- Dialog Header -->
+    <div class="awr-header">
+      <h2 class="awr-title" id="awrDialogTitle">Apply with Reason: Confirm Critical Parameter Change</h2>
+      <button class="awr-close-button" onclick="closeDialog()" aria-label="Close dialog">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    
+    <!-- Parameter Summary Section -->
+    <div class="awr-section" id="awrParameterSummary">
+      <h3 class="awr-section-title">Parameter Summary</h3>
+      <table class="awr-parameter-table">
+        <tbody>
+          <tr>
+            <td class="param-name">Detection Threshold</td>
+            <td class="param-old-value">0.30</td>
+            <td class="param-arrow">→</td>
+            <td class="param-new-value">0.50</td>
+          </tr>
+          <tr>
+            <td class="param-name">Confidence Floor</td>
+            <td class="param-old-value">0.20</td>
+            <td class="param-arrow">→</td>
+            <td class="param-new-value">0.40</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Expected Impact Section -->
+    <div class="awr-section">
+      <h3 class="awr-section-title">Expected Impact</h3>
+      <div class="awr-impact-list">
+        <div class="impact-item impact-positive">
+          <span class="impact-label">Detection count:</span>
+          <span class="impact-value">47 detections → 18 detections (62% reduction)</span>
+        </div>
+        <div class="impact-item impact-neutral">
+          <span class="impact-label">False positive rate:</span>
+          <span class="impact-value">High → Low (estimated)</span>
+        </div>
+        <div class="impact-item impact-caution">
+          <span class="impact-label">False negative rate:</span>
+          <span class="impact-value">Low → Medium (estimated)</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Metadata Section -->
+    <div class="awr-metadata">
+      <div class="metadata-item">
+        <span class="metadata-label">Change will be applied at:</span>
+        <span class="metadata-value" id="awrTimestamp">2025-11-21 14:45:30 UTC</span>
+      </div>
+      <div class="metadata-item">
+        <span class="metadata-label">Operator:</span>
+        <span class="metadata-value">operator-12345 (John Smith)</span>
+      </div>
+    </div>
+    
+    <!-- Reason Input Section -->
+    <div class="awr-section">
+      <label for="awrReasonInput" class="awr-section-title">Reason for Change:</label>
+      <textarea 
+        id="awrReasonInput" 
+        class="awr-textarea" 
+        placeholder="Explain why you're making this change (required for audit purposes)"
+        maxlength="500"
+        oninput="updateCharacterCount()"
+        aria-describedby="awrCharCount awrWarning"
+      ></textarea>
+      <div class="awr-textarea-footer">
+        <span class="awr-char-count" id="awrCharCount">0 / 500 characters</span>
+        <span class="awr-warning" id="awrWarning" style="display: none;">
+          ⚠ Consider providing a more detailed reason for audit purposes
+        </span>
+      </div>
+    </div>
+    
+    <!-- Additional Information -->
+    <div class="awr-info-box">
+      <svg class="info-icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+        <circle cx="8" cy="8" r="7" stroke="currentColor" fill="none" stroke-width="1.5"></circle>
+        <text x="8" y="12" text-anchor="middle" font-size="12" font-weight="bold">i</text>
+      </svg>
+      <span>This change is critical and requires justification. Your reason will be logged for audit purposes.</span>
+    </div>
+    
+    <!-- Action Buttons -->
+    <div class="awr-actions">
+      <button class="awr-button awr-button-tertiary" onclick="rollbackToPrevious()" id="awrRollbackButton" disabled>
+        Rollback to Previous
+      </button>
+      <button class="awr-button awr-button-secondary" onclick="closeDialog()">
+        Cancel
+      </button>
+      <button class="awr-button awr-button-primary" onclick="confirmAndApply()" id="awrConfirmButton">
+        Confirm and Apply
+      </button>
+    </div>
+    
+    <!-- Loading State (hidden by default) -->
+    <div class="awr-loading" id="awrLoading" style="display: none;">
+      <div class="loading-spinner"></div>
+      <span class="loading-text">Applying changes...</span>
+    </div>
+  </div>
+  
+  <!-- Toast Notification -->
+  <div class="toast-notification" id="toastNotification">
+    <div class="toast-content">
+      <svg class="toast-icon" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+        <circle cx="10" cy="10" r="9" stroke="currentColor" fill="none" stroke-width="2"></circle>
+        <path d="M6 10 L9 13 L14 7" stroke="currentColor" fill="none" stroke-width="2"></path>
+      </svg>
+      <span class="toast-message" id="toastMessage">Changes applied successfully</span>
+    </div>
+  </div>
+  
+  <!-- JavaScript -->
+  <script src="apply-with-reason-dialog.js"></script>
+</body>
+</html>

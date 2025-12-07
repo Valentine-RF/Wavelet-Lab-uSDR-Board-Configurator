@@ -1,0 +1,23 @@
+CREATE TABLE `streaming_sessions` (
+	`id` int AUTO_INCREMENT NOT NULL,
+	`userId` int NOT NULL,
+	`configId` int,
+	`status` enum('starting','active','paused','stopped','error') NOT NULL,
+	`sessionId` varchar(64) NOT NULL,
+	`processId` int,
+	`command` text,
+	`outputMode` enum('websocket','file','stdout') NOT NULL,
+	`outputPath` text,
+	`samplesProcessed` varchar(20),
+	`bytesTransferred` varchar(20),
+	`durationSeconds` int,
+	`averageThroughputMbps` int,
+	`errorMessage` text,
+	`errorCode` int,
+	`startedAt` timestamp NOT NULL DEFAULT (now()),
+	`stoppedAt` timestamp,
+	`createdAt` timestamp NOT NULL DEFAULT (now()),
+	`updatedAt` timestamp NOT NULL DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,
+	CONSTRAINT `streaming_sessions_id` PRIMARY KEY(`id`),
+	CONSTRAINT `streaming_sessions_sessionId_unique` UNIQUE(`sessionId`)
+);
