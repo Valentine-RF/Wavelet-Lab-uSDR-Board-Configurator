@@ -1,4 +1,5 @@
 # uSDR Development Board Dashboard
+<img width="1213" height="960" alt="image" src="https://github.com/user-attachments/assets/db7dad6e-5ed6-4f1e-bc54-f943767deeb0" />
 
 A professional web-based configuration dashboard for the Wavelet Lab uSDR Development Board, featuring dual API support (libusdr CLI and SoapySDR C++), real-time validation, command templates, and comprehensive device control.
 
