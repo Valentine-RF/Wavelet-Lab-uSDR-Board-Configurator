@@ -146,9 +146,15 @@ pnpm start
 
 ## 📚 Documentation
 
-- **[Deployment Checklist](DEPLOYMENT_CHECKLIST.md)**: Pre-deployment verification and production readiness
-- **[Database Backup Strategy](docs/DATABASE_BACKUP_STRATEGY.md)**: Backup procedures and disaster recovery
-- **[Command Audit](COMMAND_AUDIT.md)**: Verification of command templates and API alignment
+Comprehensive documentation is available in the [docs/](docs/) directory:
+
+- **[Documentation Index](docs/README.md)** - Complete documentation overview
+- **[Docker Deployment](DOCKER.md)** - Container-based deployment guide
+- **[Deployment Checklist](docs/DEPLOYMENT_CHECKLIST.md)** - Pre-deployment verification
+- **[Database Backup Strategy](docs/DATABASE_BACKUP_STRATEGY.md)** - Backup procedures
+- **[Command Audit](docs/COMMAND_AUDIT.md)** - Template verification
+- **[Technical Specification](docs/TECHNICAL_SPEC.md)** - Architecture and design
+- **[Release Notes](docs/RELEASE_NOTES.md)** - Version history and changelog
 
 ## 🔒 Security
 
