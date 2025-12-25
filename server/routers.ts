@@ -50,32 +50,62 @@ export const appRouter = router({
 
   terminal: router({
     // Execute command in a new terminal
+    // SECURITY: Only allows whitelisted commands (usdr_dm_create) with validated parameters
     executeCommand: protectedProcedure
       .input(z.object({ command: z.string() }))
       .mutation(async ({ input }) => {
         const { spawn } = await import('child_process');
-        
-        // Spawn a new terminal with the command
+
+        // SECURITY: Whitelist of allowed commands
+        const ALLOWED_COMMANDS = ['usdr_dm_create'];
+
+        // Parse command to extract executable and arguments
+        const trimmedCommand = input.command.trim();
+        const parts = trimmedCommand.split(/\s+/);
+        const executable = parts[0];
+
+        // SECURITY: Validate command is in whitelist
+        if (!ALLOWED_COMMANDS.includes(executable)) {
+          return {
+            success: false,
+            message: `Command not allowed. Only the following commands are permitted: ${ALLOWED_COMMANDS.join(', ')}`
+          };
+        }
+
+        // SECURITY: Validate no shell metacharacters in arguments
+        const shellMetacharacters = /[;&|`$(){}[\]<>\\!"'*?~#]/;
+        const args = parts.slice(1);
+        for (const arg of args) {
+          if (shellMetacharacters.test(arg)) {
+            return {
+              success: false,
+              message: 'Invalid characters detected in command arguments'
+            };
+          }
+        }
+
+        // Spawn a new terminal with the validated command
         // Using gnome-terminal for Linux environments
         try {
-          spawn('gnome-terminal', ['--', 'bash', '-c', `${input.command}; echo '\n\nPress Enter to close...'; read`], {
+          // SECURITY: Pass arguments as array, not as shell string
+          spawn('gnome-terminal', ['--', executable, ...args], {
             detached: true,
             stdio: 'ignore'
           }).unref();
-          
+
           return { success: true, message: 'Terminal opened successfully' };
         } catch (error) {
           // Fallback: try xterm
           try {
-            spawn('xterm', ['-hold', '-e', input.command], {
+            spawn('xterm', ['-hold', '-e', executable, ...args], {
               detached: true,
               stdio: 'ignore'
             }).unref();
             return { success: true, message: 'Terminal opened successfully' };
           } catch (xterError) {
-            return { 
-              success: false, 
-              message: 'No terminal emulator found. Please install gnome-terminal or xterm.' 
+            return {
+              success: false,
+              message: 'No terminal emulator found. Please install gnome-terminal or xterm.'
             };
           }
         }

@@ -1,6 +1,49 @@
 import { spawn, ChildProcess } from 'child_process';
 import { nanoid } from 'nanoid';
 import { EventEmitter } from 'events';
+import path from 'path';
+
+// SECURITY: Path validation utilities
+const SHELL_METACHARACTERS = /[;&|`$(){}[\]<>\\!"'*?~#\n\r]/;
+const ALLOWED_OUTPUT_DIRECTORIES = ['/tmp', '/var/lib/usdr', '/home'];
+
+/**
+ * Validates a file path for security
+ * @throws Error if path is invalid or potentially malicious
+ */
+function validateFilePath(filePath: string, allowedDirs: string[] = ALLOWED_OUTPUT_DIRECTORIES): string {
+  // Check for shell metacharacters
+  if (SHELL_METACHARACTERS.test(filePath)) {
+    throw new Error('Invalid characters in file path');
+  }
+
+  // Normalize and resolve path to catch traversal attempts
+  const normalizedPath = path.normalize(filePath);
+  const resolvedPath = path.resolve(normalizedPath);
+
+  // Detect path traversal (.. components that escape)
+  if (normalizedPath !== filePath && filePath.includes('..')) {
+    throw new Error('Path traversal detected');
+  }
+
+  // Ensure path is within allowed directories
+  const isAllowed = allowedDirs.some(dir => resolvedPath.startsWith(dir));
+  if (!isAllowed && !resolvedPath.startsWith('/dev/')) {
+    throw new Error(`File path must be within allowed directories: ${allowedDirs.join(', ')}`);
+  }
+
+  return resolvedPath;
+}
+
+/**
+ * Validates a string value contains no shell metacharacters
+ */
+function validateSafeString(value: string, fieldName: string): string {
+  if (SHELL_METACHARACTERS.test(value)) {
+    throw new Error(`Invalid characters in ${fieldName}`);
+  }
+  return value;
+}
 
 export interface UsdrConfig {
   // RF Path
@@ -79,45 +122,55 @@ export class DeviceControlService extends EventEmitter {
 
   /**
    * Build usdr_dm_create command from configuration
+   * SECURITY: Returns separate args array for spawn() and command string for logging
+   * All user-provided paths are validated before use
    */
-  private buildCommand(config: UsdrConfig): string {
-    const args: string[] = ['usdr_dm_create'];
+  private buildCommand(config: UsdrConfig): { args: string[], commandString: string } {
+    const args: string[] = [];
 
-    // Sample rate
-    args.push(`-r ${config.sampleRate}`);
+    // Sample rate (numeric, safe)
+    args.push('-r', String(config.sampleRate));
 
-    // Data format
-    args.push(`-F ${config.dataFormat}`);
+    // Data format - SECURITY: validate against allowed formats
+    const allowedFormats = ['ci16', 'ci12', 'cf32', 'cs8', 'cs16'];
+    const dataFormat = validateSafeString(config.dataFormat, 'dataFormat');
+    if (!allowedFormats.includes(dataFormat)) {
+      throw new Error(`Invalid data format: ${dataFormat}`);
+    }
+    args.push('-F', dataFormat);
 
-    // Block size
-    args.push(`-S ${config.blockSize}`);
-    args.push(`-O ${config.blockSize}`);
+    // Block size (numeric, safe)
+    args.push('-S', String(config.blockSize));
+    args.push('-O', String(config.blockSize));
 
     // Continuous streaming
-    args.push('-c -1');
+    args.push('-c', '-1');
 
     // Mode-specific configuration
     if (config.mode === 'rx') {
-      // RX only
-      args.push(`-e ${config.rxCenterFreq}`);
-      args.push(`-w ${config.rxBandwidth}`);
-      
-      // Output
+      // RX only (numeric values, safe)
+      args.push('-e', String(config.rxCenterFreq));
+      args.push('-w', String(config.rxBandwidth));
+
+      // Output - SECURITY: validate file paths
       if (config.outputMode === 'stdout') {
-        args.push('-f /dev/stdout');
+        args.push('-f', '/dev/stdout');
       } else if (config.outputMode === 'file' && config.outputPath) {
-        args.push(`-f ${config.outputPath}`);
+        const validatedPath = validateFilePath(config.outputPath);
+        args.push('-f', validatedPath);
       } else if (config.outputMode === 'websocket') {
-        args.push('-f /dev/stdout');
+        args.push('-f', '/dev/stdout');
       }
     } else if (config.mode === 'tx') {
       // TX only
       args.push('-t');
-      args.push(`-E ${config.txCenterFreq}`);
-      args.push(`-W ${config.txBandwidth}`);
-      
+      args.push('-E', String(config.txCenterFreq));
+      args.push('-W', String(config.txBandwidth));
+
+      // SECURITY: validate TX file path
       if (config.txFile) {
-        args.push(`-I ${config.txFile}`);
+        const validatedTxFile = validateFilePath(config.txFile);
+        args.push('-I', validatedTxFile);
         if (config.loopTx) {
           args.push('-o');
         }
@@ -125,46 +178,50 @@ export class DeviceControlService extends EventEmitter {
     } else if (config.mode === 'trx') {
       // TX + RX
       args.push('-T');
-      args.push(`-e ${config.rxCenterFreq}`);
-      args.push(`-E ${config.txCenterFreq}`);
-      args.push(`-w ${config.rxBandwidth}`);
-      args.push(`-W ${config.txBandwidth}`);
-      
+      args.push('-e', String(config.rxCenterFreq));
+      args.push('-E', String(config.txCenterFreq));
+      args.push('-w', String(config.rxBandwidth));
+      args.push('-W', String(config.txBandwidth));
+
+      // SECURITY: validate output file path
       if (config.outputMode === 'stdout') {
-        args.push('-f /dev/stdout');
+        args.push('-f', '/dev/stdout');
       } else if (config.outputMode === 'file' && config.outputPath) {
-        args.push(`-f ${config.outputPath}`);
+        const validatedPath = validateFilePath(config.outputPath);
+        args.push('-f', validatedPath);
       } else if (config.outputMode === 'websocket') {
-        args.push('-f /dev/stdout');
+        args.push('-f', '/dev/stdout');
       }
-      
+
+      // SECURITY: validate TX file path
       if (config.txFile) {
-        args.push(`-I ${config.txFile}`);
+        const validatedTxFile = validateFilePath(config.txFile);
+        args.push('-I', validatedTxFile);
         if (config.loopTx) {
           args.push('-o');
         }
       }
     }
 
-    // Gain configuration
-    args.push(`-y ${config.rxLnaGain}`);
-    args.push(`-u ${config.rxPgaGain}`);
-    args.push(`-U ${config.rxVgaGain}`);
-    args.push(`-Y ${config.txGain}`);
+    // Gain configuration (numeric, safe)
+    args.push('-y', String(config.rxLnaGain));
+    args.push('-u', String(config.rxPgaGain));
+    args.push('-U', String(config.rxVgaGain));
+    args.push('-Y', String(config.txGain));
 
     // Clock configuration
     if (config.clockSource === 'external' && config.externalClockFreq) {
-      args.push('-a external');
-      args.push(`-x ${config.externalClockFreq}`);
+      args.push('-a', 'external');
+      args.push('-x', String(config.externalClockFreq));
     } else if (config.clockSource === 'devboard') {
-      args.push('-a internal');
+      args.push('-a', 'internal');
     } else {
-      args.push('-a internal');
+      args.push('-a', 'internal');
     }
 
     // Device parameters (-D)
     const deviceParams: string[] = [];
-    
+
     // Connection type
     if (config.connectionType === 'pcie') {
       deviceParams.push('bus=pci');
@@ -174,27 +231,32 @@ export class DeviceControlService extends EventEmitter {
 
     // Front-end configuration
     const feParams: string[] = ['pciefev1'];
-    
+
+    // SECURITY: validate RF path against allowed patterns
     if (config.rfPath) {
+      const rfPathPattern = /^trx[a-z0-9_]+$/i;
+      if (!rfPathPattern.test(config.rfPath)) {
+        throw new Error('Invalid RF path format');
+      }
       feParams.push(`path_${config.rfPath}`);
     }
-    
+
     if (config.lnaOn) {
       feParams.push('lna_on');
     }
-    
+
     if (config.paOn) {
       feParams.push('pa_on');
     }
-    
+
     if (config.gpsdoOn) {
       feParams.push('gpsdo_on');
     }
-    
+
     if (config.oscOn) {
       feParams.push('osc_on');
     }
-    
+
     if (config.dacTuning !== undefined) {
       feParams.push(`dac_${config.dacTuning}`);
     }
@@ -202,10 +264,13 @@ export class DeviceControlService extends EventEmitter {
     deviceParams.push(`fe=${feParams.join(':')}`);
 
     if (deviceParams.length > 0) {
-      args.push(`-D ${deviceParams.join(',')}`);
+      args.push('-D', deviceParams.join(','));
     }
 
-    return args.join(' ');
+    // Build command string for logging (not used for execution)
+    const commandString = `usdr_dm_create ${args.join(' ')}`;
+
+    return { args, commandString };
   }
 
   /**
@@ -213,14 +278,15 @@ export class DeviceControlService extends EventEmitter {
    */
   async startStream(config: UsdrConfig): Promise<StreamingSession> {
     const sessionId = nanoid();
-    const command = this.buildCommand(config);
+    // SECURITY: buildCommand now returns validated args array and command string separately
+    const { args, commandString } = this.buildCommand(config);
 
     const session: StreamingSession = {
       sessionId,
       processId: undefined,
       status: 'starting',
       config,
-      command,
+      command: commandString, // Use command string for logging/display only
       metrics: {
         samplesProcessed: 0,
         bytesTransferred: 0,
@@ -235,13 +301,9 @@ export class DeviceControlService extends EventEmitter {
     this.sessions.set(sessionId, session);
 
     try {
-      // Parse command into executable and args
-      const cmdParts = command.split(' ');
-      const executable = cmdParts[0];
-      const args = cmdParts.slice(1);
-
-      // Spawn the process
-      const process = spawn(executable, args, {
+      // SECURITY: Use pre-validated args array directly - no string parsing needed
+      // Spawn the process with usdr_dm_create as executable
+      const process = spawn('usdr_dm_create', args, {
         stdio: config.outputMode === 'websocket' ? ['ignore', 'pipe', 'pipe'] : ['ignore', 'inherit', 'pipe'],
       });
 

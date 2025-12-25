@@ -1,6 +1,7 @@
 import { WebSocketServer, WebSocket } from 'ws';
 import { Server as HTTPServer } from 'http';
 import { deviceControl, StreamingSession } from './deviceControl';
+import { getStreamingSession } from './streamingDb';
 
 export interface StreamClient {
   ws: WebSocket;
@@ -30,7 +31,7 @@ export class StreamingServer {
   }
 
   private setupWebSocketServer() {
-    this.wss.on('connection', (ws: WebSocket, req) => {
+    this.wss.on('connection', async (ws: WebSocket, req) => {
       console.log('[StreamingServer] New WebSocket connection');
 
       // Extract session ID from query parameters
@@ -51,11 +52,32 @@ export class StreamingServer {
         return;
       }
 
-      // Verify session exists
+      // SECURITY: Verify session exists in database and user owns it
+      try {
+        const dbSession = await getStreamingSession(sessionId);
+        if (!dbSession) {
+          console.error(`[StreamingServer] Session ${sessionId} not found in database`);
+          ws.close(1008, 'Session not found');
+          return;
+        }
+
+        // SECURITY: Validate that the claimed userId matches the session owner
+        if (dbSession.userId !== userId) {
+          console.error(`[StreamingServer] User ${userId} attempted to access session owned by ${dbSession.userId}`);
+          ws.close(1008, 'Access denied');
+          return;
+        }
+      } catch (error) {
+        console.error('[StreamingServer] Database error during session validation:', error);
+        ws.close(1011, 'Internal error');
+        return;
+      }
+
+      // Verify session exists in memory (active streaming)
       const session = deviceControl.getSession(sessionId);
       if (!session) {
-        console.error(`[StreamingServer] Session ${sessionId} not found`);
-        ws.close(1008, 'Session not found');
+        console.error(`[StreamingServer] Session ${sessionId} not found in active sessions`);
+        ws.close(1008, 'Session not active');
         return;
       }
 

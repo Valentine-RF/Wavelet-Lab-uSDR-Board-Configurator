@@ -5,14 +5,20 @@ import { Request, Response, NextFunction } from "express";
  * Implements OWASP recommended security headers
  */
 export function securityHeaders(req: Request, res: Response, next: NextFunction) {
+  const isProduction = process.env.NODE_ENV === "production";
+
   // Content Security Policy (CSP)
-  // Allows scripts and styles from same origin and inline (required for Vite/React)
-  // Restricts other resources to same origin only
+  // SECURITY: 'unsafe-eval' only allowed in development for HMR/debugging
+  // Production builds should not require eval
+  const scriptSrc = isProduction
+    ? "script-src 'self' 'unsafe-inline'" // No unsafe-eval in production
+    : "script-src 'self' 'unsafe-inline' 'unsafe-eval'"; // Dev needs eval for HMR
+
   res.setHeader(
     "Content-Security-Policy",
     [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval'", // unsafe-eval needed for dev tools
+      scriptSrc,
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
       "img-src 'self' data: https:",

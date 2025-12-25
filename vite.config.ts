@@ -1,13 +1,15 @@
 import { jsxLocPlugin } from "@builder.io/vite-plugin-jsx-loc";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
-import fs from "node:fs";
 import path from "path";
 import { defineConfig } from "vite";
 import { vitePluginManusRuntime } from "vite-plugin-manus-runtime";
 
 
 const plugins = [react(), tailwindcss(), jsxLocPlugin(), vitePluginManusRuntime()];
+
+// HMR configuration - use environment variable or auto-detect
+const hmrHost = process.env.VITE_HMR_HOST;
 
 export default defineConfig({
   plugins,
@@ -36,11 +38,12 @@ export default defineConfig({
       "localhost",
       "127.0.0.1",
     ],
-    hmr: {
+    // HMR config: use env var if set, otherwise let Vite auto-detect
+    hmr: hmrHost ? {
       protocol: 'wss',
-      host: '3000-i5j10nwfez5sbvu0s9zcm-120751f5.manusvm.computer',
+      host: hmrHost,
       clientPort: 443,
-    },
+    } : true,
     fs: {
       strict: true,
       deny: ["**/.*"],

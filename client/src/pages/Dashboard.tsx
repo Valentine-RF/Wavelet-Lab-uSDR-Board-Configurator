@@ -547,7 +547,7 @@ export default function Dashboard() {
 
             {/* Configuration Tabs */}
             <Tabs defaultValue="rf-path" className="w-full">
-              <TabsList className="grid w-full grid-cols-5" style={{ backgroundColor: 'var(--dd-bg-medium)' }}>
+              <TabsList className="grid w-full grid-cols-7" style={{ backgroundColor: 'var(--dd-bg-medium)' }}>
                 <TabsTrigger value="rf-path">RF Path</TabsTrigger>
                 <TabsTrigger value="frequency">Frequency</TabsTrigger>
                 <TabsTrigger value="gain">Gain</TabsTrigger>
