@@ -215,29 +215,32 @@ hmr: {
 ## Action Items (Priority Order)
 
 ### P0 - Critical (Fix Immediately)
-1. [x] ~~Fix command injection in `terminal.executeCommand`~~ **FIXED**
-2. [x] ~~Fix command injection in `deviceControl.buildCommand`~~ **FIXED**
-3. [x] ~~Fix WebSocket authentication bypass~~ **FIXED**
+1. [x] ~~Fix command injection in `terminal.executeCommand`~~ **FIXED** - Added command whitelist and argument validation
+2. [x] ~~Fix command injection in `deviceControl.buildCommand`~~ **FIXED** - Added path validation and safe argument handling
+3. [x] ~~Fix WebSocket authentication bypass~~ **FIXED** - Added session ownership verification
 
 ### P1 - High (Fix Before Production)
-4. [x] ~~Remove `unsafe-eval` from CSP~~ **FIXED** (production only, kept for dev)
-5. [ ] Add rate limiting to API
-6. [ ] Add database indexes
+4. [x] ~~Remove `unsafe-eval` from CSP~~ **FIXED** - Removed in production, kept for dev HMR
+5. [x] ~~Add rate limiting to API~~ **FIXED** - Created `server/_core/rateLimit.ts` with configurable limits
+6. [x] ~~Add database indexes~~ **FIXED** - Added indexes on userId, sessionId, timestamp columns
 7. [ ] Implement proper connection pooling
 
 ### P2 - Medium (Technical Debt)
 8. [ ] Refactor Dashboard.tsx into smaller components
-9. [ ] Add foreign key constraints
-10. [ ] Replace `any` types with proper types
-11. [ ] Extract shared test utilities
+9. [x] ~~Add foreign key constraints~~ **FIXED** - Added FK constraints with cascade delete
+10. [x] ~~Replace `any` types with proper types~~ **FIXED** - Created typed schemas and Record types
+11. [x] ~~Extract shared test utilities~~ **FIXED** - Created `server/test-utils.ts`
 12. [ ] Add React component tests
 
 ### P3 - Low (Nice to Have)
 13. [ ] Add JSDoc documentation
-14. [ ] Optimize Docker image size
-15. [x] ~~Fix tab layout mismatch~~ **FIXED** (grid-cols-5 → grid-cols-7)
+14. [x] ~~Optimize Docker image size~~ **FIXED** - Removed source dirs, use wget for health check
+15. [x] ~~Fix tab layout mismatch~~ **FIXED** - grid-cols-5 → grid-cols-7
 16. [ ] Add ARIA accessibility labels
 17. [ ] Replace browser prompts with modals
+18. [x] ~~Document wouter patch~~ **FIXED** - Added `patches/README.md`
+19. [x] ~~Extract magic numbers~~ **FIXED** - Created `server/constants.ts`
+20. [x] ~~Secure default credentials~~ **FIXED** - Updated .env.example and docker-compose.yml
 
 ---
 
