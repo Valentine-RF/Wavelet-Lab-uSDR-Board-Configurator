@@ -9,6 +9,7 @@ import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 import { initStreamingServer } from "../streamingServer";
 import { securityHeaders } from "./securityHeaders";
+import { apiRateLimiter, authRateLimiter } from "./rateLimit";
 
 
 function isPortAvailable(port: number): Promise<boolean> {
@@ -43,8 +44,14 @@ async function startServer() {
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
+
+  // Rate limiting for OAuth routes (more restrictive)
+  app.use("/api/oauth", authRateLimiter);
   // OAuth callback under /api/oauth/callback
   registerOAuthRoutes(app);
+
+  // Rate limiting for tRPC API (general rate limit)
+  app.use("/api/trpc", apiRateLimiter);
   // tRPC API
   app.use(
     "/api/trpc",
