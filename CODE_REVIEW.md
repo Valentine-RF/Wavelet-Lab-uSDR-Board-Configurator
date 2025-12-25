@@ -208,18 +208,19 @@ hmr: {
   host: '3000-i5j10nwfez5sbvu0s9zcm-120751f5.manusvm.computer',
 }
 ```
+**FIXED**: Now configurable via `VITE_HMR_HOST` environment variable.
 
 ---
 
 ## Action Items (Priority Order)
 
 ### P0 - Critical (Fix Immediately)
-1. [ ] Fix command injection in `terminal.executeCommand`
-2. [ ] Fix command injection in `deviceControl.buildCommand`
-3. [ ] Fix WebSocket authentication bypass
+1. [x] ~~Fix command injection in `terminal.executeCommand`~~ **FIXED**
+2. [x] ~~Fix command injection in `deviceControl.buildCommand`~~ **FIXED**
+3. [x] ~~Fix WebSocket authentication bypass~~ **FIXED**
 
 ### P1 - High (Fix Before Production)
-4. [ ] Remove `unsafe-eval` from CSP
+4. [x] ~~Remove `unsafe-eval` from CSP~~ **FIXED** (production only, kept for dev)
 5. [ ] Add rate limiting to API
 6. [ ] Add database indexes
 7. [ ] Implement proper connection pooling
@@ -234,7 +235,7 @@ hmr: {
 ### P3 - Low (Nice to Have)
 13. [ ] Add JSDoc documentation
 14. [ ] Optimize Docker image size
-15. [ ] Fix tab layout mismatch
+15. [x] ~~Fix tab layout mismatch~~ **FIXED** (grid-cols-5 → grid-cols-7)
 16. [ ] Add ARIA accessibility labels
 17. [ ] Replace browser prompts with modals
 
