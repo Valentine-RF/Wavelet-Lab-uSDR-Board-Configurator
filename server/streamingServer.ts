@@ -2,6 +2,11 @@ import { WebSocketServer, WebSocket } from 'ws';
 import { Server as HTTPServer } from 'http';
 import { deviceControl, StreamingSession } from './deviceControl';
 import { getStreamingSession } from './streamingDb';
+import {
+  WS_CLOSE_NORMAL,
+  WS_CLOSE_POLICY_VIOLATION,
+  WS_CLOSE_INTERNAL_ERROR,
+} from './constants';
 
 export interface StreamClient {
   ws: WebSocket;
@@ -41,14 +46,14 @@ export class StreamingServer {
 
       if (!sessionId || !userIdStr) {
         console.error('[StreamingServer] Missing sessionId or userId');
-        ws.close(1008, 'Missing sessionId or userId');
+        ws.close(WS_CLOSE_POLICY_VIOLATION, 'Missing sessionId or userId');
         return;
       }
 
       const userId = parseInt(userIdStr, 10);
       if (isNaN(userId)) {
         console.error('[StreamingServer] Invalid userId');
-        ws.close(1008, 'Invalid userId');
+        ws.close(WS_CLOSE_POLICY_VIOLATION, 'Invalid userId');
         return;
       }
 
@@ -57,19 +62,19 @@ export class StreamingServer {
         const dbSession = await getStreamingSession(sessionId);
         if (!dbSession) {
           console.error(`[StreamingServer] Session ${sessionId} not found in database`);
-          ws.close(1008, 'Session not found');
+          ws.close(WS_CLOSE_POLICY_VIOLATION, 'Session not found');
           return;
         }
 
         // SECURITY: Validate that the claimed userId matches the session owner
         if (dbSession.userId !== userId) {
           console.error(`[StreamingServer] User ${userId} attempted to access session owned by ${dbSession.userId}`);
-          ws.close(1008, 'Access denied');
+          ws.close(WS_CLOSE_POLICY_VIOLATION, 'Access denied');
           return;
         }
       } catch (error) {
         console.error('[StreamingServer] Database error during session validation:', error);
-        ws.close(1011, 'Internal error');
+        ws.close(WS_CLOSE_INTERNAL_ERROR, 'Internal error');
         return;
       }
 
@@ -77,7 +82,7 @@ export class StreamingServer {
       const session = deviceControl.getSession(sessionId);
       if (!session) {
         console.error(`[StreamingServer] Session ${sessionId} not found in active sessions`);
-        ws.close(1008, 'Session not active');
+        ws.close(WS_CLOSE_POLICY_VIOLATION, 'Session not active');
         return;
       }
 
@@ -255,7 +260,7 @@ export class StreamingServer {
   disconnectClient(clientId: string) {
     const client = this.clients.get(clientId);
     if (client) {
-      client.ws.close(1000, 'Server requested disconnect');
+      client.ws.close(WS_CLOSE_NORMAL, 'Server requested disconnect');
       this.clients.delete(clientId);
     }
   }
@@ -266,7 +271,7 @@ export class StreamingServer {
   disconnectSession(sessionId: string) {
     for (const [clientId, client] of Array.from(this.clients.entries())) {
       if (client.sessionId === sessionId) {
-        client.ws.close(1000, 'Session ended');
+        client.ws.close(WS_CLOSE_NORMAL, 'Session ended');
         this.clients.delete(clientId);
       }
     }

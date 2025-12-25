@@ -2,6 +2,12 @@ import { spawn, ChildProcess } from 'child_process';
 import { nanoid } from 'nanoid';
 import { EventEmitter } from 'events';
 import path from 'path';
+import {
+  ONE_SECOND_MS,
+  METRICS_UPDATE_INTERVAL_MS,
+  BITS_PER_BYTE,
+  BITS_PER_MEGABIT,
+} from './constants';
 
 // SECURITY: Path validation utilities
 const SHELL_METACHARACTERS = /[;&|`$(){}[\]<>\\!"'*?~#\n\r]/;
@@ -342,7 +348,7 @@ export class DeviceControlService extends EventEmitter {
         session.status = code === 0 ? 'stopped' : 'error';
         session.stopTime = new Date();
         session.metrics.durationSeconds = Math.floor(
-          (session.stopTime.getTime() - session.startTime.getTime()) / 1000
+          (session.stopTime.getTime() - session.startTime.getTime()) / ONE_SECOND_MS
         );
         
         if (code !== 0) {
@@ -353,7 +359,7 @@ export class DeviceControlService extends EventEmitter {
         // Calculate average throughput
         if (session.metrics.durationSeconds > 0) {
           session.metrics.throughputMbps = Math.floor(
-            (session.metrics.bytesTransferred * 8) / (session.metrics.durationSeconds * 1000000)
+            (session.metrics.bytesTransferred * BITS_PER_BYTE) / (session.metrics.durationSeconds * BITS_PER_MEGABIT)
           );
         }
 
@@ -392,12 +398,12 @@ export class DeviceControlService extends EventEmitter {
       // Send SIGTERM for graceful shutdown
       process.kill('SIGTERM');
       
-      // Wait for process to exit, or force kill after 5 seconds
+      // Wait for process to exit, or force kill after timeout
       setTimeout(() => {
         if (!process.killed) {
           process.kill('SIGKILL');
         }
-      }, 5000);
+      }, METRICS_UPDATE_INTERVAL_MS);
     }
 
     session.status = 'stopped';

@@ -35,10 +35,11 @@ services:
     image: mysql:8.0
     container_name: usdr-database
     environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-changeme}
+      # SECURITY: No default passwords - deployment will fail if not properly configured
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:?MYSQL_ROOT_PASSWORD must be set in .env}
       - MYSQL_DATABASE=${MYSQL_DATABASE:-usdr_dashboard}
       - MYSQL_USER=${MYSQL_USER:-usdr}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-changeme}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:?MYSQL_PASSWORD must be set in .env}
     ports:
       - "3306:3306"
     volumes:
