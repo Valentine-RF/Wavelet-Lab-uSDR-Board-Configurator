@@ -77,16 +77,20 @@ export async function upsertUser(user: InsertUser): Promise<void> {
   }
 }
 
+/**
+ * Get user by OpenID
+ * @returns User or null if not found/DB unavailable
+ */
 export async function getUserByOpenId(openId: string) {
   const db = await getDb();
   if (!db) {
     console.warn("[Database] Cannot get user: database not available");
-    return undefined;
+    return null;
   }
 
   const result = await db.select().from(users).where(eq(users.openId, openId)).limit(1);
 
-  return result.length > 0 ? result[0] : undefined;
+  return result.length > 0 ? result[0] : null;
 }
 
 // Device Configuration Functions
@@ -115,10 +119,14 @@ export async function getUserDeviceConfigs(userId: number): Promise<DeviceConfig
     .orderBy(desc(deviceConfigs.updatedAt));
 }
 
-export async function getDeviceConfigById(configId: number, userId: number): Promise<DeviceConfig | undefined> {
+/**
+ * Get device config by ID for a specific user
+ * @returns DeviceConfig or null if not found/DB unavailable
+ */
+export async function getDeviceConfigById(configId: number, userId: number): Promise<DeviceConfig | null> {
   const db = await getDb();
   if (!db) {
-    return undefined;
+    return null;
   }
 
   const result = await db.select().from(deviceConfigs)
@@ -128,10 +136,15 @@ export async function getDeviceConfigById(configId: number, userId: number): Pro
     ))
     .limit(1);
 
-  return result.length > 0 ? result[0] : undefined;
+  return result.length > 0 ? result[0] : null;
 }
 
-export async function updateDeviceConfig(configId: number, userId: number, updates: Partial<InsertDeviceConfig>): Promise<DeviceConfig | undefined> {
+/**
+ * Update device config for a specific user
+ * @returns Updated DeviceConfig or null if not found
+ * @throws Error if database unavailable
+ */
+export async function updateDeviceConfig(configId: number, userId: number, updates: Partial<InsertDeviceConfig>): Promise<DeviceConfig | null> {
   const db = await getDb();
   if (!db) {
     throw new Error("Database not available");
@@ -182,10 +195,14 @@ export async function setDefaultConfig(configId: number, userId: number): Promis
     ));
 }
 
-export async function getDefaultConfig(userId: number): Promise<DeviceConfig | undefined> {
+/**
+ * Get user's default device config
+ * @returns Default DeviceConfig or null if not set/DB unavailable
+ */
+export async function getDefaultConfig(userId: number): Promise<DeviceConfig | null> {
   const db = await getDb();
   if (!db) {
-    return undefined;
+    return null;
   }
 
   const result = await db.select().from(deviceConfigs)
@@ -195,7 +212,7 @@ export async function getDefaultConfig(userId: number): Promise<DeviceConfig | u
     ))
     .limit(1);
 
-  return result.length > 0 ? result[0] : undefined;
+  return result.length > 0 ? result[0] : null;
 }
 
 // Device Status Log Functions
