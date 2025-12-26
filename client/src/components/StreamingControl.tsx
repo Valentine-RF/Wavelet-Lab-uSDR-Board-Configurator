@@ -87,7 +87,7 @@ export function StreamingControl({ config, configId }: StreamingControlProps) {
     onSuccess: () => {
       setIsStreaming(false);
       setSessionId(null);
-      setWsConnected(false);
+      setConnectionState('disconnected');
       if (wsRef.current) {
         wsRef.current.close();
         wsRef.current = null;
@@ -198,7 +198,7 @@ export function StreamingControl({ config, configId }: StreamingControlProps) {
           setMetrics(message.session.metrics);
         }
         setIsStreaming(false);
-        setWsConnected(false);
+        setConnectionState('disconnected');
         break;
 
       case 'log':

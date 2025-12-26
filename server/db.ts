@@ -16,7 +16,8 @@ const POOL_CONFIG = {
 };
 
 let _pool: mysql.Pool | null = null;
-let _db: ReturnType<typeof drizzle> | null = null;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let _db: ReturnType<typeof drizzle<any>> | null = null;
 
 /**
  * Get or create the MySQL connection pool
@@ -47,7 +48,8 @@ export async function getDb() {
     try {
       const pool = await getPool();
       if (pool) {
-        _db = drizzle(pool);
+        // Type assertion needed due to conflicting mysql2 type definitions
+        _db = drizzle(pool) as unknown as typeof _db;
       }
     } catch (error) {
       console.warn("[Database] Failed to connect:", error);

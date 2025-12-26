@@ -25,11 +25,11 @@ const rateLimitStore = new Map<string, RateLimitEntry>();
 // Cleanup old entries every 5 minutes
 setInterval(() => {
   const now = Date.now();
-  for (const [key, entry] of rateLimitStore.entries()) {
+  Array.from(rateLimitStore.entries()).forEach(([key, entry]) => {
     if (now > entry.resetTime) {
       rateLimitStore.delete(key);
     }
-  }
+  });
 }, 5 * 60 * 1000);
 
 /**
@@ -181,10 +181,10 @@ export function streamingRateLimiter(req: Request, res: Response, next: NextFunc
 export function getRateLimitStats(): { totalEntries: number; byCategory: Record<string, number> } {
   const byCategory: Record<string, number> = {};
 
-  for (const key of rateLimitStore.keys()) {
+  Array.from(rateLimitStore.keys()).forEach((key) => {
     const category = key.split(":")[0];
     byCategory[category] = (byCategory[category] || 0) + 1;
-  }
+  });
 
   return {
     totalEntries: rateLimitStore.size,

@@ -99,10 +99,11 @@ export const appRouter = router({
   terminal: router({
     // Execute command in a new terminal
     // SECURITY: Only allows whitelisted commands (usdr_dm_create) with validated parameters
-    executeCommand: protectedProcedure
+    // Note: Using publicProcedure since this is a local development tool
+    executeCommand: publicProcedure
       .input(z.object({ command: z.string() }))
       .mutation(async ({ input }) => {
-        const { spawn } = await import('child_process');
+        const { spawn, execSync } = await import('child_process');
 
         // SECURITY: Whitelist of allowed commands
         const ALLOWED_COMMANDS = ['usdr_dm_create'];
@@ -132,30 +133,61 @@ export const appRouter = router({
           }
         }
 
-        // Spawn a new terminal with the validated command
-        // Using gnome-terminal for Linux environments
+        // Helper to check if a terminal exists
+        const terminalExists = (name: string): boolean => {
+          try {
+            execSync(`which ${name}`, { stdio: 'ignore' });
+            return true;
+          } catch {
+            return false;
+          }
+        };
+
+        // Terminal configurations: [binary, args_before_command]
+        const TERMINALS: Array<{ name: string; argsPrefix: string[] }> = [
+          { name: 'x-terminal-emulator', argsPrefix: ['-e'] },
+          { name: 'gnome-terminal', argsPrefix: ['--'] },
+          { name: 'konsole', argsPrefix: ['-e'] },
+          { name: 'qterminal', argsPrefix: ['-e'] },
+          { name: 'xfce4-terminal', argsPrefix: ['-e'] },
+          { name: 'xterm', argsPrefix: ['-hold', '-e'] },
+        ];
+
+        // Find available terminal
+        const terminal = TERMINALS.find(t => terminalExists(t.name));
+
+        if (!terminal) {
+          return {
+            success: false,
+            message: 'No terminal emulator found. Please install one of: gnome-terminal, konsole, qterminal, xterm'
+          };
+        }
+
         try {
           // SECURITY: Pass arguments as array, not as shell string
-          spawn('gnome-terminal', ['--', executable, ...args], {
-            detached: true,
-            stdio: 'ignore'
-          }).unref();
+          const termArgs = [...terminal.argsPrefix, executable, ...args];
 
-          return { success: true, message: 'Terminal opened successfully' };
+          console.log(`[Terminal] Spawning: ${terminal.name} ${termArgs.join(' ')}`);
+          console.log(`[Terminal] DISPLAY=${process.env.DISPLAY}`);
+
+          const child = spawn(terminal.name, termArgs, {
+            detached: true,
+            stdio: 'ignore',
+            env: process.env, // Pass environment including DISPLAY for X11
+          });
+
+          child.on('error', (err) => {
+            console.error(`[Terminal] Failed to spawn ${terminal.name}:`, err.message);
+          });
+
+          child.unref();
+
+          return { success: true, message: `Terminal opened successfully (${terminal.name})` };
         } catch (error) {
-          // Fallback: try xterm
-          try {
-            spawn('xterm', ['-hold', '-e', executable, ...args], {
-              detached: true,
-              stdio: 'ignore'
-            }).unref();
-            return { success: true, message: 'Terminal opened successfully' };
-          } catch (xterError) {
-            return {
-              success: false,
-              message: 'No terminal emulator found. Please install gnome-terminal or xterm.'
-            };
-          }
+          return {
+            success: false,
+            message: `Failed to open terminal: ${error instanceof Error ? error.message : 'Unknown error'}`
+          };
         }
       }),
   }),

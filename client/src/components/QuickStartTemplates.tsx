@@ -21,7 +21,7 @@ interface QuickStartTemplatesProps {
 }
 
 export default function QuickStartTemplates({ onApplyTemplate }: QuickStartTemplatesProps) {
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
   
   const categories = {
     monitoring: configurationTemplates.filter(t => t.category === 'monitoring'),
@@ -53,7 +53,7 @@ export default function QuickStartTemplates({ onApplyTemplate }: QuickStartTempl
                 className="font-semibold text-sm group-hover:text-blue-400 transition-colors"
                 style={{ fontFamily: 'var(--dd-font-display)', color: 'var(--dd-text-primary)' }}
               >
-                {language === 'ru' ? template.nameRu : template.name}
+                {template.name}
               </h4>
               <Badge
                 className="sdr-badge shrink-0"
@@ -67,7 +67,7 @@ export default function QuickStartTemplates({ onApplyTemplate }: QuickStartTempl
             </div>
             
             <p className="text-xs mb-3" style={{ color: 'var(--dd-text-secondary)' }}>
-              {language === 'ru' ? template.descriptionRu : template.description}
+              {template.description}
             </p>
             
             <div className="flex flex-wrap gap-2 text-xs font-mono">

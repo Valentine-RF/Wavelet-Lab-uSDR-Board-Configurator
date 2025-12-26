@@ -9,9 +9,7 @@ import type { DeviceParameters } from '@/components/DeviceParameterBuilder';
 export interface ConfigurationTemplate {
   id: string;
   name: string;
-  nameRu: string;
   description: string;
-  descriptionRu: string;
   category: 'monitoring' | 'analysis' | 'communication' | 'testing';
   icon: string;
   mode: 'rx' | 'tx' | 'trx';
@@ -29,9 +27,7 @@ export const configurationTemplates: ConfigurationTemplate[] = [
   {
     id: 'ism-2.4ghz-monitor',
     name: '2.4 GHz ISM Band Monitoring',
-    nameRu: 'Мониторинг ISM диапазона 2.4 ГГц',
     description: 'Monitor WiFi, Bluetooth, and ZigBee signals in the 2.4 GHz ISM band',
-    descriptionRu: 'Мониторинг сигналов WiFi, Bluetooth и ZigBee в ISM диапазоне 2.4 ГГц',
     category: 'monitoring',
     icon: 'Wifi',
     mode: 'rx',
@@ -78,9 +74,7 @@ export const configurationTemplates: ConfigurationTemplate[] = [
   {
     id: 'lte-band7-analysis',
     name: 'LTE Band 7 Analysis',
-    nameRu: 'Анализ LTE диапазона 7',
     description: 'Analyze LTE Band 7 (2.5-2.69 GHz) cellular signals',
-    descriptionRu: 'Анализ сотовых сигналов LTE диапазона 7 (2.5-2.69 ГГц)',
     category: 'analysis',
     icon: 'Signal',
     mode: 'rx',
@@ -127,9 +121,7 @@ export const configurationTemplates: ConfigurationTemplate[] = [
   {
     id: 'gps-l1-reception',
     name: 'GPS L1 Reception',
-    nameRu: 'Прием GPS L1',
     description: 'Receive GPS L1 C/A signals at 1575.42 MHz',
-    descriptionRu: 'Прием сигналов GPS L1 C/A на частоте 1575.42 МГц',
     category: 'monitoring',
     icon: 'Satellite',
     mode: 'rx',
@@ -176,9 +168,7 @@ export const configurationTemplates: ConfigurationTemplate[] = [
   {
     id: 'wideband-spectrum-scan',
     name: 'Wideband Spectrum Scan',
-    nameRu: 'Широкополосное сканирование спектра',
     description: 'Wide bandwidth spectrum scanning from 300 MHz to 3.8 GHz',
-    descriptionRu: 'Широкополосное сканирование спектра от 300 МГц до 3.8 ГГц',
     category: 'analysis',
     icon: 'Activity',
     mode: 'rx',
@@ -225,9 +215,7 @@ export const configurationTemplates: ConfigurationTemplate[] = [
   {
     id: 'gsm900-monitoring',
     name: 'GSM 900 Monitoring',
-    nameRu: 'Мониторинг GSM 900',
     description: 'Monitor GSM 900 cellular band (880-960 MHz)',
-    descriptionRu: 'Мониторинг сотового диапазона GSM 900 (880-960 МГц)',
     category: 'monitoring',
     icon: 'Radio',
     mode: 'rx',
@@ -274,9 +262,7 @@ export const configurationTemplates: ConfigurationTemplate[] = [
   {
     id: 'narrowband-fm',
     name: 'Narrowband FM Reception',
-    nameRu: 'Прием узкополосного FM',
     description: 'Receive narrowband FM signals (PMR446, FRS, GMRS)',
-    descriptionRu: 'Прием узкополосных FM сигналов (PMR446, FRS, GMRS)',
     category: 'communication',
     icon: 'MessageSquare',
     mode: 'rx',
@@ -323,9 +309,7 @@ export const configurationTemplates: ConfigurationTemplate[] = [
   {
     id: 'test-tone-generation',
     name: 'Test Tone Generation',
-    nameRu: 'Генерация тестовых тонов',
     description: 'Generate test tones for TX path verification',
-    descriptionRu: 'Генерация тестовых тонов для проверки тракта передачи',
     category: 'testing',
     icon: 'TestTube',
     mode: 'tx',

@@ -223,14 +223,19 @@ export default function CommandPreview({
         sampleRate: sampleRate.sampleRate.toString(),
         configuration: {
           rfPath,
-          frequency,
-          gain,
-          clock,
-          sampleRate,
-          bufferSize,
-          channels,
-          syncConfig,
-          deviceParams,
+          rxCenterFreq: frequency.rxCenter,
+          txCenterFreq: frequency.txCenter,
+          rxBandwidth: frequency.rxBandwidth,
+          txBandwidth: frequency.txBandwidth,
+          rxLnaGain: gain.rxLna,
+          rxPgaGain: gain.rxPga,
+          rxVgaGain: gain.rxVga,
+          txGain: gain.txGain,
+          clockSource: clock.source,
+          sampleRate: sampleRate.sampleRate,
+          dataFormat: sampleRate.dataFormat,
+          blockSize: sampleRate.blockSize,
+          connectionType: sampleRate.connectionType,
           mode,
         },
       });
@@ -241,10 +246,16 @@ export default function CommandPreview({
 
   const openInTerminal = async () => {
     try {
-      const result = await executeCommandMutation.mutateAsync({ command });
+      // Clean the command: remove line continuations and extra whitespace for terminal execution
+      const cleanCommand = command
+        .replace(/\s*\\\n\s*/g, ' ')  // Remove backslash + newline + whitespace
+        .replace(/\s+/g, ' ')          // Normalize whitespace
+        .trim();
+
+      const result = await executeCommandMutation.mutateAsync({ command: cleanCommand });
       if (result.success) {
-        toast.success('Terminal opened successfully');
-        
+        toast.success(result.message || 'Terminal opened successfully');
+
         // Save to history
         await saveHistoryMutation.mutateAsync({
           command,
@@ -256,14 +267,19 @@ export default function CommandPreview({
           sampleRate: sampleRate.sampleRate.toString(),
           configuration: {
             rfPath,
-            frequency,
-            gain,
-            clock,
-            sampleRate,
-            bufferSize,
-            channels,
-            syncConfig,
-            deviceParams,
+            rxCenterFreq: frequency.rxCenter,
+            txCenterFreq: frequency.txCenter,
+            rxBandwidth: frequency.rxBandwidth,
+            txBandwidth: frequency.txBandwidth,
+            rxLnaGain: gain.rxLna,
+            rxPgaGain: gain.rxPga,
+            rxVgaGain: gain.rxVga,
+            txGain: gain.txGain,
+            clockSource: clock.source,
+            sampleRate: sampleRate.sampleRate,
+            dataFormat: sampleRate.dataFormat,
+            blockSize: sampleRate.blockSize,
+            connectionType: sampleRate.connectionType,
             mode,
           },
         });
