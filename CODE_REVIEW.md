@@ -223,7 +223,8 @@ hmr: {
 4. [x] ~~Remove `unsafe-eval` from CSP~~ **FIXED** - Removed in production, kept for dev HMR
 5. [x] ~~Add rate limiting to API~~ **FIXED** - Created `server/_core/rateLimit.ts` with configurable limits
 6. [x] ~~Add database indexes~~ **FIXED** - Added indexes on userId, sessionId, timestamp columns
-7. [ ] Implement proper connection pooling
+7. [x] ~~Implement proper connection pooling~~ **FIXED** - Added mysql2 pool with configurable limits in `db.ts`
+8. [x] ~~Add WebSocket error handling~~ **FIXED** - Added reconnection logic and error states in `StreamingControl.tsx`
 
 ### P2 - Medium (Technical Debt)
 8. [ ] Refactor Dashboard.tsx into smaller components
