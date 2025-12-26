@@ -1,21 +1,77 @@
 import { eq, desc, and } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
+import mysql from "mysql2/promise";
 import { InsertUser, users, deviceConfigs, InsertDeviceConfig, DeviceConfig, deviceStatusLog, InsertDeviceStatusLog, commandHistory, InsertCommandHistory, CommandHistory, userTemplates, InsertUserTemplate, UserTemplate, templateFavorites, InsertTemplateFavorite, TemplateFavorite } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
+// Connection pool configuration
+const POOL_CONFIG = {
+  connectionLimit: 10,        // Maximum number of connections in the pool
+  maxIdle: 10,                // Maximum idle connections (same as connectionLimit for MySQL2)
+  idleTimeout: 60000,         // Close idle connections after 60 seconds
+  waitForConnections: true,   // Queue requests when pool is full
+  queueLimit: 0,              // Unlimited queue size
+  enableKeepAlive: true,      // Enable TCP keepalive
+  keepAliveInitialDelay: 0,   // Start keepalive immediately
+};
+
+let _pool: mysql.Pool | null = null;
 let _db: ReturnType<typeof drizzle> | null = null;
 
-// Lazily create the drizzle instance so local tooling can run without a DB.
+/**
+ * Get or create the MySQL connection pool
+ * Uses connection pooling for better performance in production
+ */
+async function getPool(): Promise<mysql.Pool | null> {
+  if (!_pool && process.env.DATABASE_URL) {
+    try {
+      _pool = mysql.createPool({
+        uri: process.env.DATABASE_URL,
+        ...POOL_CONFIG,
+      });
+      console.log("[Database] Connection pool created with limit:", POOL_CONFIG.connectionLimit);
+    } catch (error) {
+      console.warn("[Database] Failed to create connection pool:", error);
+      _pool = null;
+    }
+  }
+  return _pool;
+}
+
+/**
+ * Get the Drizzle ORM instance with connection pooling
+ * Lazily creates the pool so local tooling can run without a DB.
+ */
 export async function getDb() {
   if (!_db && process.env.DATABASE_URL) {
     try {
-      _db = drizzle(process.env.DATABASE_URL);
+      const pool = await getPool();
+      if (pool) {
+        _db = drizzle(pool);
+      }
     } catch (error) {
       console.warn("[Database] Failed to connect:", error);
       _db = null;
     }
   }
   return _db;
+}
+
+/**
+ * Close the connection pool gracefully
+ * Call this during application shutdown
+ */
+export async function closePool(): Promise<void> {
+  if (_pool) {
+    try {
+      await _pool.end();
+      console.log("[Database] Connection pool closed");
+      _pool = null;
+      _db = null;
+    } catch (error) {
+      console.error("[Database] Error closing connection pool:", error);
+    }
+  }
 }
 
 export async function upsertUser(user: InsertUser): Promise<void> {
@@ -77,16 +133,20 @@ export async function upsertUser(user: InsertUser): Promise<void> {
   }
 }
 
+/**
+ * Get user by OpenID
+ * @returns User or null if not found/DB unavailable
+ */
 export async function getUserByOpenId(openId: string) {
   const db = await getDb();
   if (!db) {
     console.warn("[Database] Cannot get user: database not available");
-    return undefined;
+    return null;
   }
 
   const result = await db.select().from(users).where(eq(users.openId, openId)).limit(1);
 
-  return result.length > 0 ? result[0] : undefined;
+  return result.length > 0 ? result[0] : null;
 }
 
 // Device Configuration Functions
@@ -115,10 +175,14 @@ export async function getUserDeviceConfigs(userId: number): Promise<DeviceConfig
     .orderBy(desc(deviceConfigs.updatedAt));
 }
 
-export async function getDeviceConfigById(configId: number, userId: number): Promise<DeviceConfig | undefined> {
+/**
+ * Get device config by ID for a specific user
+ * @returns DeviceConfig or null if not found/DB unavailable
+ */
+export async function getDeviceConfigById(configId: number, userId: number): Promise<DeviceConfig | null> {
   const db = await getDb();
   if (!db) {
-    return undefined;
+    return null;
   }
 
   const result = await db.select().from(deviceConfigs)
@@ -128,10 +192,15 @@ export async function getDeviceConfigById(configId: number, userId: number): Pro
     ))
     .limit(1);
 
-  return result.length > 0 ? result[0] : undefined;
+  return result.length > 0 ? result[0] : null;
 }
 
-export async function updateDeviceConfig(configId: number, userId: number, updates: Partial<InsertDeviceConfig>): Promise<DeviceConfig | undefined> {
+/**
+ * Update device config for a specific user
+ * @returns Updated DeviceConfig or null if not found
+ * @throws Error if database unavailable
+ */
+export async function updateDeviceConfig(configId: number, userId: number, updates: Partial<InsertDeviceConfig>): Promise<DeviceConfig | null> {
   const db = await getDb();
   if (!db) {
     throw new Error("Database not available");
@@ -182,10 +251,14 @@ export async function setDefaultConfig(configId: number, userId: number): Promis
     ));
 }
 
-export async function getDefaultConfig(userId: number): Promise<DeviceConfig | undefined> {
+/**
+ * Get user's default device config
+ * @returns Default DeviceConfig or null if not set/DB unavailable
+ */
+export async function getDefaultConfig(userId: number): Promise<DeviceConfig | null> {
   const db = await getDb();
   if (!db) {
-    return undefined;
+    return null;
   }
 
   const result = await db.select().from(deviceConfigs)
@@ -195,7 +268,7 @@ export async function getDefaultConfig(userId: number): Promise<DeviceConfig | u
     ))
     .limit(1);
 
-  return result.length > 0 ? result[0] : undefined;
+  return result.length > 0 ? result[0] : null;
 }
 
 // Device Status Log Functions

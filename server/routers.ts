@@ -34,6 +34,54 @@ const deviceConfigSchema = z.object({
   mode: z.enum(["rx", "tx", "trx"]),
 });
 
+// Schema for command history configuration snapshot
+const commandConfigurationSchema = z.object({
+  rfPath: z.string().optional(),
+  rxCenterFreq: z.number().optional(),
+  txCenterFreq: z.number().optional(),
+  rxBandwidth: z.number().optional(),
+  txBandwidth: z.number().optional(),
+  rxLnaGain: z.number().optional(),
+  rxPgaGain: z.number().optional(),
+  rxVgaGain: z.number().optional(),
+  txGain: z.number().optional(),
+  clockSource: z.string().optional(),
+  sampleRate: z.number().optional(),
+  dataFormat: z.string().optional(),
+  blockSize: z.number().optional(),
+  connectionType: z.string().optional(),
+  lnaOn: z.boolean().optional(),
+  paOn: z.boolean().optional(),
+  gpsdoOn: z.boolean().optional(),
+  oscOn: z.boolean().optional(),
+  mode: z.string().optional(),
+  outputMode: z.string().optional(),
+  outputPath: z.string().optional(),
+}).passthrough(); // Allow additional fields for flexibility
+
+// Schema for user template parameters
+const templateParametersSchema = z.object({
+  rfPath: z.string().optional(),
+  rxCenterFreq: z.number().optional(),
+  txCenterFreq: z.number().optional(),
+  rxBandwidth: z.number().optional(),
+  txBandwidth: z.number().optional(),
+  rxLnaGain: z.number().optional(),
+  rxPgaGain: z.number().optional(),
+  rxVgaGain: z.number().optional(),
+  txGain: z.number().optional(),
+  clockSource: z.string().optional(),
+  sampleRate: z.number().optional(),
+  dataFormat: z.string().optional(),
+  blockSize: z.number().optional(),
+  connectionType: z.string().optional(),
+  lnaOn: z.boolean().optional(),
+  paOn: z.boolean().optional(),
+  gpsdoOn: z.boolean().optional(),
+  oscOn: z.boolean().optional(),
+  mode: z.string().optional(),
+}).passthrough(); // Allow additional template-specific fields
+
 export const appRouter = router({
   system: systemRouter,
   
@@ -50,32 +98,62 @@ export const appRouter = router({
 
   terminal: router({
     // Execute command in a new terminal
+    // SECURITY: Only allows whitelisted commands (usdr_dm_create) with validated parameters
     executeCommand: protectedProcedure
       .input(z.object({ command: z.string() }))
       .mutation(async ({ input }) => {
         const { spawn } = await import('child_process');
-        
-        // Spawn a new terminal with the command
+
+        // SECURITY: Whitelist of allowed commands
+        const ALLOWED_COMMANDS = ['usdr_dm_create'];
+
+        // Parse command to extract executable and arguments
+        const trimmedCommand = input.command.trim();
+        const parts = trimmedCommand.split(/\s+/);
+        const executable = parts[0];
+
+        // SECURITY: Validate command is in whitelist
+        if (!ALLOWED_COMMANDS.includes(executable)) {
+          return {
+            success: false,
+            message: `Command not allowed. Only the following commands are permitted: ${ALLOWED_COMMANDS.join(', ')}`
+          };
+        }
+
+        // SECURITY: Validate no shell metacharacters in arguments
+        const shellMetacharacters = /[;&|`$(){}[\]<>\\!"'*?~#]/;
+        const args = parts.slice(1);
+        for (const arg of args) {
+          if (shellMetacharacters.test(arg)) {
+            return {
+              success: false,
+              message: 'Invalid characters detected in command arguments'
+            };
+          }
+        }
+
+        // Spawn a new terminal with the validated command
         // Using gnome-terminal for Linux environments
         try {
-          spawn('gnome-terminal', ['--', 'bash', '-c', `${input.command}; echo '\n\nPress Enter to close...'; read`], {
+          // SECURITY: Pass arguments as array, not as shell string
+          spawn('gnome-terminal', ['--', executable, ...args], {
             detached: true,
             stdio: 'ignore'
           }).unref();
-          
+
           return { success: true, message: 'Terminal opened successfully' };
         } catch (error) {
           // Fallback: try xterm
           try {
-            spawn('xterm', ['-hold', '-e', input.command], {
+            spawn('xterm', ['-hold', '-e', executable, ...args], {
               detached: true,
               stdio: 'ignore'
             }).unref();
             return { success: true, message: 'Terminal opened successfully' };
           } catch (xterError) {
-            return { 
-              success: false, 
-              message: 'No terminal emulator found. Please install gnome-terminal or xterm.' 
+            return {
+              success: false,
+              message: 'No terminal emulator found. Please install gnome-terminal or xterm.'
             };
           }
         }
@@ -123,7 +201,8 @@ export const appRouter = router({
         data: deviceConfigSchema.partial(),
       }))
       .mutation(async ({ ctx, input }) => {
-        const updates: any = { ...input.data };
+        // Convert numeric fields to strings for database storage
+        const updates: Record<string, string | number | boolean | undefined> = { ...input.data };
         if (updates.rxCenterFreq !== undefined) updates.rxCenterFreq = updates.rxCenterFreq.toString();
         if (updates.txCenterFreq !== undefined) updates.txCenterFreq = updates.txCenterFreq.toString();
         if (updates.rxBandwidth !== undefined) updates.rxBandwidth = updates.rxBandwidth.toString();
@@ -290,7 +369,7 @@ export const appRouter = router({
       .input(z.object({
         command: z.string(),
         executionMethod: z.enum(["terminal", "copy", "stream"]),
-        configuration: z.any().optional(),
+        configuration: commandConfigurationSchema.optional(),
         mode: z.enum(["rx", "tx", "trx"]),
         apiType: z.enum(["libusdr", "soapysdr"]).optional(),
         rfPath: z.string().optional(),
@@ -340,7 +419,7 @@ export const appRouter = router({
         category: z.enum(["monitoring", "testing", "analysis", "communication"]),
         tags: z.array(z.string()),
         difficulty: z.enum(["beginner", "intermediate", "advanced"]).optional(),
-        parameters: z.any(),
+        parameters: templateParametersSchema,
         command: z.string(),
       }))
       .mutation(async ({ ctx, input }) => {
@@ -374,7 +453,7 @@ export const appRouter = router({
         category: z.enum(["monitoring", "testing", "analysis", "communication"]).optional(),
         tags: z.array(z.string()).optional(),
         difficulty: z.enum(["beginner", "intermediate", "advanced"]).optional(),
-        parameters: z.any().optional(),
+        parameters: templateParametersSchema.optional(),
         command: z.string().optional(),
       }))
       .mutation(async ({ ctx, input }) => {

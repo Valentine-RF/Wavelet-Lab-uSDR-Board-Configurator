@@ -37,6 +37,7 @@ import CommandHistory from '@/components/CommandHistory';
 import CommandTemplateLibrary from '@/components/CommandTemplateLibrary';
 import type { CommandTemplate } from '@/lib/commandTemplates';
 import SaveTemplateDialog from '@/components/SaveTemplateDialog';
+import SaveConfigDialog from '@/components/SaveConfigDialog';
 import {
   exportConfiguration,
   downloadConfigurationFile,
@@ -198,6 +199,9 @@ export default function Dashboard() {
   // Save template dialog state
   const [saveTemplateDialogOpen, setSaveTemplateDialogOpen] = useState(false);
 
+  // Save config dialog state (for device configuration save)
+  const [saveConfigDialogOpen, setSaveConfigDialogOpen] = useState(false);
+
   // Generate command string for template saving
   const generateCommand = (): string => {
     const parts: string[] = ['usdr_dm_create'];
@@ -298,10 +302,13 @@ export default function Dashboard() {
     },
   });
 
+  // Opens the save config dialog (replaces browser prompt)
   const handleSaveConfig = () => {
-    const configName = prompt('Enter a name for this configuration:');
-    if (!configName) return;
+    setSaveConfigDialogOpen(true);
+  };
 
+  // Actually saves the config when dialog confirms
+  const handleConfirmSaveConfig = (configName: string) => {
     createConfig.mutate({
       name: configName,
       description: `RF Path: ${rfPath}, Mode: ${mode.toUpperCase()}`,
@@ -327,6 +334,7 @@ export default function Dashboard() {
       oscOn: deviceParams.oscOn,
       mode,
     });
+    setSaveConfigDialogOpen(false);
   };
 
   // Export configuration to JSON file
@@ -547,7 +555,7 @@ export default function Dashboard() {
 
             {/* Configuration Tabs */}
             <Tabs defaultValue="rf-path" className="w-full">
-              <TabsList className="grid w-full grid-cols-5" style={{ backgroundColor: 'var(--dd-bg-medium)' }}>
+              <TabsList className="grid w-full grid-cols-7" style={{ backgroundColor: 'var(--dd-bg-medium)' }}>
                 <TabsTrigger value="rf-path">RF Path</TabsTrigger>
                 <TabsTrigger value="frequency">Frequency</TabsTrigger>
                 <TabsTrigger value="gain">Gain</TabsTrigger>
@@ -737,6 +745,14 @@ export default function Dashboard() {
           deviceParams: JSON.stringify(deviceParams),
         }}
         command={generateCommand()}
+      />
+
+      {/* Save Config Dialog (replaces browser prompt) */}
+      <SaveConfigDialog
+        open={saveConfigDialogOpen}
+        onOpenChange={setSaveConfigDialogOpen}
+        onSave={handleConfirmSaveConfig}
+        isPending={createConfig.isPending}
       />
 
     </div>
