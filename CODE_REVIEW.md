@@ -238,7 +238,7 @@ hmr: {
 14. [x] ~~Optimize Docker image size~~ **FIXED** - Removed source dirs, use wget for health check
 15. [x] ~~Fix tab layout mismatch~~ **FIXED** - grid-cols-5 → grid-cols-7
 16. [ ] Add ARIA accessibility labels
-17. [ ] Replace browser prompts with modals
+17. [x] ~~Replace browser prompts with modals~~ **FIXED** - Created `SaveConfigDialog.tsx` component
 18. [x] ~~Document wouter patch~~ **FIXED** - Added `patches/README.md`
 19. [x] ~~Extract magic numbers~~ **FIXED** - Created `server/constants.ts`
 20. [x] ~~Secure default credentials~~ **FIXED** - Updated .env.example and docker-compose.yml
