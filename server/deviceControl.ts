@@ -8,6 +8,8 @@ import {
   BITS_PER_BYTE,
   BITS_PER_MEGABIT,
 } from './constants';
+import * as streamingDb from './streamingDb';
+import * as streamingDb from './streamingDb';
 
 // SECURITY: Path validation utilities
 const SHELL_METACHARACTERS = /[;&|`$(){}[\]<>\\!"'*?~#\n\r]/;
@@ -106,6 +108,7 @@ export interface StreamMetrics {
 }
 
 export interface StreamingSession {
+  userId: number;
   sessionId: string;
   processId: number | undefined;
   status: 'starting' | 'active' | 'paused' | 'stopped' | 'error';
@@ -125,6 +128,10 @@ export interface StreamingSession {
 export class DeviceControlService extends EventEmitter {
   private sessions: Map<string, StreamingSession> = new Map();
   private processes: Map<string, ChildProcess> = new Map();
+
+  constructor() {
+    super();
+  }
 
   /**
    * Build usdr_dm_create command from configuration
@@ -282,12 +289,13 @@ export class DeviceControlService extends EventEmitter {
   /**
    * Start a new streaming session
    */
-  async startStream(config: UsdrConfig): Promise<StreamingSession> {
+  async startStream(userId: number, config: UsdrConfig): Promise<StreamingSession> {
     const sessionId = nanoid();
     // SECURITY: buildCommand now returns validated args array and command string separately
     const { args, commandString } = this.buildCommand(config);
 
     const session: StreamingSession = {
+      userId,
       sessionId,
       processId: undefined,
       status: 'starting',
@@ -365,13 +373,32 @@ export class DeviceControlService extends EventEmitter {
 
         this.processes.delete(sessionId);
         this.emit('exit', sessionId, session);
+
+        // Persist final status to database (best effort)
+        const persist = session.status === 'error' && session.errorMessage
+          ? streamingDb.markSessionError(sessionId, session.errorMessage, session.errorCode)
+          : streamingDb.stopStreamingSession(sessionId, {
+              samplesProcessed: session.metrics.samplesProcessed.toString(),
+              bytesTransferred: session.metrics.bytesTransferred.toString(),
+              durationSeconds: session.metrics.durationSeconds,
+              averageThroughputMbps: session.metrics.throughputMbps,
+            });
+
+        void persist.catch((err) => {
+          console.error('[DeviceControl] Failed to persist session state:', err);
+        });
       });
 
       // Handle process errors
       process.on('error', (error) => {
         session.status = 'error';
         session.errorMessage = error.message;
-        this.emit('error', sessionId, error);
+        this.emit('session-error', sessionId, error);
+
+        // Persist error status to database (best effort)
+        void streamingDb.markSessionError(sessionId, error.message).catch((err) => {
+          console.error('[DeviceControl] Failed to persist error state:', err);
+        });
       });
 
       this.emit('start', sessionId, session);
@@ -379,7 +406,7 @@ export class DeviceControlService extends EventEmitter {
     } catch (error) {
       session.status = 'error';
       session.errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      this.emit('error', sessionId, error);
+      this.emit('session-error', sessionId, error);
       throw error;
     }
   }
@@ -387,10 +414,14 @@ export class DeviceControlService extends EventEmitter {
   /**
    * Stop a streaming session
    */
-  async stopStream(sessionId: string): Promise<void> {
+  async stopStream(sessionId: string, userId?: number): Promise<void> {
     const session = this.sessions.get(sessionId);
     if (!session) {
       throw new Error(`Session ${sessionId} not found`);
+    }
+
+    if (userId !== undefined && session.userId !== userId) {
+      throw new Error('Access denied');
     }
 
     const process = this.processes.get(sessionId);
@@ -424,6 +455,13 @@ export class DeviceControlService extends EventEmitter {
     return Array.from(this.sessions.values()).filter(
       (s) => s.status === 'active' || s.status === 'starting'
     );
+  }
+
+  /**
+   * Get all active sessions for a user
+   */
+  getActiveSessionsForUser(userId: number): StreamingSession[] {
+    return this.getActiveSessions().filter((s) => s.userId === userId);
   }
 
   /**

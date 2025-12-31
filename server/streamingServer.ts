@@ -7,6 +7,7 @@ import {
   WS_CLOSE_POLICY_VIOLATION,
   WS_CLOSE_INTERNAL_ERROR,
 } from './constants';
+import { verifyStreamingToken } from './_core/streamingAuth';
 
 export interface StreamClient {
   ws: WebSocket;
@@ -39,21 +40,30 @@ export class StreamingServer {
     this.wss.on('connection', async (ws: WebSocket, req) => {
       console.log('[StreamingServer] New WebSocket connection');
 
-      // Extract session ID from query parameters
+      // Extract session ID and token from query parameters
       const url = new URL(req.url || '', `http://${req.headers.host}`);
       const sessionId = url.searchParams.get('sessionId');
-      const userIdStr = url.searchParams.get('userId');
+      const token = url.searchParams.get('token');
 
-      if (!sessionId || !userIdStr) {
-        console.error('[StreamingServer] Missing sessionId or userId');
-        ws.close(WS_CLOSE_POLICY_VIOLATION, 'Missing sessionId or userId');
+      if (!sessionId || !token) {
+        console.error('[StreamingServer] Missing sessionId or token');
+        ws.close(WS_CLOSE_POLICY_VIOLATION, 'Missing sessionId or token');
         return;
       }
 
-      const userId = parseInt(userIdStr, 10);
-      if (isNaN(userId)) {
-        console.error('[StreamingServer] Invalid userId');
-        ws.close(WS_CLOSE_POLICY_VIOLATION, 'Invalid userId');
+      // SECURITY: Verify signed token (binds userId+sessionId and expiration)
+      let tokenPayload;
+      try {
+        tokenPayload = await verifyStreamingToken(token);
+      } catch (error) {
+        console.error('[StreamingServer] Invalid streaming token:', error);
+        ws.close(WS_CLOSE_POLICY_VIOLATION, 'Invalid token');
+        return;
+      }
+
+      if (tokenPayload.sessionId !== sessionId) {
+        console.error('[StreamingServer] Token/sessionId mismatch');
+        ws.close(WS_CLOSE_POLICY_VIOLATION, 'Session mismatch');
         return;
       }
 
@@ -67,8 +77,8 @@ export class StreamingServer {
         }
 
         // SECURITY: Validate that the claimed userId matches the session owner
-        if (dbSession.userId !== userId) {
-          console.error(`[StreamingServer] User ${userId} attempted to access session owned by ${dbSession.userId}`);
+        if (dbSession.userId !== tokenPayload.userId) {
+          console.error(`[StreamingServer] User ${tokenPayload.userId} attempted to access session owned by ${dbSession.userId}`);
           ws.close(WS_CLOSE_POLICY_VIOLATION, 'Access denied');
           return;
         }
@@ -85,13 +95,18 @@ export class StreamingServer {
         ws.close(WS_CLOSE_POLICY_VIOLATION, 'Session not active');
         return;
       }
+      if (session.userId !== tokenPayload.userId) {
+        console.error(`[StreamingServer] User ${tokenPayload.userId} attempted to access in-memory session owned by ${session.userId}`);
+        ws.close(WS_CLOSE_POLICY_VIOLATION, 'Access denied');
+        return;
+      }
 
       // Register client
       const clientId = `${sessionId}-${Date.now()}`;
       const client: StreamClient = {
         ws,
         sessionId,
-        userId,
+        userId: tokenPayload.userId,
         connectedAt: new Date(),
         bytesSent: 0,
       };
@@ -178,7 +193,7 @@ export class StreamingServer {
     });
 
     // Notify clients of errors
-    deviceControl.on('error', (sessionId: string, error: Error) => {
+    deviceControl.on('session-error', (sessionId: string, error: Error) => {
       this.broadcastToSession(sessionId, JSON.stringify({
         type: 'error',
         error: error.message,
