@@ -7,6 +7,7 @@ import * as db from "./db";
 import * as streamingDb from "./streamingDb";
 import { deviceControl } from "./deviceControl";
 import { getStreamingServer } from "./streamingServer";
+import { signStreamingToken } from "./_core/streamingAuth";
 
 const deviceConfigSchema = z.object({
   name: z.string().min(1).max(255),
@@ -100,10 +101,17 @@ export const appRouter = router({
     // Execute command in a new terminal
     // SECURITY: Only allows whitelisted commands (usdr_dm_create) with validated parameters
     // Note: Using publicProcedure since this is a local development tool
-    executeCommand: publicProcedure
+    executeCommand: protectedProcedure
       .input(z.object({ command: z.string() }))
       .mutation(async ({ input }) => {
         const { spawn, execSync } = await import('child_process');
+
+        if (process.env.NODE_ENV === 'production') {
+          return {
+            success: false as const,
+            message: 'Terminal access is disabled in production',
+          };
+        }
 
         // SECURITY: Whitelist of allowed commands
         const ALLOWED_COMMANDS = ['usdr_dm_create'];
@@ -295,7 +303,7 @@ export const appRouter = router({
       .mutation(async ({ ctx, input }) => {
         try {
           // Start the stream
-          const session = await deviceControl.startStream(input.config);
+          const session = await deviceControl.startStream(ctx.user.id, input.config);
 
           // Save to database
           await streamingDb.createStreamingSession({
@@ -325,7 +333,7 @@ export const appRouter = router({
       .input(z.object({ sessionId: z.string() }))
       .mutation(async ({ ctx, input }) => {
         try {
-          await deviceControl.stopStream(input.sessionId);
+          await deviceControl.stopStream(input.sessionId, ctx.user.id);
           const session = deviceControl.getSession(input.sessionId);
 
           if (session) {
@@ -352,12 +360,15 @@ export const appRouter = router({
         if (!session) {
           throw new Error('Session not found');
         }
+        if (session.userId !== ctx.user.id) {
+          throw new Error('Access denied');
+        }
         return session;
       }),
 
     // List active sessions
     listActive: protectedProcedure.query(async ({ ctx }) => {
-      return deviceControl.getActiveSessions();
+      return deviceControl.getActiveSessionsForUser(ctx.user.id);
     }),
 
     // List user's streaming history
@@ -386,11 +397,16 @@ export const appRouter = router({
           throw new Error('Session not found or access denied');
         }
 
+        const token = await signStreamingToken({
+          sessionId: input.sessionId,
+          userId: ctx.user.id,
+        });
+
         // Return WebSocket URL with session ID and user ID
         const protocol = ctx.req.protocol === 'https' ? 'wss' : 'ws';
         const host = ctx.req.get('host');
         return {
-          url: `${protocol}://${host}/api/stream?sessionId=${input.sessionId}&userId=${ctx.user.id}`,
+          url: `${protocol}://${host}/api/stream?sessionId=${input.sessionId}&token=${token}`,
         };
       }),
   }),
@@ -593,4 +609,3 @@ export const appRouter = router({
 });
 
 export type AppRouter = typeof appRouter;
-

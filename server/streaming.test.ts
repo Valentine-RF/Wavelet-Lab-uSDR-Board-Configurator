@@ -7,15 +7,15 @@ import { createAuthContext } from "./test-utils";
 describe("streaming procedures", () => {
   // Add error handler to prevent unhandled errors during tests
   beforeEach(() => {
-    deviceControl.on('error', (sessionId, error) => {
+    deviceControl.on('session-error', (sessionId, error) => {
       // Silently handle errors during tests
-      console.log(`[Test] Stream error for session ${sessionId}:`, error.message);
+      console.log(`[Test] Stream error for session ${sessionId}:`, (error as Error).message);
     });
   });
 
   afterEach(() => {
     // Clean up all listeners
-    deviceControl.removeAllListeners('error');
+    deviceControl.removeAllListeners('session-error');
   });
   it("should generate WebSocket URL for a valid session", async () => {
     const { ctx } = createAuthContext();
@@ -36,7 +36,7 @@ describe("streaming procedures", () => {
     expect(result).toHaveProperty("url");
     expect(result.url).toContain("/api/stream");
     expect(result.url).toContain(`sessionId=${sessionId}`);
-    expect(result.url).toContain(`userId=${ctx.user!.id}`);
+    expect(result.url).toContain(`token=`);
     expect(result.url).toMatch(/^wss?:\/\//);
   });
 
