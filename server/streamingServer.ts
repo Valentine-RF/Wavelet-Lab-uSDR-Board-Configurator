@@ -203,13 +203,20 @@ export class StreamingServer {
     });
   }
 
-  private handleClientMessage(clientId: string, message: any) {
+  private handleClientMessage(clientId: string, message: unknown) {
     const client = this.clients.get(clientId);
     if (!client) return;
 
-    console.log(`[StreamingServer] Message from client ${clientId}:`, message.type);
+    // Validate message shape
+    if (typeof message !== 'object' || message === null || !('type' in message) || typeof (message as Record<string, unknown>).type !== 'string') {
+      console.warn(`[StreamingServer] Invalid message format from client ${clientId}`);
+      return;
+    }
 
-    switch (message.type) {
+    const msg = message as { type: string };
+    console.log(`[StreamingServer] Message from client ${clientId}:`, msg.type);
+
+    switch (msg.type) {
       case 'ping':
         client.ws.send(JSON.stringify({ type: 'pong', timestamp: Date.now() }));
         break;
@@ -226,7 +233,7 @@ export class StreamingServer {
         break;
 
       default:
-        console.warn(`[StreamingServer] Unknown message type: ${message.type}`);
+        console.warn(`[StreamingServer] Unknown message type: ${msg.type}`);
     }
   }
 

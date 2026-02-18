@@ -46,6 +46,7 @@ const RF_PATH_RANGES: Record<string, { min: number; max: number; name: string }>
 // Maximum sample rates for different connection types (in MHz)
 const MAX_SAMPLE_RATES: Record<string, number> = {
   'pcie': 70,
+  'usb': 30,
   'usb3': 40,
   'usb2': 10,
   'ethernet': 30,

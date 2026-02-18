@@ -190,15 +190,32 @@ export default function CommandPreview({
       lines.push('');
     }
     
-    // Setup stream
-    lines.push(`// Setup stream`);
+    // Setup stream(s)
     const format = sampleRate.dataFormat === 'ci16' ? 'SOAPY_SDR_CS16' : 'SOAPY_SDR_CF32';
-    lines.push(`auto stream = dev->setupStream(${direction}, "${format}");`);
-    lines.push(`dev->activateStream(stream);`);
-    lines.push('');
-    
-    lines.push(`// Read/write samples...`);
-    lines.push(`// dev->readStream(stream, buffs, numElems, flags, timeNs);`);
+    if (mode === 'trx') {
+      lines.push(`// Setup RX stream`);
+      lines.push(`auto rxStream = dev->setupStream(SOAPY_SDR_RX, "${format}");`);
+      lines.push(`dev->activateStream(rxStream);`);
+      lines.push('');
+      lines.push(`// Setup TX stream`);
+      lines.push(`auto txStream = dev->setupStream(SOAPY_SDR_TX, "${format}");`);
+      lines.push(`dev->activateStream(txStream);`);
+      lines.push('');
+      lines.push(`// Read/write samples...`);
+      lines.push(`// dev->readStream(rxStream, rxBuffs, numElems, flags, timeNs);`);
+      lines.push(`// dev->writeStream(txStream, txBuffs, numElems, flags, timeNs);`);
+    } else {
+      lines.push(`// Setup stream`);
+      lines.push(`auto stream = dev->setupStream(${direction}, "${format}");`);
+      lines.push(`dev->activateStream(stream);`);
+      lines.push('');
+      lines.push(`// Read/write samples...`);
+      if (mode === 'tx') {
+        lines.push(`// dev->writeStream(stream, buffs, numElems, flags, timeNs);`);
+      } else {
+        lines.push(`// dev->readStream(stream, buffs, numElems, flags, timeNs);`);
+      }
+    }
     
     return lines.join('\n');
   };

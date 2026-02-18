@@ -11,7 +11,7 @@ export function securityHeaders(req: Request, res: Response, next: NextFunction)
   // SECURITY: 'unsafe-eval' only allowed in development for HMR/debugging
   // Production builds should not require eval
   const scriptSrc = isProduction
-    ? "script-src 'self' 'unsafe-inline'" // No unsafe-eval in production
+    ? "script-src 'self'" // No unsafe-inline or unsafe-eval in production
     : "script-src 'self' 'unsafe-inline' 'unsafe-eval'"; // Dev needs eval for HMR
 
   res.setHeader(

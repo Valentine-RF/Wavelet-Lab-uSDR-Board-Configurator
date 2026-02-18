@@ -2,6 +2,7 @@ import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import * as db from "./db";
 import * as streamingDb from "./streamingDb";
@@ -333,7 +334,10 @@ export const appRouter = router({
             processId: session.processId,
           };
         } catch (error) {
-          throw new Error(`Failed to start stream: ${error instanceof Error ? error.message : 'Unknown error'}`);
+          throw new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: `Failed to start stream: ${error instanceof Error ? error.message : 'Unknown error'}`,
+          });
         }
       }),
 
@@ -357,7 +361,10 @@ export const appRouter = router({
 
           return { success: true };
         } catch (error) {
-          throw new Error(`Failed to stop stream: ${error instanceof Error ? error.message : 'Unknown error'}`);
+          throw new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: `Failed to stop stream: ${error instanceof Error ? error.message : 'Unknown error'}`,
+          });
         }
       }),
 
@@ -382,7 +389,7 @@ export const appRouter = router({
 
     // List user's streaming history
     listHistory: protectedProcedure
-      .input(z.object({ limit: z.number().optional() }))
+      .input(z.object({ limit: z.number().int().min(1).max(200).optional() }))
       .query(async ({ ctx, input }) => {
         return streamingDb.getUserStreamingSessions(ctx.user.id, input.limit);
       }),
@@ -446,7 +453,7 @@ export const appRouter = router({
 
     // Get command history
     list: protectedProcedure
-      .input(z.object({ limit: z.number().optional() }))
+      .input(z.object({ limit: z.number().int().min(1).max(200).optional() }))
       .query(async ({ ctx, input }) => {
         return db.getCommandHistory(ctx.user.id, input.limit);
       }),
@@ -541,6 +548,8 @@ export const appRouter = router({
       .input(z.object({
         templateId: z.string().optional(),
         userTemplateId: z.number().optional(),
+      }).refine(data => data.templateId || data.userTemplateId, {
+        message: "Either templateId or userTemplateId must be provided",
       }))
       .mutation(async ({ ctx, input }) => {
         const favorite = await db.addTemplateFavorite(
@@ -556,6 +565,8 @@ export const appRouter = router({
       .input(z.object({
         templateId: z.string().optional(),
         userTemplateId: z.number().optional(),
+      }).refine(data => data.templateId || data.userTemplateId, {
+        message: "Either templateId or userTemplateId must be provided",
       }))
       .mutation(async ({ ctx, input }) => {
         const success = await db.removeTemplateFavorite(
@@ -610,7 +621,7 @@ export const appRouter = router({
 
     // Get recent status logs
     recent: protectedProcedure
-      .input(z.object({ limit: z.number().optional() }))
+      .input(z.object({ limit: z.number().int().min(1).max(200).optional() }))
       .query(async ({ ctx, input }) => {
         return db.getRecentDeviceStatus(ctx.user.id, input.limit);
       }),

@@ -1,4 +1,4 @@
-import { eq, desc, and } from "drizzle-orm";
+import { eq, desc, and, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import mysql from "mysql2/promise";
 import { InsertUser, users, deviceConfigs, InsertDeviceConfig, DeviceConfig, deviceStatusLog, InsertDeviceStatusLog, commandHistory, InsertCommandHistory, CommandHistory, userTemplates, InsertUserTemplate, UserTemplate, templateFavorites, InsertTemplateFavorite, TemplateFavorite } from "../drizzle/schema";
@@ -338,14 +338,10 @@ export async function getCommandHistoryById(id: number, userId: number): Promise
   }
 
   const result = await db.select().from(commandHistory)
-    .where(eq(commandHistory.id, id))
+    .where(and(eq(commandHistory.id, id), eq(commandHistory.userId, userId)))
     .limit(1);
-  
-  if (result.length === 0 || result[0].userId !== userId) {
-    return null;
-  }
-  
-  return result[0];
+
+  return result.length > 0 ? result[0] : null;
 }
 
 export async function deleteCommandHistory(id: number, userId: number): Promise<boolean> {
@@ -402,14 +398,10 @@ export async function getUserTemplateById(id: number, userId: number): Promise<U
   }
 
   const result = await db.select().from(userTemplates)
-    .where(eq(userTemplates.id, id))
+    .where(and(eq(userTemplates.id, id), eq(userTemplates.userId, userId)))
     .limit(1);
-  
-  if (result.length === 0 || result[0].userId !== userId) {
-    return null;
-  }
-  
-  return result[0];
+
+  return result.length > 0 ? result[0] : null;
 }
 
 export async function updateUserTemplate(id: number, userId: number, updates: Partial<InsertUserTemplate>): Promise<UserTemplate | null> {
@@ -453,14 +445,16 @@ export async function incrementTemplateUseCount(id: number, userId: number): Pro
     return;
   }
 
+  // Verify ownership first
   const template = await getUserTemplateById(id, userId);
   if (!template) {
     return;
   }
 
+  // Use SQL increment to avoid read-then-write race condition
   await db.update(userTemplates)
     .set({
-      useCount: (template.useCount || 0) + 1,
+      useCount: sql`${userTemplates.useCount} + 1`,
       lastUsedAt: new Date(),
     })
     .where(eq(userTemplates.id, id));
