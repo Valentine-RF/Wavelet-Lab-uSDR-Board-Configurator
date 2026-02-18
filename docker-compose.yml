@@ -41,7 +41,7 @@ services:
       - MYSQL_USER=${MYSQL_USER:-usdr}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD:?MYSQL_PASSWORD must be set in .env}
     ports:
-      - "3306:3306"
+      - "127.0.0.1:3306:3306"  # Bind to localhost only — not exposed to network
     volumes:
       - db-data:/var/lib/mysql
     restart: unless-stopped

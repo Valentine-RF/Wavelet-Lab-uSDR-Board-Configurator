@@ -42,6 +42,13 @@ Thumbs.db
 *.spec.tsx
 coverage
 
+# SDR data files
+out.data
+sigmf
+
+# Claude Code
+.claude
+
 # Misc
 .cache
 tmp
