@@ -231,8 +231,13 @@ export default function CommandPreview({
       setCopied(true);
       toast.success(t('command.copied'));
       setTimeout(() => setCopied(false), 2000);
-      
-      // Save to history
+    } catch (err) {
+      toast.error(t('command.copyFailed'));
+      return;
+    }
+
+    // Save to history (best-effort, don't let failures affect UX)
+    try {
       await saveHistoryMutation.mutateAsync({
         command,
         executionMethod: 'copy',
@@ -259,8 +264,8 @@ export default function CommandPreview({
           mode,
         },
       });
-    } catch (err) {
-      toast.error(t('command.copyFailed'));
+    } catch {
+      // History save failure is non-critical
     }
   };
 
@@ -275,39 +280,45 @@ export default function CommandPreview({
       const result = await executeCommandMutation.mutateAsync({ command: cleanCommand });
       if (result.success) {
         toast.success(result.message || 'Terminal opened successfully');
-
-        // Save to history
-        await saveHistoryMutation.mutateAsync({
-          command,
-          executionMethod: 'terminal',
-          mode,
-          apiType,
-          rfPath,
-          centerFrequency: mode !== 'tx' ? frequency.rxCenter.toString() : frequency.txCenter.toString(),
-          sampleRate: sampleRate.sampleRate.toString(),
-          configuration: {
-            rfPath,
-            rxCenterFreq: frequency.rxCenter,
-            txCenterFreq: frequency.txCenter,
-            rxBandwidth: frequency.rxBandwidth,
-            txBandwidth: frequency.txBandwidth,
-            rxLnaGain: gain.rxLna,
-            rxPgaGain: gain.rxPga,
-            rxVgaGain: gain.rxVga,
-            txGain: gain.txGain,
-            clockSource: clock.source,
-            sampleRate: sampleRate.sampleRate,
-            dataFormat: sampleRate.dataFormat,
-            blockSize: sampleRate.blockSize,
-            connectionType: sampleRate.connectionType,
-            mode,
-          },
-        });
       } else {
         toast.error(result.message);
+        return;
       }
     } catch (err) {
       toast.error('Failed to open terminal');
+      return;
+    }
+
+    // Save to history (best-effort, don't let failures affect UX)
+    try {
+      await saveHistoryMutation.mutateAsync({
+        command,
+        executionMethod: 'terminal',
+        mode,
+        apiType,
+        rfPath,
+        centerFrequency: mode !== 'tx' ? frequency.rxCenter.toString() : frequency.txCenter.toString(),
+        sampleRate: sampleRate.sampleRate.toString(),
+        configuration: {
+          rfPath,
+          rxCenterFreq: frequency.rxCenter,
+          txCenterFreq: frequency.txCenter,
+          rxBandwidth: frequency.rxBandwidth,
+          txBandwidth: frequency.txBandwidth,
+          rxLnaGain: gain.rxLna,
+          rxPgaGain: gain.rxPga,
+          rxVgaGain: gain.rxVga,
+          txGain: gain.txGain,
+          clockSource: clock.source,
+          sampleRate: sampleRate.sampleRate,
+          dataFormat: sampleRate.dataFormat,
+          blockSize: sampleRate.blockSize,
+          connectionType: sampleRate.connectionType,
+          mode,
+        },
+      });
+    } catch {
+      // History save failure is non-critical
     }
   };
 

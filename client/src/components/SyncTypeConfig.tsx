@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
@@ -68,14 +67,12 @@ const syncModes = [
 
 export default function SyncTypeConfig({ value, onChange }: SyncTypeConfigProps) {
   const { t } = useLanguage();
-  const [selectedMode, setSelectedMode] = useState(value.syncType);
 
   const handleModeChange = (mode: SyncTypeConfiguration['syncType']) => {
-    setSelectedMode(mode);
     onChange({ syncType: mode });
   };
 
-  const currentMode = syncModes.find(m => m.id === selectedMode);
+  const currentMode = syncModes.find(m => m.id === value.syncType);
 
   return (
     <Card className="sdr-panel">
@@ -134,7 +131,7 @@ export default function SyncTypeConfig({ value, onChange }: SyncTypeConfigProps)
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
           {syncModes.map((mode) => {
             const Icon = mode.icon;
-            const isSelected = selectedMode === mode.id;
+            const isSelected = value.syncType === mode.id;
             
             return (
               <Button
@@ -173,7 +170,7 @@ export default function SyncTypeConfig({ value, onChange }: SyncTypeConfigProps)
         </div>
 
         {/* Validation Warnings */}
-        {selectedMode === '1pps' && (
+        {value.syncType === '1pps' && (
           <div 
             className="p-3 rounded-lg flex items-start gap-2"
             style={{ backgroundColor: 'rgba(59, 130, 246, 0.1)' }}
@@ -190,7 +187,7 @@ export default function SyncTypeConfig({ value, onChange }: SyncTypeConfigProps)
           </div>
         )}
 
-        {(selectedMode === 'rx' || selectedMode === 'tx') && (
+        {(value.syncType === 'rx' || value.syncType === 'tx') && (
           <div 
             className="p-3 rounded-lg flex items-start gap-2"
             style={{ backgroundColor: 'rgba(251, 191, 36, 0.1)' }}

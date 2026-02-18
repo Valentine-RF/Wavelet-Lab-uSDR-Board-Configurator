@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useAuth } from '@/_core/hooks/useAuth';
 import { trpc } from '@/lib/trpc';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -13,7 +12,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { toast } from 'sonner';
-import { Radio, Save, FolderOpen, Settings, Activity, Download, Upload } from 'lucide-react';
+import { Save, FolderOpen, Download, Upload } from 'lucide-react';
 
 import RFPathSelector from '@/components/RFPathSelector';
 import FrequencyControl, { FrequencyConfig } from '@/components/FrequencyControl';
@@ -47,7 +46,6 @@ import {
 
 
 export default function Dashboard() {
-  const { user } = useAuth();
   const { t } = useLanguage();
 
   // Configuration state
@@ -237,7 +235,6 @@ export default function Dashboard() {
     } else if (clockConfig.source === 'internal') {
       parts.push('-a internal');
     }
-    if (rfPath) parts.push(`-R ${rfPath}`);
     // Channel configuration
     if (mode !== 'tx') {
       if (channelConfig.rxMode === 'mask' && channelConfig.rxChannelMask !== undefined) {

@@ -7,7 +7,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 
 export interface SampleRateConfig {
   sampleRate: number; // in Hz
-  dataFormat: 'ci16' | 'cf32' | 'cf32@ci12' | 'cfftlpwri16';
+  dataFormat: 'ci16' | 'ci12' | 'cf32' | 'cs8' | 'cs16' | 'cf32@ci12' | 'cfftlpwri16';
   blockSize: number; // samples per block
   connectionType: 'usb' | 'pcie';
 }
@@ -18,27 +18,45 @@ interface SampleRateConfigProps {
 }
 
 const DATA_FORMATS = [
-  { 
-    value: 'ci16', 
-    label: 'CI16 - Complex Int16', 
+  {
+    value: 'ci16',
+    label: 'CI16 - Complex Int16',
     description: 'I/Q 4 bytes/sample - Ideal for PCIe bandwidth',
     bytesPerSample: 4,
   },
-  { 
-    value: 'cf32', 
-    label: 'CF32 - Complex Float32', 
+  {
+    value: 'ci12',
+    label: 'CI12 - Complex Int12',
+    description: 'I/Q 3 bytes/sample - Reduced bandwidth',
+    bytesPerSample: 3,
+  },
+  {
+    value: 'cf32',
+    label: 'CF32 - Complex Float32',
     description: 'I/Q 8 bytes/sample - Higher precision',
     bytesPerSample: 8,
   },
-  { 
-    value: 'cf32@ci12', 
-    label: 'CF32@CI12 - Hybrid', 
+  {
+    value: 'cs8',
+    label: 'CS8 - Complex Signed 8-bit',
+    description: 'I/Q 2 bytes/sample - Minimum bandwidth',
+    bytesPerSample: 2,
+  },
+  {
+    value: 'cs16',
+    label: 'CS16 - Complex Signed 16-bit',
+    description: 'I/Q 4 bytes/sample - Standard precision',
+    bytesPerSample: 4,
+  },
+  {
+    value: 'cf32@ci12',
+    label: 'CF32@CI12 - Hybrid',
     description: 'Host sees CF32, wire uses 12-bit (RX only)',
     bytesPerSample: 3,
   },
-  { 
-    value: 'cfftlpwri16', 
-    label: 'CFFTLPWRI16 - FFT', 
+  {
+    value: 'cfftlpwri16',
+    label: 'CFFTLPWRI16 - FFT',
     description: 'Hardware FFT frames in int16 (RX only)',
     bytesPerSample: 4,
   },

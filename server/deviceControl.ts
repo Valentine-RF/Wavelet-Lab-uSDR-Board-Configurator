@@ -9,12 +9,7 @@ import {
   BITS_PER_MEGABIT,
 } from './constants';
 import * as streamingDb from './streamingDb';
-
-/** Bytes per complex sample for each supported data format */
-const BYTES_PER_SAMPLE: Record<string, number> = {
-  'ci16': 4, 'ci12': 3, 'cf32': 8, 'cs8': 2,
-  'cs16': 4, 'cf32@ci12': 8, 'cfftlpwri16': 4,
-};
+import { BYTES_PER_SAMPLE } from '@shared/const';
 
 // SECURITY: Path validation utilities
 const SHELL_METACHARACTERS = /[;&|`$(){}[\]<>\\!"'*?~#\n\r]/;

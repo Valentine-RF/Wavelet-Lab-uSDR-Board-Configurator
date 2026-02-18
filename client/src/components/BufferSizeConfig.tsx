@@ -1,3 +1,4 @@
+import { BYTES_PER_SAMPLE } from '@shared/const';
 import { Card } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -19,15 +20,11 @@ interface BufferSizeConfigProps {
 
 // Calculate bytes per sample based on data format
 function getBytesPerSample(format: string): number {
-  const BYTES_PER_SAMPLE: Record<string, number> = {
-    'ci16': 4, 'ci12': 3, 'cf32': 8, 'cs8': 2,
-    'cs16': 4, 'cf32@ci12': 8, 'cfftlpwri16': 4,
-  };
   return BYTES_PER_SAMPLE[format] ?? 4;
 }
 
-// Calculate throughput in MB/s
-function calculateThroughput(sampleRate: number, bufferSize: number, format: string): number {
+// Calculate data rate in MB/s
+function calculateThroughput(sampleRate: number, format: string): number {
   const bytesPerSample = getBytesPerSample(format);
   const bytesPerSecond = sampleRate * bytesPerSample;
   return bytesPerSecond / (1024 * 1024); // Convert to MB/s
@@ -53,8 +50,8 @@ export default function BufferSizeConfig({ config, sampleRate, dataFormat, onCha
   const recommendedRx = getRecommendedBufferSize(sampleRate);
   const recommendedTx = getRecommendedBufferSize(sampleRate);
   
-  const rxThroughput = calculateThroughput(sampleRate, config.rxBufferSize, dataFormat);
-  const txThroughput = calculateThroughput(sampleRate, config.txBufferSize, dataFormat);
+  const rxThroughput = calculateThroughput(sampleRate, dataFormat);
+  const txThroughput = calculateThroughput(sampleRate, dataFormat);
   
   const rxWarning = getWarningLevel(config.rxBufferSize, recommendedRx);
   const txWarning = getWarningLevel(config.txBufferSize, recommendedTx);
