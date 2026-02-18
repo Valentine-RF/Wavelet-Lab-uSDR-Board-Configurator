@@ -38,6 +38,11 @@ async function startServer() {
   // Initialize WebSocket streaming server
   initStreamingServer(server);
   
+  // Health check endpoint for Docker/load balancer probes
+  app.get("/api/health", (_req, res) => {
+    res.json({ status: "ok", uptime: process.uptime() });
+  });
+
   // Security headers (production)
   app.use(securityHeaders);
 

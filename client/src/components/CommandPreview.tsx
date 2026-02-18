@@ -133,8 +133,11 @@ export default function CommandPreview({
       // Auto mode: no -R parameter (autodetect)
     }
     
-    // Device parameters
-    if (deviceParams) {
+    // RF path (passed via device parameters front-end config)
+    if (rfPath) {
+      const feParam = deviceParams ? `${deviceParams},fe=pciefev1:path_${rfPath}` : `fe=pciefev1:path_${rfPath}`;
+      parts.push(`-D ${feParam}`);
+    } else if (deviceParams) {
       parts.push(`-D ${deviceParams}`);
     }
     

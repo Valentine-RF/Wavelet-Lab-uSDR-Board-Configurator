@@ -129,7 +129,7 @@ enum ConnectionType {
 
 // RF path selection
 message RFPathRequest {
-  string rf_path = 1;  // e.g., "rxw", "txw", "rxl", "rxh", "trx1200_2100"
+  string rf_path = 1;  // e.g., "rxw", "txw", "rxl", "rxh", "band7"
 }
 
 // Clock configuration

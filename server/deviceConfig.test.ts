@@ -10,7 +10,7 @@ describe("deviceConfig", () => {
     const config = await caller.deviceConfig.create({
       name: "Test Config",
       description: "Test configuration for uSDR",
-      rfPath: "trx1200_2100",
+      rfPath: "rxw",
       rxCenterFreq: 2450000000,
       txCenterFreq: 2450000000,
       rxBandwidth: 20000000,
@@ -33,7 +33,7 @@ describe("deviceConfig", () => {
 
     expect(config).toBeDefined();
     expect(config.name).toBe("Test Config");
-    expect(config.rfPath).toBe("trx1200_2100");
+    expect(config.rfPath).toBe("rxw");
     expect(config.rxCenterFreq).toBe("2450000000");
     expect(config.mode).toBe("rx");
   });

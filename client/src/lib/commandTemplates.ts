@@ -33,7 +33,7 @@ export const commandTemplates: CommandTemplate[] = [
     command: 'usdr_dm_create -r 40000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
-      rfPath: 'trx1200_2100',
+      rfPath: 'rxw',
       frequency: 2_450_000_000,
       bandwidth: 80_000_000,
       sampleRate: 40_000_000,
@@ -55,7 +55,7 @@ export const commandTemplates: CommandTemplate[] = [
     command: 'usdr_dm_create -r 40000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
-      rfPath: 'trx1200_2100',
+      rfPath: 'rxw',
       frequency: 2_440_000_000,
       bandwidth: 80_000_000,
       sampleRate: 40_000_000,
@@ -77,7 +77,7 @@ export const commandTemplates: CommandTemplate[] = [
     command: 'usdr_dm_create -r 10000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
-      rfPath: 'trx1200_2100',
+      rfPath: 'rxw',
       frequency: 1_575_420_000,
       bandwidth: 10_000_000,
       sampleRate: 10_000_000,
@@ -99,7 +99,7 @@ export const commandTemplates: CommandTemplate[] = [
     command: 'usdr_dm_create -r 20000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
-      rfPath: 'trx700_900',
+      rfPath: 'rxl',
       frequency: 98_000_000,
       bandwidth: 20_000_000,
       sampleRate: 20_000_000,
@@ -123,7 +123,7 @@ export const commandTemplates: CommandTemplate[] = [
     command: 'usdr_dm_create -r 100000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
-      rfPath: 'trx1200_2100',
+      rfPath: 'rxw',
       frequency: 1_500_000_000,
       bandwidth: 100_000_000,
       sampleRate: 100_000_000,
@@ -145,7 +145,7 @@ export const commandTemplates: CommandTemplate[] = [
     command: 'usdr_dm_create -r 10000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
-      rfPath: 'trx1200_2100',
+      rfPath: 'rxl',
       frequency: 1_000_000_000,
       bandwidth: 10_000_000,
       sampleRate: 10_000_000,
@@ -167,7 +167,7 @@ export const commandTemplates: CommandTemplate[] = [
     command: 'usdr_dm_create -r 20000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'trx',
-      rfPath: 'trx1200_2100',
+      rfPath: 'rxw_lb',
       frequency: 1_000_000_000,
       bandwidth: 20_000_000,
       sampleRate: 20_000_000,
@@ -190,7 +190,7 @@ export const commandTemplates: CommandTemplate[] = [
     command: 'usdr_dm_create -r 200000000 -F ci16 -S 8192 -c 32768',
     parameters: {
       mode: 'rx',
-      rfPath: 'trx1200_2100',
+      rfPath: 'rxw',
       frequency: 2_000_000_000,
       bandwidth: 200_000_000,
       sampleRate: 200_000_000,
@@ -214,7 +214,7 @@ export const commandTemplates: CommandTemplate[] = [
     command: 'usdr_dm_create -r 40000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
-      rfPath: 'trx1200_2100',
+      rfPath: 'band7',
       frequency: 2_655_000_000,
       bandwidth: 40_000_000,
       sampleRate: 40_000_000,
@@ -236,7 +236,7 @@ export const commandTemplates: CommandTemplate[] = [
     command: 'usdr_dm_create -r 100000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
-      rfPath: 'trx1200_2100',
+      rfPath: 'rxw',
       frequency: 2_450_000_000,
       bandwidth: 100_000_000,
       sampleRate: 100_000_000,
@@ -258,7 +258,7 @@ export const commandTemplates: CommandTemplate[] = [
     command: 'usdr_dm_create -r 5000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
-      rfPath: 'trx1200_2100',
+      rfPath: 'rxl',
       frequency: 1_000_000_000,
       bandwidth: 5_000_000,
       sampleRate: 5_000_000,
@@ -282,7 +282,7 @@ export const commandTemplates: CommandTemplate[] = [
     command: 'usdr_dm_create -r 10000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
-      rfPath: 'trx700_900',
+      rfPath: 'rxl',
       frequency: 146_000_000,
       bandwidth: 10_000_000,
       sampleRate: 10_000_000,
@@ -304,7 +304,7 @@ export const commandTemplates: CommandTemplate[] = [
     command: 'usdr_dm_create -r 10000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
-      rfPath: 'trx700_900',
+      rfPath: 'rxl',
       frequency: 931_000_000,
       bandwidth: 10_000_000,
       sampleRate: 10_000_000,
@@ -326,7 +326,7 @@ export const commandTemplates: CommandTemplate[] = [
     command: 'usdr_dm_create -r 10000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
-      rfPath: 'trx1200_2100',
+      rfPath: 'rxl',
       frequency: 1_090_000_000,
       bandwidth: 10_000_000,
       sampleRate: 10_000_000,
@@ -350,7 +350,7 @@ export const commandTemplates: CommandTemplate[] = [
     command: 'usdr_dm_create -r 10000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
-      rfPath: 'trx700_900',
+      rfPath: 'rxl',
       frequency: 137_500_000,
       bandwidth: 10_000_000,
       sampleRate: 10_000_000,
@@ -372,7 +372,7 @@ export const commandTemplates: CommandTemplate[] = [
     command: 'usdr_dm_create -r 10000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
-      rfPath: 'trx700_900',
+      rfPath: 'rxl',
       frequency: 156_800_000,
       bandwidth: 10_000_000,
       sampleRate: 10_000_000,
@@ -394,7 +394,7 @@ export const commandTemplates: CommandTemplate[] = [
     command: 'usdr_dm_create -r 20000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
-      rfPath: 'trx700_900',
+      rfPath: 'rxl',
       frequency: 127_500_000,
       bandwidth: 20_000_000,
       sampleRate: 20_000_000,
@@ -416,7 +416,7 @@ export const commandTemplates: CommandTemplate[] = [
     command: 'usdr_dm_create -r 10000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
-      rfPath: 'trx700_900',
+      rfPath: 'rxl',
       frequency: 220_000_000,
       bandwidth: 10_000_000,
       sampleRate: 10_000_000,
@@ -438,7 +438,7 @@ export const commandTemplates: CommandTemplate[] = [
     command: 'usdr_dm_create -r 10000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
-      rfPath: 'trx700_900',
+      rfPath: 'rxl',
       frequency: 400_000_000,
       bandwidth: 10_000_000,
       sampleRate: 10_000_000,
@@ -462,7 +462,7 @@ export const commandTemplates: CommandTemplate[] = [
     command: 'usdr_dm_create -r 10000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
-      rfPath: 'trx700_900',
+      rfPath: 'rxl',
       frequency: 868_000_000,
       bandwidth: 10_000_000,
       sampleRate: 10_000_000,
@@ -484,7 +484,7 @@ export const commandTemplates: CommandTemplate[] = [
     command: 'usdr_dm_create -r 10000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
-      rfPath: 'trx700_900',
+      rfPath: 'rxl',
       frequency: 915_000_000,
       bandwidth: 10_000_000,
       sampleRate: 10_000_000,
@@ -506,7 +506,7 @@ export const commandTemplates: CommandTemplate[] = [
     command: 'usdr_dm_create -r 20000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
-      rfPath: 'trx1200_2100',
+      rfPath: 'rxw',
       frequency: 2_450_000_000,
       bandwidth: 20_000_000,
       sampleRate: 20_000_000,
@@ -528,7 +528,7 @@ export const commandTemplates: CommandTemplate[] = [
     command: 'usdr_dm_create -r 20000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
-      rfPath: 'trx700_900',
+      rfPath: 'rxl',
       frequency: 435_000_000,
       bandwidth: 20_000_000,
       sampleRate: 20_000_000,
@@ -550,7 +550,7 @@ export const commandTemplates: CommandTemplate[] = [
     command: 'usdr_dm_create -r 10000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
-      rfPath: 'trx700_900',
+      rfPath: 'rxl',
       frequency: 446_000_000,
       bandwidth: 10_000_000,
       sampleRate: 10_000_000,
@@ -574,7 +574,7 @@ export const commandTemplates: CommandTemplate[] = [
     command: 'usdr_dm_create -r 100000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
-      rfPath: 'trx1200_2100',
+      rfPath: 'rxw',
       frequency: 2_000_000_000,
       bandwidth: 100_000_000,
       sampleRate: 100_000_000,
@@ -596,7 +596,7 @@ export const commandTemplates: CommandTemplate[] = [
     command: 'usdr_dm_create -t -r 10000000 -F ci16 -O 4096 -c 16384',
     parameters: {
       mode: 'tx',
-      rfPath: 'trx1200_2100',
+      rfPath: 'txb1',
       frequency: 1_000_000_000,
       bandwidth: 10_000_000,
       sampleRate: 10_000_000,
@@ -616,7 +616,7 @@ export const commandTemplates: CommandTemplate[] = [
     command: 'usdr_dm_create -r 10000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
-      rfPath: 'trx1200_2100',
+      rfPath: 'rxl',
       frequency: 1_000_000_000,
       bandwidth: 10_000_000,
       sampleRate: 10_000_000,
@@ -640,7 +640,7 @@ export const commandTemplates: CommandTemplate[] = [
     command: 'usdr_dm_create -r 100000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
-      rfPath: 'trx1200_2100',
+      rfPath: 'rxh',
       frequency: 3_500_000_000,
       bandwidth: 100_000_000,
       sampleRate: 100_000_000,
@@ -662,7 +662,7 @@ export const commandTemplates: CommandTemplate[] = [
     command: 'usdr_dm_create -r 50000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
-      rfPath: 'trx1200_2100',
+      rfPath: 'rxw',
       frequency: 2_450_000_000,
       bandwidth: 50_000_000,
       sampleRate: 50_000_000,
@@ -684,7 +684,7 @@ export const commandTemplates: CommandTemplate[] = [
     command: 'usdr_dm_create -r 20000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
-      rfPath: 'trx1200_2100',
+      rfPath: 'rxl',
       frequency: 1_000_000_000,
       bandwidth: 20_000_000,
       sampleRate: 20_000_000,

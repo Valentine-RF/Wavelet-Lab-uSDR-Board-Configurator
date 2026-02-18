@@ -46,20 +46,35 @@ export const BITS_PER_MEGABIT = 1_000_000;
 // SDR Hardware Limits
 // =============================================================================
 
-/** Maximum RX LNA gain in dB */
-export const MAX_RX_LNA_GAIN = 30;
+/** Maximum RX LNA gain in dB (LMS7002M hardware limit) */
+export const MAX_RX_LNA_GAIN = 40;
 
-/** Maximum RX PGA gain in dB */
+/** Maximum RX PGA gain in dB (LMS7002M hardware limit) */
 export const MAX_RX_PGA_GAIN = 19;
 
-/** Maximum RX VGA gain in dB */
-export const MAX_RX_VGA_GAIN = 15;
+/** Maximum RX VGA gain in dB (LMS7002M hardware limit) */
+export const MAX_RX_VGA_GAIN = 30;
 
-/** Maximum TX gain in dB */
+/** Maximum TX gain in dB (LMS7002M hardware limit) */
 export const MAX_TX_GAIN = 89;
 
 /** Maximum DAC tuning value (12-bit) */
 export const MAX_DAC_TUNING = 4095;
+
+/** Maximum frequency in Hz (6 GHz) */
+export const MAX_FREQ_HZ = 6_000_000_000;
+
+/** Minimum frequency in Hz (100 kHz) */
+export const MIN_FREQ_HZ = 100_000;
+
+/** Maximum bandwidth in Hz (200 MHz) */
+export const MAX_BANDWIDTH_HZ = 200_000_000;
+
+/** Maximum sample rate in Hz (160 MSps) */
+export const MAX_SAMPLE_RATE_HZ = 160_000_000;
+
+/** Maximum block size (16 MB) */
+export const MAX_BLOCK_SIZE = 16_777_216;
 
 // =============================================================================
 // WebSocket Close Codes

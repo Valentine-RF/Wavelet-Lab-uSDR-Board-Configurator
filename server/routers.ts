@@ -9,34 +9,29 @@ import * as streamingDb from "./streamingDb";
 import { deviceControl } from "./deviceControl";
 import { getStreamingServer } from "./streamingServer";
 import { signStreamingToken } from "./_core/streamingAuth";
-
-// Hardware parameter bounds for the uSDR board (LMS7002M-based)
-const HARDWARE_LIMITS = {
-  MAX_FREQ_HZ: 6_000_000_000,       // 6 GHz
-  MIN_FREQ_HZ: 100_000,             // 100 kHz
-  MAX_BANDWIDTH_HZ: 200_000_000,    // 200 MHz
-  MAX_SAMPLE_RATE_HZ: 160_000_000,  // 160 MSps
-  MAX_BLOCK_SIZE: 16_777_216,        // 16 MB
-} as const;
+import {
+  MAX_RX_LNA_GAIN, MAX_RX_PGA_GAIN, MAX_RX_VGA_GAIN, MAX_TX_GAIN, MAX_DAC_TUNING,
+  MAX_FREQ_HZ, MIN_FREQ_HZ, MAX_BANDWIDTH_HZ, MAX_SAMPLE_RATE_HZ, MAX_BLOCK_SIZE,
+} from "./constants";
 
 const deviceConfigSchema = z.object({
   name: z.string().min(1).max(255),
   description: z.string().optional(),
   rfPath: z.string().regex(/^[a-zA-Z0-9_]{1,32}$/).optional(),
-  rxCenterFreq: z.number().int().min(HARDWARE_LIMITS.MIN_FREQ_HZ).max(HARDWARE_LIMITS.MAX_FREQ_HZ),
-  txCenterFreq: z.number().int().min(HARDWARE_LIMITS.MIN_FREQ_HZ).max(HARDWARE_LIMITS.MAX_FREQ_HZ),
-  rxBandwidth: z.number().int().positive().max(HARDWARE_LIMITS.MAX_BANDWIDTH_HZ),
-  txBandwidth: z.number().int().positive().max(HARDWARE_LIMITS.MAX_BANDWIDTH_HZ),
-  rxLnaGain: z.number().int().min(0).max(40),
-  rxPgaGain: z.number().int().min(0).max(19),
-  rxVgaGain: z.number().int().min(0).max(30),
-  txGain: z.number().int().min(0).max(89),
+  rxCenterFreq: z.number().int().min(MIN_FREQ_HZ).max(MAX_FREQ_HZ),
+  txCenterFreq: z.number().int().min(MIN_FREQ_HZ).max(MAX_FREQ_HZ),
+  rxBandwidth: z.number().int().positive().max(MAX_BANDWIDTH_HZ),
+  txBandwidth: z.number().int().positive().max(MAX_BANDWIDTH_HZ),
+  rxLnaGain: z.number().int().min(0).max(MAX_RX_LNA_GAIN),
+  rxPgaGain: z.number().int().min(0).max(MAX_RX_PGA_GAIN),
+  rxVgaGain: z.number().int().min(0).max(MAX_RX_VGA_GAIN),
+  txGain: z.number().int().min(0).max(MAX_TX_GAIN),
   clockSource: z.enum(["internal", "devboard", "external"]),
   externalClockFreq: z.number().int().optional(),
-  dacTuning: z.number().int().min(0).max(4095).optional(),
-  sampleRate: z.number().int().positive().max(HARDWARE_LIMITS.MAX_SAMPLE_RATE_HZ),
+  dacTuning: z.number().int().min(0).max(MAX_DAC_TUNING).optional(),
+  sampleRate: z.number().int().positive().max(MAX_SAMPLE_RATE_HZ),
   dataFormat: z.enum(["ci16", "ci12", "cf32", "cs8", "cs16", "cf32@ci12", "cfftlpwri16"]),
-  blockSize: z.number().int().positive().max(HARDWARE_LIMITS.MAX_BLOCK_SIZE),
+  blockSize: z.number().int().positive().max(MAX_BLOCK_SIZE),
   connectionType: z.enum(["usb", "pcie"]),
   lnaOn: z.boolean(),
   paOn: z.boolean(),
@@ -284,20 +279,20 @@ export const appRouter = router({
         configId: z.number().optional(),
         config: z.object({
           rfPath: z.string().regex(/^[a-zA-Z0-9_]{1,32}$/).optional(),
-          rxCenterFreq: z.number().int().min(HARDWARE_LIMITS.MIN_FREQ_HZ).max(HARDWARE_LIMITS.MAX_FREQ_HZ),
-          txCenterFreq: z.number().int().min(HARDWARE_LIMITS.MIN_FREQ_HZ).max(HARDWARE_LIMITS.MAX_FREQ_HZ),
-          rxBandwidth: z.number().int().positive().max(HARDWARE_LIMITS.MAX_BANDWIDTH_HZ),
-          txBandwidth: z.number().int().positive().max(HARDWARE_LIMITS.MAX_BANDWIDTH_HZ),
-          rxLnaGain: z.number().int().min(0).max(40),
-          rxPgaGain: z.number().int().min(0).max(19),
-          rxVgaGain: z.number().int().min(0).max(30),
-          txGain: z.number().int().min(0).max(89),
+          rxCenterFreq: z.number().int().min(MIN_FREQ_HZ).max(MAX_FREQ_HZ),
+          txCenterFreq: z.number().int().min(MIN_FREQ_HZ).max(MAX_FREQ_HZ),
+          rxBandwidth: z.number().int().positive().max(MAX_BANDWIDTH_HZ),
+          txBandwidth: z.number().int().positive().max(MAX_BANDWIDTH_HZ),
+          rxLnaGain: z.number().int().min(0).max(MAX_RX_LNA_GAIN),
+          rxPgaGain: z.number().int().min(0).max(MAX_RX_PGA_GAIN),
+          rxVgaGain: z.number().int().min(0).max(MAX_RX_VGA_GAIN),
+          txGain: z.number().int().min(0).max(MAX_TX_GAIN),
           clockSource: z.enum(["internal", "devboard", "external"]),
           externalClockFreq: z.number().int().optional(),
-          dacTuning: z.number().int().min(0).max(4095).optional(),
-          sampleRate: z.number().int().positive().max(HARDWARE_LIMITS.MAX_SAMPLE_RATE_HZ),
+          dacTuning: z.number().int().min(0).max(MAX_DAC_TUNING).optional(),
+          sampleRate: z.number().int().positive().max(MAX_SAMPLE_RATE_HZ),
           dataFormat: z.enum(["ci16", "ci12", "cf32", "cs8", "cs16", "cf32@ci12", "cfftlpwri16"]),
-          blockSize: z.number().int().positive().max(HARDWARE_LIMITS.MAX_BLOCK_SIZE),
+          blockSize: z.number().int().positive().max(MAX_BLOCK_SIZE),
           connectionType: z.enum(["usb", "pcie"]),
           lnaOn: z.boolean(),
           paOn: z.boolean(),

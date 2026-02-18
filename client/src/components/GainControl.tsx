@@ -5,9 +5,9 @@ import { Card } from '@/components/ui/card';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 export interface GainConfig {
-  rxLna: number; // RX LNA gain in dB (0-30)
+  rxLna: number; // RX LNA gain in dB (0-40)
   rxPga: number; // RX PGA gain in dB (0-19)
-  rxVga: number; // RX VGA gain in dB (0-15)
+  rxVga: number; // RX VGA gain in dB (0-30)
   txGain: number; // TX gain in dB (0-89)
 }
 

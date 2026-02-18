@@ -244,11 +244,17 @@ export class DeviceControlService extends EventEmitter {
     // Front-end configuration
     const feParams: string[] = ['pciefev1'];
 
-    // SECURITY: validate RF path against allowed patterns
+    // SECURITY: validate RF path against allowed values
     if (config.rfPath) {
-      const rfPathPattern = /^trx[a-z0-9_]+$/i;
-      if (!rfPathPattern.test(config.rfPath)) {
-        throw new Error('Invalid RF path format');
+      const VALID_RF_PATHS = new Set([
+        'band2', 'band3', 'band5', 'band7', 'band8',
+        'rxl', 'rxw', 'rxh', 'adc',
+        'rxl_lb', 'rxw_lb', 'rxh_lb',
+        'txb1', 'txb2', 'txw', 'txh',
+        'rx_auto', 'tx_auto',
+      ]);
+      if (!VALID_RF_PATHS.has(config.rfPath)) {
+        throw new Error(`Invalid RF path: ${config.rfPath}`);
       }
       feParams.push(`path_${config.rfPath}`);
     }

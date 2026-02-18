@@ -80,7 +80,7 @@ describe("streaming procedures", () => {
     const caller = appRouter.createCaller(ctx);
 
     const validConfig = {
-      rfPath: "trx1200_2100",
+      rfPath: "rxw",
       rxCenterFreq: 2450000000,
       txCenterFreq: 2450000000,
       rxBandwidth: 20000000,
@@ -129,7 +129,7 @@ describe("streaming procedures", () => {
     const caller = appRouter.createCaller(ctx);
 
     const invalidConfig = {
-      rfPath: "trx1200_2100",
+      rfPath: "rxw",
       rxCenterFreq: 2450000000,
       txCenterFreq: 2450000000,
       rxBandwidth: 20000000,

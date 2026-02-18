@@ -52,7 +52,7 @@ export default function Dashboard() {
 
   // Configuration state
   const [apiType, setApiType] = useState<'libusdr' | 'soapysdr'>('libusdr');
-  const [rfPath, setRfPath] = useState<string>('trx1200_2100');
+  const [rfPath, setRfPath] = useState<string>('rxw');
   const [mode, setMode] = useState<'rx' | 'tx' | 'trx'>('rx');
   
   const [frequencyConfig, setFrequencyConfig] = useState<FrequencyConfig>({

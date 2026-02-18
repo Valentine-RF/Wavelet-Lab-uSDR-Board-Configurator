@@ -25,22 +25,30 @@ export interface ValidationResult {
 }
 
 // RF Path frequency ranges (in MHz)
+// IDs match RFPathSelector.tsx component values
 const RF_PATH_RANGES: Record<string, { min: number; max: number; name: string }> = {
-  'TRX_BAND2': { min: 1850, max: 1990, name: 'Band 2 / PCS / GSM1900' },
-  'TRX_BAND3': { min: 1710, max: 1880, name: 'Band 3 / DCS / GSM1800' },
-  'TRX_BAND5': { min: 824, max: 894, name: 'Band 5 / GSM850' },
-  'TRX_BAND7': { min: 2500, max: 2690, name: 'Band 7 / IMT-E' },
-  'TRX_BAND8': { min: 880, max: 960, name: 'Band 8 / GSM900' },
-  'rxl': { min: 300, max: 3800, name: 'RX Low Band' },
-  'rxw': { min: 300, max: 3800, name: 'RX Wide Band' },
-  'rxh': { min: 300, max: 3800, name: 'RX High Band' },
+  // Duplexer-backed cellular bands (tight frequency constraints)
+  'band2': { min: 1850, max: 1990, name: 'Band 2 / PCS / GSM1900' },
+  'band3': { min: 1710, max: 1880, name: 'Band 3 / DCS / GSM1800' },
+  'band5': { min: 824, max: 894, name: 'Band 5 / GSM850' },
+  'band7': { min: 2500, max: 2690, name: 'Band 7 / IMT-E' },
+  'band8': { min: 880, max: 960, name: 'Band 8 / GSM900' },
+  // RX-only paths
+  'rxl': { min: 0, max: 1200, name: 'RX Low Band' },
+  'rxw': { min: 0, max: 4200, name: 'RX Wide Band' },
+  'rxh': { min: 2100, max: 4200, name: 'RX High Band' },
   'adc': { min: 0, max: 6000, name: 'Direct ADC' },
-  'txb1': { min: 300, max: 3800, name: 'TX Band 1' },
-  'txb2': { min: 300, max: 3800, name: 'TX Band 2' },
-  'txw': { min: 300, max: 3800, name: 'TX Wide Band' },
-  'txh': { min: 300, max: 3800, name: 'TX High Band' },
-  'rx_auto': { min: 300, max: 3800, name: 'RX Auto' },
-  'tx_auto': { min: 300, max: 3800, name: 'TX Auto' },
+  'rxl_lb': { min: 0, max: 1200, name: 'RX Low Loopback' },
+  'rxw_lb': { min: 0, max: 4200, name: 'RX Wide Loopback' },
+  'rxh_lb': { min: 2100, max: 4200, name: 'RX High Loopback' },
+  // TX-only paths
+  'txb1': { min: 0, max: 1200, name: 'TX Band 1' },
+  'txb2': { min: 1200, max: 2600, name: 'TX Band 2' },
+  'txw': { min: 0, max: 4200, name: 'TX Wide Band' },
+  'txh': { min: 2600, max: 4200, name: 'TX High Band' },
+  // Auto paths
+  'rx_auto': { min: 0, max: 4200, name: 'RX Auto' },
+  'tx_auto': { min: 0, max: 4200, name: 'TX Auto' },
 };
 
 // Maximum sample rates for different connection types (in MHz)
@@ -176,7 +184,7 @@ export function validateConfiguration(
         severity: 'warning',
         category: 'Gain',
         message: `Total RX gain (${totalRxGain} dB) exceeds recommended maximum (70 dB) - high risk of ADC saturation`,
-        suggestion: `Reduce total gain by ${totalRxGain - 70} dB. Recommended: LNA=${Math.min(30, gain.rxLna)} dB, PGA=${Math.min(19, Math.max(0, 70 - gain.rxLna - gain.rxVga))} dB, VGA=${gain.rxVga} dB`,
+        suggestion: `Reduce total gain by ${totalRxGain - 70} dB. Recommended: LNA=${Math.min(40, gain.rxLna)} dB, PGA=${Math.min(19, Math.max(0, 70 - gain.rxLna - gain.rxVga))} dB, VGA=${gain.rxVga} dB`,
         affectedFields: ['gain'],
       });
     }
