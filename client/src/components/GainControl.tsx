@@ -107,8 +107,8 @@ export default function GainControl({ config, onChange }: GainControlProps) {
               value={config.rxLna}
               onChange={(value) => updateConfig({ rxLna: value })}
               min={0}
-              max={30}
-              description="Low Noise Amplifier - Front-end gain stage (~19.5 dB typical)"
+              max={40}
+              description="Low Noise Amplifier - Front-end gain stage (0-40 dB per hardware spec)"
             />
             
             <GainSlider
@@ -125,8 +125,8 @@ export default function GainControl({ config, onChange }: GainControlProps) {
               value={config.rxVga}
               onChange={(value) => updateConfig({ rxVga: value })}
               min={0}
-              max={15}
-              description="Variable Gain Amplifier - Final gain stage"
+              max={30}
+              description="Variable Gain Amplifier - Final gain stage (0-30 dB per hardware spec)"
             />
           </div>
           

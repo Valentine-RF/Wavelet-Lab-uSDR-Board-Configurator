@@ -221,23 +221,30 @@ export default function Dashboard() {
       parts.push(`-W ${frequencyConfig.txBandwidth}`);
     }
     if (mode !== 'tx') {
-      parts.push(`-l ${gainConfig.rxLna}`);
-      parts.push(`-g ${gainConfig.rxVga}`);
-      parts.push(`-p ${gainConfig.rxPga}`);
+      parts.push(`-y ${gainConfig.rxLna}`);
+      parts.push(`-u ${gainConfig.rxPga}`);
+      parts.push(`-U ${gainConfig.rxVga}`);
     }
     if (mode === 'tx' || mode === 'trx') {
-      parts.push(`-G ${gainConfig.txGain}`);
+      parts.push(`-Y ${gainConfig.txGain}`);
     }
-    parts.push(`-s ${(clockConfig as any).clockSource}`);
-    if ((clockConfig as any).clockSource === 'external' && (clockConfig as any).externalClockFreq) {
-      parts.push(`-x ${(clockConfig as any).externalClockFreq}`);
-    }
-    if ((clockConfig as any).dacTuning !== undefined) {
-      parts.push(`-d ${(clockConfig as any).dacTuning}`);
+    // Clock configuration
+    if (clockConfig.source === 'external') {
+      parts.push('-a external');
+      if (clockConfig.externalFrequency) {
+        parts.push(`-x ${clockConfig.externalFrequency}`);
+      }
+    } else if (clockConfig.source === 'internal') {
+      parts.push('-a internal');
     }
     if (rfPath) parts.push(`-R ${rfPath}`);
-    if ((channelConfig as any).channelCount > 1) {
-      parts.push(`-C ${(channelConfig as any).channelCount}`);
+    // Channel configuration
+    if (mode !== 'tx') {
+      if (channelConfig.rxMode === 'mask' && channelConfig.rxChannelMask !== undefined) {
+        parts.push(`-C ${channelConfig.rxChannelMask}`);
+      } else if (channelConfig.rxMode === 'list' && channelConfig.rxChannelList && channelConfig.rxChannelList.length > 0) {
+        parts.push(`-C :${channelConfig.rxChannelList.join(',')}`);
+      }
     }
     const deviceString = Object.entries(deviceParams)
       .filter(([_, value]) => value)

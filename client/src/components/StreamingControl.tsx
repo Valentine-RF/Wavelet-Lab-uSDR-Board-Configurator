@@ -28,7 +28,7 @@ interface StreamingControlProps {
     externalClockFreq?: number;
     dacTuning?: number;
     sampleRate: number;
-    dataFormat: string;
+    dataFormat: 'ci16' | 'ci12' | 'cf32' | 'cs8' | 'cs16' | 'cf32@ci12' | 'cfftlpwri16';
     blockSize: number;
     connectionType: 'usb' | 'pcie';
     lnaOn: boolean;

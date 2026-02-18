@@ -30,7 +30,7 @@ export const commandTemplates: CommandTemplate[] = [
     description: 'Monitor 2.4 GHz WiFi band for network activity and interference',
     category: 'monitoring',
     tags: ['wifi', '2.4ghz', 'ism', 'network'],
-    command: 'usdr_dm_create -r 40000000 -F c116 -S 4096 -c 16384',
+    command: 'usdr_dm_create -r 40000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
       rfPath: 'trx1200_2100',
@@ -52,7 +52,7 @@ export const commandTemplates: CommandTemplate[] = [
     description: 'Monitor Bluetooth devices and connections in 2.4 GHz band',
     category: 'monitoring',
     tags: ['bluetooth', 'ble', '2.4ghz', 'ism'],
-    command: 'usdr_dm_create -r 40000000 -F c116 -S 4096 -c 16384',
+    command: 'usdr_dm_create -r 40000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
       rfPath: 'trx1200_2100',
@@ -74,7 +74,7 @@ export const commandTemplates: CommandTemplate[] = [
     description: 'Receive GPS L1 C/A signals at 1575.42 MHz',
     category: 'monitoring',
     tags: ['gps', 'gnss', 'navigation', 'l1'],
-    command: 'usdr_dm_create -r 10000000 -F c116 -S 4096 -c 16384',
+    command: 'usdr_dm_create -r 10000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
       rfPath: 'trx1200_2100',
@@ -96,7 +96,7 @@ export const commandTemplates: CommandTemplate[] = [
     description: 'Monitor FM radio broadcast band (88-108 MHz)',
     category: 'monitoring',
     tags: ['fm', 'radio', 'broadcast', 'audio'],
-    command: 'usdr_dm_create -r 20000000 -F c116 -S 4096 -c 16384',
+    command: 'usdr_dm_create -r 20000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
       rfPath: 'trx700_900',
@@ -120,7 +120,7 @@ export const commandTemplates: CommandTemplate[] = [
     description: 'High-bandwidth spectrum analysis for signal discovery',
     category: 'testing',
     tags: ['spectrum', 'sweep', 'analysis', 'wideband'],
-    command: 'usdr_dm_create -r 100000000 -F c116 -S 4096 -c 16384',
+    command: 'usdr_dm_create -r 100000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
       rfPath: 'trx1200_2100',
@@ -142,7 +142,7 @@ export const commandTemplates: CommandTemplate[] = [
     description: 'Test receiver sensitivity with maximum gain settings',
     category: 'testing',
     tags: ['sensitivity', 'calibration', 'receiver', 'test'],
-    command: 'usdr_dm_create -r 10000000 -F c116 -S 4096 -c 16384',
+    command: 'usdr_dm_create -r 10000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
       rfPath: 'trx1200_2100',
@@ -164,7 +164,7 @@ export const commandTemplates: CommandTemplate[] = [
     description: 'Test transmit and receive paths with loopback',
     category: 'testing',
     tags: ['loopback', 'calibration', 'trx', 'test'],
-    command: 'usdr_dm_create -r 20000000 -F c116 -S 4096 -c 16384',
+    command: 'usdr_dm_create -r 20000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'trx',
       rfPath: 'trx1200_2100',
@@ -187,7 +187,7 @@ export const commandTemplates: CommandTemplate[] = [
     description: 'Stress test with maximum sample rate and buffer size',
     category: 'testing',
     tags: ['performance', 'buffer', 'throughput', 'stress'],
-    command: 'usdr_dm_create -r 200000000 -F c116 -S 8192 -c 32768',
+    command: 'usdr_dm_create -r 200000000 -F ci16 -S 8192 -c 32768',
     parameters: {
       mode: 'rx',
       rfPath: 'trx1200_2100',
@@ -211,7 +211,7 @@ export const commandTemplates: CommandTemplate[] = [
     description: 'Analyze LTE cellular signals in Band 7 (2.6 GHz)',
     category: 'analysis',
     tags: ['lte', '4g', 'cellular', 'band7'],
-    command: 'usdr_dm_create -r 40000000 -F c116 -S 4096 -c 16384',
+    command: 'usdr_dm_create -r 40000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
       rfPath: 'trx1200_2100',
@@ -233,7 +233,7 @@ export const commandTemplates: CommandTemplate[] = [
     description: 'Analyze 2.4 GHz ISM band for various protocols',
     category: 'analysis',
     tags: ['ism', '2.4ghz', 'zigbee', 'wifi', 'bluetooth'],
-    command: 'usdr_dm_create -r 100000000 -F c116 -S 4096 -c 16384',
+    command: 'usdr_dm_create -r 100000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
       rfPath: 'trx1200_2100',
@@ -255,7 +255,7 @@ export const commandTemplates: CommandTemplate[] = [
     description: 'Analyze narrowband signals with high resolution',
     category: 'analysis',
     tags: ['narrowband', 'precision', 'analysis'],
-    command: 'usdr_dm_create -r 5000000 -F c116 -S 4096 -c 16384',
+    command: 'usdr_dm_create -r 5000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
       rfPath: 'trx1200_2100',
@@ -279,7 +279,7 @@ export const commandTemplates: CommandTemplate[] = [
     description: 'Monitor amateur radio 2-meter band (144-148 MHz)',
     category: 'communication',
     tags: ['amateur', 'ham', '2m', 'vhf'],
-    command: 'usdr_dm_create -r 10000000 -F c116 -S 4096 -c 16384',
+    command: 'usdr_dm_create -r 10000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
       rfPath: 'trx700_900',
@@ -301,7 +301,7 @@ export const commandTemplates: CommandTemplate[] = [
     description: 'Monitor pager signals around 900 MHz',
     category: 'communication',
     tags: ['pager', 'pocsag', '900mhz'],
-    command: 'usdr_dm_create -r 10000000 -F c116 -S 4096 -c 16384',
+    command: 'usdr_dm_create -r 10000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
       rfPath: 'trx700_900',
@@ -323,7 +323,7 @@ export const commandTemplates: CommandTemplate[] = [
     description: 'Receive ADS-B signals from aircraft at 1090 MHz',
     category: 'communication',
     tags: ['adsb', 'aircraft', 'aviation', '1090mhz'],
-    command: 'usdr_dm_create -r 10000000 -F c116 -S 4096 -c 16384',
+    command: 'usdr_dm_create -r 10000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
       rfPath: 'trx1200_2100',
@@ -347,7 +347,7 @@ export const commandTemplates: CommandTemplate[] = [
     description: 'Receive NOAA weather satellite APT transmissions at 137 MHz',
     category: 'monitoring',
     tags: ['noaa', 'weather', 'satellite', 'apt', 'vhf'],
-    command: 'usdr_dm_create -r 10000000 -F c116 -S 4096 -c 16384',
+    command: 'usdr_dm_create -r 10000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
       rfPath: 'trx700_900',
@@ -369,7 +369,7 @@ export const commandTemplates: CommandTemplate[] = [
     description: 'Monitor marine VHF communications (156-162 MHz)',
     category: 'monitoring',
     tags: ['marine', 'vhf', 'boat', 'channel16'],
-    command: 'usdr_dm_create -r 10000000 -F c116 -S 4096 -c 16384',
+    command: 'usdr_dm_create -r 10000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
       rfPath: 'trx700_900',
@@ -391,7 +391,7 @@ export const commandTemplates: CommandTemplate[] = [
     description: 'Monitor aviation communications (118-137 MHz)',
     category: 'monitoring',
     tags: ['aviation', 'vhf', 'atc', 'aircraft'],
-    command: 'usdr_dm_create -r 20000000 -F c116 -S 4096 -c 16384',
+    command: 'usdr_dm_create -r 20000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
       rfPath: 'trx700_900',
@@ -413,7 +413,7 @@ export const commandTemplates: CommandTemplate[] = [
     description: 'Receive DAB/DAB+ digital radio broadcasts (174-240 MHz)',
     category: 'monitoring',
     tags: ['dab', 'digital', 'radio', 'broadcast'],
-    command: 'usdr_dm_create -r 10000000 -F c116 -S 4096 -c 16384',
+    command: 'usdr_dm_create -r 10000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
       rfPath: 'trx700_900',
@@ -435,7 +435,7 @@ export const commandTemplates: CommandTemplate[] = [
     description: 'Monitor TETRA digital trunked radio (380-430 MHz)',
     category: 'monitoring',
     tags: ['tetra', 'digital', 'trunked', 'emergency'],
-    command: 'usdr_dm_create -r 10000000 -F c116 -S 4096 -c 16384',
+    command: 'usdr_dm_create -r 10000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
       rfPath: 'trx700_900',
@@ -459,7 +459,7 @@ export const commandTemplates: CommandTemplate[] = [
     description: 'Monitor LoRa IoT communications in EU 868 MHz band',
     category: 'communication',
     tags: ['lora', 'iot', 'lpwan', '868mhz'],
-    command: 'usdr_dm_create -r 10000000 -F c116 -S 4096 -c 16384',
+    command: 'usdr_dm_create -r 10000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
       rfPath: 'trx700_900',
@@ -481,7 +481,7 @@ export const commandTemplates: CommandTemplate[] = [
     description: 'Monitor LoRa IoT communications in US 915 MHz band',
     category: 'communication',
     tags: ['lora', 'iot', 'lpwan', '915mhz'],
-    command: 'usdr_dm_create -r 10000000 -F c116 -S 4096 -c 16384',
+    command: 'usdr_dm_create -r 10000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
       rfPath: 'trx700_900',
@@ -503,7 +503,7 @@ export const commandTemplates: CommandTemplate[] = [
     description: 'Monitor ZigBee smart home and IoT networks (2.4 GHz)',
     category: 'communication',
     tags: ['zigbee', 'iot', 'smarthome', '2.4ghz'],
-    command: 'usdr_dm_create -r 20000000 -F c116 -S 4096 -c 16384',
+    command: 'usdr_dm_create -r 20000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
       rfPath: 'trx1200_2100',
@@ -525,7 +525,7 @@ export const commandTemplates: CommandTemplate[] = [
     description: 'Monitor amateur radio 70-centimeter band (420-450 MHz)',
     category: 'communication',
     tags: ['amateur', 'ham', '70cm', 'uhf'],
-    command: 'usdr_dm_create -r 20000000 -F c116 -S 4096 -c 16384',
+    command: 'usdr_dm_create -r 20000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
       rfPath: 'trx700_900',
@@ -547,7 +547,7 @@ export const commandTemplates: CommandTemplate[] = [
     description: 'Monitor DMR digital mobile radio communications',
     category: 'communication',
     tags: ['dmr', 'digital', 'mobile', 'uhf'],
-    command: 'usdr_dm_create -r 10000000 -F c116 -S 4096 -c 16384',
+    command: 'usdr_dm_create -r 10000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
       rfPath: 'trx700_900',
@@ -571,7 +571,7 @@ export const commandTemplates: CommandTemplate[] = [
     description: 'Scan for interference sources across wide frequency range',
     category: 'testing',
     tags: ['interference', 'scan', 'detection', 'troubleshooting'],
-    command: 'usdr_dm_create -r 100000000 -F c116 -S 4096 -c 16384',
+    command: 'usdr_dm_create -r 100000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
       rfPath: 'trx1200_2100',
@@ -593,7 +593,7 @@ export const commandTemplates: CommandTemplate[] = [
     description: 'Generate continuous wave (CW) test signal',
     category: 'testing',
     tags: ['generator', 'cw', 'test', 'transmit'],
-    command: 'usdr_dm_create -t -r 10000000 -F c116 -O 4096 -c 16384',
+    command: 'usdr_dm_create -t -r 10000000 -F ci16 -O 4096 -c 16384',
     parameters: {
       mode: 'tx',
       rfPath: 'trx1200_2100',
@@ -613,7 +613,7 @@ export const commandTemplates: CommandTemplate[] = [
     description: 'Measure receiver noise floor with minimal gain',
     category: 'testing',
     tags: ['noise', 'floor', 'measurement', 'calibration'],
-    command: 'usdr_dm_create -r 10000000 -F c116 -S 4096 -c 16384',
+    command: 'usdr_dm_create -r 10000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
       rfPath: 'trx1200_2100',
@@ -637,7 +637,7 @@ export const commandTemplates: CommandTemplate[] = [
     description: 'Analyze 5G New Radio signals in n78 band (3.5 GHz)',
     category: 'analysis',
     tags: ['5g', 'nr', 'cellular', 'n78'],
-    command: 'usdr_dm_create -r 100000000 -F c116 -S 4096 -c 16384',
+    command: 'usdr_dm_create -r 100000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
       rfPath: 'trx1200_2100',
@@ -659,7 +659,7 @@ export const commandTemplates: CommandTemplate[] = [
     description: 'Capture RF signatures for device identification',
     category: 'analysis',
     tags: ['fingerprinting', 'identification', 'security', 'rf'],
-    command: 'usdr_dm_create -r 50000000 -F c116 -S 4096 -c 16384',
+    command: 'usdr_dm_create -r 50000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
       rfPath: 'trx1200_2100',
@@ -681,7 +681,7 @@ export const commandTemplates: CommandTemplate[] = [
     description: 'Analyze and classify signal modulation schemes',
     category: 'analysis',
     tags: ['modulation', 'classification', 'analysis', 'signal'],
-    command: 'usdr_dm_create -r 20000000 -F c116 -S 4096 -c 16384',
+    command: 'usdr_dm_create -r 20000000 -F ci16 -S 4096 -c 16384',
     parameters: {
       mode: 'rx',
       rfPath: 'trx1200_2100',

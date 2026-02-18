@@ -9,7 +9,6 @@ import {
   BITS_PER_MEGABIT,
 } from './constants';
 import * as streamingDb from './streamingDb';
-import * as streamingDb from './streamingDb';
 
 // SECURITY: Path validation utilities
 const SHELL_METACHARACTERS = /[;&|`$(){}[\]<>\\!"'*?~#\n\r]/;
@@ -145,7 +144,7 @@ export class DeviceControlService extends EventEmitter {
     args.push('-r', String(config.sampleRate));
 
     // Data format - SECURITY: validate against allowed formats
-    const allowedFormats = ['ci16', 'ci12', 'cf32', 'cs8', 'cs16'];
+    const allowedFormats = ['ci16', 'ci12', 'cf32', 'cs8', 'cs16', 'cf32@ci12', 'cfftlpwri16'];
     const dataFormat = validateSafeString(config.dataFormat, 'dataFormat');
     if (!allowedFormats.includes(dataFormat)) {
       throw new Error(`Invalid data format: ${dataFormat}`);
