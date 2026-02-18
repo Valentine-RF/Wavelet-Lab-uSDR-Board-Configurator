@@ -1,4 +1,5 @@
-import { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
+import { COOKIE_NAME } from "@shared/const";
+import { SESSION_MAX_AGE_SECONDS } from "../constants";
 import type { Express, Request, Response } from "express";
 import * as db from "../db";
 import { getSessionCookieOptions } from "./cookies";
@@ -36,13 +37,14 @@ export function registerOAuthRoutes(app: Express) {
         lastSignedIn: new Date(),
       });
 
+      const sessionMaxAgeMs = SESSION_MAX_AGE_SECONDS * 1000;
       const sessionToken = await sdk.createSessionToken(userInfo.openId, {
         name: userInfo.name || "",
-        expiresInMs: ONE_YEAR_MS,
+        expiresInMs: sessionMaxAgeMs,
       });
 
       const cookieOptions = getSessionCookieOptions(req);
-      res.cookie(COOKIE_NAME, sessionToken, { ...cookieOptions, maxAge: ONE_YEAR_MS });
+      res.cookie(COOKIE_NAME, sessionToken, { ...cookieOptions, maxAge: sessionMaxAgeMs });
 
       res.redirect(302, "/");
     } catch (error) {

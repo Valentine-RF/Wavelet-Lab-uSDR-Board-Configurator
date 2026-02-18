@@ -30,6 +30,7 @@ export class StreamingServer {
     this.wss = new WebSocketServer({
       server,
       path: '/api/stream',
+      maxPayload: 1024, // 1KB - clients only send small control messages
     });
 
     this.setupWebSocketServer();

@@ -37,10 +37,8 @@ setInterval(() => {
  * Uses IP address, falling back to a default for local development
  */
 function getClientId(req: Request): string {
-  const forwarded = req.headers["x-forwarded-for"];
-  if (typeof forwarded === "string") {
-    return forwarded.split(",")[0].trim();
-  }
+  // Use req.ip which respects Express "trust proxy" settings.
+  // Do NOT trust X-Forwarded-For directly — it can be spoofed by clients.
   return req.ip || req.socket.remoteAddress || "unknown";
 }
 

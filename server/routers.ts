@@ -67,7 +67,7 @@ const commandConfigurationSchema = z.object({
   mode: z.string().optional(),
   outputMode: z.string().optional(),
   outputPath: z.string().optional(),
-}).passthrough(); // Allow additional fields for flexibility
+});
 
 // Schema for user template parameters
 const templateParametersSchema = z.object({
@@ -90,7 +90,7 @@ const templateParametersSchema = z.object({
   gpsdoOn: z.boolean().optional(),
   oscOn: z.boolean().optional(),
   mode: z.string().optional(),
-}).passthrough(); // Allow additional template-specific fields
+});
 
 export const appRouter = router({
   system: systemRouter,
@@ -113,7 +113,7 @@ export const appRouter = router({
     executeCommand: protectedProcedure
       .input(z.object({ command: z.string() }))
       .mutation(async ({ input }) => {
-        const { spawn, execSync } = await import('child_process');
+        const { spawn, execFileSync } = await import('child_process');
 
         if (process.env.NODE_ENV === 'production') {
           return {
@@ -153,7 +153,7 @@ export const appRouter = router({
         // Helper to check if a terminal exists
         const terminalExists = (name: string): boolean => {
           try {
-            execSync(`which ${name}`, { stdio: 'ignore' });
+            execFileSync('which', [name], { stdio: 'ignore' });
             return true;
           } catch {
             return false;
@@ -287,9 +287,9 @@ export const appRouter = router({
           txCenterFreq: z.number().int().min(HARDWARE_LIMITS.MIN_FREQ_HZ).max(HARDWARE_LIMITS.MAX_FREQ_HZ),
           rxBandwidth: z.number().int().positive().max(HARDWARE_LIMITS.MAX_BANDWIDTH_HZ),
           txBandwidth: z.number().int().positive().max(HARDWARE_LIMITS.MAX_BANDWIDTH_HZ),
-          rxLnaGain: z.number().int().min(0).max(30),
+          rxLnaGain: z.number().int().min(0).max(40),
           rxPgaGain: z.number().int().min(0).max(19),
-          rxVgaGain: z.number().int().min(0).max(15),
+          rxVgaGain: z.number().int().min(0).max(30),
           txGain: z.number().int().min(0).max(89),
           clockSource: z.enum(["internal", "devboard", "external"]),
           externalClockFreq: z.number().int().optional(),

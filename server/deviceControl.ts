@@ -424,16 +424,23 @@ export class DeviceControlService extends EventEmitter {
     }
 
     const process = this.processes.get(sessionId);
-    if (process && !process.killed) {
+    if (process) {
       // Send SIGTERM for graceful shutdown
       process.kill('SIGTERM');
-      
+
       // Wait for process to exit, or force kill after timeout
-      setTimeout(() => {
-        if (!process.killed) {
+      const killTimer = setTimeout(() => {
+        try {
+          // signal 0 checks if process is still running without sending a signal
+          process.kill(0);
+          // Process still alive — force kill
           process.kill('SIGKILL');
+        } catch {
+          // Process already exited, no action needed
         }
       }, METRICS_UPDATE_INTERVAL_MS);
+
+      process.on('exit', () => clearTimeout(killTimer));
     }
 
     session.status = 'stopped';

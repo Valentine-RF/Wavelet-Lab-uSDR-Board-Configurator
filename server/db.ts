@@ -239,18 +239,20 @@ export async function setDefaultConfig(configId: number, userId: number): Promis
     throw new Error("Database not available");
   }
 
-  // First, unset all defaults for this user
-  await db.update(deviceConfigs)
-    .set({ isDefault: false })
-    .where(eq(deviceConfigs.userId, userId));
+  await db.transaction(async (tx) => {
+    // First, unset all defaults for this user
+    await tx.update(deviceConfigs)
+      .set({ isDefault: false })
+      .where(eq(deviceConfigs.userId, userId));
 
-  // Then set the specified config as default
-  await db.update(deviceConfigs)
-    .set({ isDefault: true })
-    .where(and(
-      eq(deviceConfigs.id, configId),
-      eq(deviceConfigs.userId, userId)
-    ));
+    // Then set the specified config as default
+    await tx.update(deviceConfigs)
+      .set({ isDefault: true })
+      .where(and(
+        eq(deviceConfigs.id, configId),
+        eq(deviceConfigs.userId, userId)
+      ));
+  });
 }
 
 /**

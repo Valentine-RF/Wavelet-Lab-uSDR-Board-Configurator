@@ -1,4 +1,4 @@
-import { eq, and, desc } from "drizzle-orm";
+import { eq, and, desc, lt } from "drizzle-orm";
 import { streamingSessions, InsertStreamingSession, StreamingSession } from "../drizzle/schema";
 import { getDb } from "./db";
 
@@ -161,8 +161,7 @@ export async function cleanupOldSessions(daysOld: number = 30): Promise<number> 
     .delete(streamingSessions)
     .where(and(
       eq(streamingSessions.status, "stopped"),
-      // @ts-ignore - drizzle typing issue with date comparison
-      streamingSessions.stoppedAt < cutoffDate
+      lt(streamingSessions.stoppedAt, cutoffDate)
     ));
 
   return result[0].affectedRows || 0;
