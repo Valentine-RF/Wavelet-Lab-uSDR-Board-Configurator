@@ -62,7 +62,10 @@ const commandConfigurationSchema = z.object({
   oscOn: z.boolean().optional(),
   mode: z.string().optional(),
   outputMode: z.string().optional(),
-  outputPath: z.string().optional(),
+  outputPath: z.string().max(512)
+    .refine(val => !val.includes('..'), { message: 'Path traversal not allowed' })
+    .refine(val => !/[;&|`$(){}[\]<>\\!"'*?~#\n\r]/.test(val), { message: 'Invalid characters in path' })
+    .optional(),
 });
 
 // Schema for user template parameters
@@ -300,8 +303,14 @@ export const appRouter = router({
           oscOn: z.boolean(),
           mode: z.enum(["rx", "tx", "trx"]),
           outputMode: z.enum(["websocket", "file", "stdout"]),
-          outputPath: z.string().optional(),
-          txFile: z.string().optional(),
+          outputPath: z.string().max(512)
+            .refine(val => !val.includes('..'), { message: 'Path traversal not allowed' })
+            .refine(val => !/[;&|`$(){}[\]<>\\!"'*?~#\n\r]/.test(val), { message: 'Invalid characters in path' })
+            .optional(),
+          txFile: z.string().max(512)
+            .refine(val => !val.includes('..'), { message: 'Path traversal not allowed' })
+            .refine(val => !/[;&|`$(){}[\]<>\\!"'*?~#\n\r]/.test(val), { message: 'Invalid characters in path' })
+            .optional(),
           loopTx: z.boolean().optional(),
         }),
       }))

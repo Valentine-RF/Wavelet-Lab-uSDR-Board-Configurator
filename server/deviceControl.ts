@@ -295,6 +295,13 @@ export class DeviceControlService extends EventEmitter {
    * Start a new streaming session
    */
   async startStream(userId: number, config: UsdrConfig): Promise<StreamingSession> {
+    // Limit concurrent sessions per user to prevent resource exhaustion
+    const MAX_SESSIONS_PER_USER = 3;
+    const activeSessions = this.getActiveSessionsForUser(userId);
+    if (activeSessions.length >= MAX_SESSIONS_PER_USER) {
+      throw new Error(`Maximum concurrent sessions (${MAX_SESSIONS_PER_USER}) reached. Stop an existing session first.`);
+    }
+
     const sessionId = nanoid();
     // SECURITY: buildCommand now returns validated args array and command string separately
     const { args, commandString } = this.buildCommand(config);

@@ -23,7 +23,7 @@ const RATE_LIMIT_CONFIG = {
 const rateLimitStore = new Map<string, RateLimitEntry>();
 
 // Cleanup old entries every 5 minutes
-setInterval(() => {
+const rateLimitCleanupInterval = setInterval(() => {
   const now = Date.now();
   Array.from(rateLimitStore.entries()).forEach(([key, entry]) => {
     if (now > entry.resetTime) {
@@ -31,6 +31,11 @@ setInterval(() => {
     }
   });
 }, 5 * 60 * 1000);
+
+/** Stop the rate limit cleanup interval (call during graceful shutdown) */
+export function stopRateLimitCleanup() {
+  clearInterval(rateLimitCleanupInterval);
+}
 
 /**
  * Get client identifier for rate limiting
