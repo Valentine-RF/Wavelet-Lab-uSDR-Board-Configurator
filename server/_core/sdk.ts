@@ -2,6 +2,7 @@ import { AXIOS_TIMEOUT_MS, COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
 import { ForbiddenError } from "@shared/_core/errors";
 import axios, { type AxiosInstance } from "axios";
 import { parse as parseCookieHeader } from "cookie";
+import crypto from "crypto";
 import type { Request } from "express";
 import { SignJWT, jwtVerify } from "jose";
 import type { User } from "../../drizzle/schema";
@@ -14,6 +15,20 @@ import type {
   GetUserInfoWithJwtRequest,
   GetUserInfoWithJwtResponse,
 } from "./types/manusTypes";
+/**
+ * Extended OAuth API response type that includes the `platforms` array
+ * returned by the Manus OAuth server but not declared in the base protobuf types.
+ */
+interface OAuthApiResponse {
+  openId: string;
+  projectId: string;
+  name: string;
+  email?: string | null;
+  platform?: string | null;
+  loginMethod?: string | null;
+  platforms?: string[];
+}
+
 // Utility function
 const isNonEmptyString = (value: unknown): value is string =>
   typeof value === "string" && value.length > 0;
@@ -38,9 +53,58 @@ class OAuthService {
     }
   }
 
+  /**
+   * Encode OAuth state with HMAC signature and timestamp for CSRF protection.
+   * The state contains the redirect URI, a timestamp, and an HMAC signature
+   * computed with the JWT secret to prevent forgery.
+   */
+  encodeState(redirectUri: string): string {
+    const timestamp = Date.now();
+    const payload = JSON.stringify({ redirectUri, ts: timestamp });
+    const sig = crypto
+      .createHmac("sha256", ENV.cookieSecret)
+      .update(payload)
+      .digest("hex");
+    return Buffer.from(JSON.stringify({ redirectUri, ts: timestamp, sig })).toString("base64");
+  }
+
+  /**
+   * Decode and verify OAuth state parameter.
+   * Verifies HMAC signature and checks timestamp is within 10 minutes.
+   */
   private decodeState(state: string): string {
-    const redirectUri = atob(state);
-    return redirectUri;
+    const STATE_MAX_AGE_MS = 10 * 60 * 1000; // 10 minutes
+
+    let parsed: { redirectUri?: string; ts?: number; sig?: string };
+    try {
+      parsed = JSON.parse(Buffer.from(state, "base64").toString("utf-8"));
+    } catch {
+      // Fallback: legacy unsigned state (base64-encoded redirect URI)
+      // TODO: Remove fallback after migration period
+      return atob(state);
+    }
+
+    if (!parsed.redirectUri || !parsed.ts || !parsed.sig) {
+      throw new Error("Invalid OAuth state: missing fields");
+    }
+
+    // Verify HMAC signature
+    const payload = JSON.stringify({ redirectUri: parsed.redirectUri, ts: parsed.ts });
+    const expectedSig = crypto
+      .createHmac("sha256", ENV.cookieSecret)
+      .update(payload)
+      .digest("hex");
+
+    if (!crypto.timingSafeEqual(Buffer.from(parsed.sig), Buffer.from(expectedSig))) {
+      throw new Error("Invalid OAuth state: signature mismatch");
+    }
+
+    // Verify timestamp is fresh
+    if (Date.now() - parsed.ts > STATE_MAX_AGE_MS) {
+      throw new Error("Invalid OAuth state: expired");
+    }
+
+    return parsed.redirectUri;
   }
 
   async getTokenByCode(
@@ -131,18 +195,21 @@ class SDKServer {
    * const userInfo = await sdk.getUserInfo(tokenResponse.accessToken);
    */
   async getUserInfo(accessToken: string): Promise<GetUserInfoResponse> {
-    const data = await this.oauthService.getUserInfoByToken({
+    const data: OAuthApiResponse = await this.oauthService.getUserInfoByToken({
       accessToken,
     } as ExchangeTokenResponse);
     const loginMethod = this.deriveLoginMethod(
-      (data as any)?.platforms,
-      (data as any)?.platform ?? data.platform ?? null
+      data.platforms,
+      data.platform ?? null
     );
     return {
-      ...(data as any),
+      openId: data.openId,
+      projectId: data.projectId,
+      name: data.name,
+      email: data.email,
       platform: loginMethod,
       loginMethod,
-    } as GetUserInfoResponse;
+    };
   }
 
   private parseCookies(cookieHeader: string | undefined) {
@@ -245,15 +312,19 @@ class SDKServer {
       payload
     );
 
+    const response = data as OAuthApiResponse;
     const loginMethod = this.deriveLoginMethod(
-      (data as any)?.platforms,
-      (data as any)?.platform ?? data.platform ?? null
+      response.platforms,
+      response.platform ?? null
     );
     return {
-      ...(data as any),
+      openId: response.openId,
+      projectId: response.projectId,
+      name: response.name,
+      email: response.email,
       platform: loginMethod,
       loginMethod,
-    } as GetUserInfoWithJwtResponse;
+    };
   }
 
   async authenticateRequest(req: Request): Promise<User> {

@@ -342,6 +342,23 @@ export class DeviceControlService extends EventEmitter {
       session.status = 'active';
       this.processes.set(sessionId, process);
 
+      // Startup watchdog: detect hung process that never produces output or exits
+      const STARTUP_TIMEOUT_MS = 30_000;
+      const startupTimer = setTimeout(() => {
+        if (session.status === 'active' && session.metrics.bytesTransferred === 0 && session.metrics.errorCount === 0) {
+          const proc = this.processes.get(sessionId);
+          if (proc && !proc.killed) {
+            session.status = 'error';
+            session.errorMessage = 'Process startup timed out after 30s — hardware may be unresponsive';
+            proc.kill('SIGKILL');
+            this.emit('session-error', sessionId, new Error(session.errorMessage));
+          }
+        }
+      }, STARTUP_TIMEOUT_MS);
+
+      process.on('exit', () => clearTimeout(startupTimer));
+      process.on('error', () => clearTimeout(startupTimer));
+
       // Handle stdout (I/Q data stream)
       if (config.outputMode === 'websocket' && process.stdout) {
         process.stdout.on('data', (data: Buffer) => {

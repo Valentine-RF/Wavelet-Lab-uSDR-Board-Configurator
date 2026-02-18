@@ -74,6 +74,32 @@ export function validateConfiguration(
 ): ValidationResult {
   const issues: ValidationIssue[] = [];
 
+  // 0. RF Path vs Mode Compatibility
+  const RX_ONLY_PATHS = new Set(['rxl', 'rxw', 'rxh', 'adc', 'rxl_lb', 'rxw_lb', 'rxh_lb', 'rx_auto']);
+  const TX_ONLY_PATHS = new Set(['txb1', 'txb2', 'txw', 'txh', 'tx_auto']);
+
+  if (rfPath && mode === 'tx' && RX_ONLY_PATHS.has(rfPath)) {
+    issues.push({
+      id: 'rx-path-in-tx-mode',
+      severity: 'error',
+      category: 'RF Path',
+      message: `RX-only path "${rfPath}" cannot be used in TX mode`,
+      suggestion: 'Switch to a TX path (txb1, txb2, txw, txh) or a duplexer band',
+      affectedFields: ['rfPath', 'mode'],
+    });
+  }
+
+  if (rfPath && mode === 'rx' && TX_ONLY_PATHS.has(rfPath)) {
+    issues.push({
+      id: 'tx-path-in-rx-mode',
+      severity: 'error',
+      category: 'RF Path',
+      message: `TX-only path "${rfPath}" cannot be used in RX mode`,
+      suggestion: 'Switch to an RX path (rxl, rxw, rxh) or a duplexer band',
+      affectedFields: ['rfPath', 'mode'],
+    });
+  }
+
   // 1. RF Path Frequency Range Validation
   if (rfPath && RF_PATH_RANGES[rfPath]) {
     const pathRange = RF_PATH_RANGES[rfPath];

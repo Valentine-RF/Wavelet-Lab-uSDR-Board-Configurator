@@ -240,9 +240,19 @@ export class StreamingServer {
   private broadcastToSession(sessionId: string, data: Buffer | string) {
     let sentCount = 0;
     const isBinary = Buffer.isBuffer(data);
+    // 16 MB backpressure threshold — disconnect clients that can't keep up
+    const MAX_BUFFERED_AMOUNT = 16 * 1024 * 1024;
 
     for (const [clientId, client] of Array.from(this.clients.entries())) {
       if (client.sessionId === sessionId && client.ws.readyState === WebSocket.OPEN) {
+        // Check backpressure before sending binary I/Q data
+        if (isBinary && client.ws.bufferedAmount > MAX_BUFFERED_AMOUNT) {
+          console.warn(`[StreamingServer] Client ${clientId} exceeded backpressure threshold (${(client.ws.bufferedAmount / 1024 / 1024).toFixed(1)} MB buffered), disconnecting`);
+          client.ws.close(WS_CLOSE_POLICY_VIOLATION, 'Slow consumer');
+          this.clients.delete(clientId);
+          continue;
+        }
+
         try {
           client.ws.send(data, { binary: isBinary });
           if (isBinary) {
@@ -254,10 +264,6 @@ export class StreamingServer {
           this.clients.delete(clientId);
         }
       }
-    }
-
-    if (sentCount > 0 && isBinary) {
-      // console.log(`[StreamingServer] Broadcasted ${data.length} bytes to ${sentCount} clients`);
     }
   }
 
