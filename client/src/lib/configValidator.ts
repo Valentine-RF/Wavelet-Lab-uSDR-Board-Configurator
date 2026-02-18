@@ -215,7 +215,11 @@ export function validateConfiguration(
   }
 
   // 5. Buffer Size vs Throughput Validation
-  const bytesPerSample = sampleRate.dataFormat === 'ci16' ? 4 : 8;
+  const BYTES_PER_SAMPLE: Record<string, number> = {
+    'ci16': 4, 'ci12': 3, 'cf32': 8, 'cs8': 2,
+    'cs16': 4, 'cf32@ci12': 8, 'cfftlpwri16': 4,
+  };
+  const bytesPerSample = BYTES_PER_SAMPLE[sampleRate.dataFormat] ?? 4;
   const samplesPerSecond = sampleRate.sampleRate;
   const throughputMBps = (samplesPerSecond * bytesPerSample) / (1024 * 1024);
   

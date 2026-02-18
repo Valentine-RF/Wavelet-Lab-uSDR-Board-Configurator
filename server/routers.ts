@@ -12,6 +12,7 @@ import { signStreamingToken } from "./_core/streamingAuth";
 import {
   MAX_RX_LNA_GAIN, MAX_RX_PGA_GAIN, MAX_RX_VGA_GAIN, MAX_TX_GAIN, MAX_DAC_TUNING,
   MAX_FREQ_HZ, MIN_FREQ_HZ, MAX_BANDWIDTH_HZ, MAX_SAMPLE_RATE_HZ, MAX_BLOCK_SIZE,
+  MAX_TAGS_COUNT, MAX_TAG_LENGTH,
 } from "./constants";
 
 const deviceConfigSchema = z.object({
@@ -27,7 +28,7 @@ const deviceConfigSchema = z.object({
   rxVgaGain: z.number().int().min(0).max(MAX_RX_VGA_GAIN),
   txGain: z.number().int().min(0).max(MAX_TX_GAIN),
   clockSource: z.enum(["internal", "devboard", "external"]),
-  externalClockFreq: z.number().int().optional(),
+  externalClockFreq: z.number().int().min(23_000_000).max(41_000_000).optional(),
   dacTuning: z.number().int().min(0).max(MAX_DAC_TUNING).optional(),
   sampleRate: z.number().int().positive().max(MAX_SAMPLE_RATE_HZ),
   dataFormat: z.enum(["ci16", "ci12", "cf32", "cs8", "cs16", "cf32@ci12", "cfftlpwri16"]),
@@ -291,7 +292,7 @@ export const appRouter = router({
           rxVgaGain: z.number().int().min(0).max(MAX_RX_VGA_GAIN),
           txGain: z.number().int().min(0).max(MAX_TX_GAIN),
           clockSource: z.enum(["internal", "devboard", "external"]),
-          externalClockFreq: z.number().int().optional(),
+          externalClockFreq: z.number().int().min(23_000_000).max(41_000_000).optional(),
           dacTuning: z.number().int().min(0).max(MAX_DAC_TUNING).optional(),
           sampleRate: z.number().int().positive().max(MAX_SAMPLE_RATE_HZ),
           dataFormat: z.enum(["ci16", "ci12", "cf32", "cs8", "cs16", "cf32@ci12", "cfftlpwri16"]),
@@ -351,18 +352,8 @@ export const appRouter = router({
       .mutation(async ({ ctx, input }) => {
         try {
           await deviceControl.stopStream(input.sessionId, ctx.user.id);
-          const session = deviceControl.getSession(input.sessionId);
-
-          if (session) {
-            // Update database
-            await streamingDb.stopStreamingSession(input.sessionId, {
-              samplesProcessed: session.metrics.samplesProcessed.toString(),
-              bytesTransferred: session.metrics.bytesTransferred.toString(),
-              durationSeconds: session.metrics.durationSeconds,
-              averageThroughputMbps: session.metrics.throughputMbps,
-            });
-          }
-
+          // DB metrics are persisted by the process exit handler in deviceControl
+          // to ensure final (not partial) values are written
           return { success: true };
         } catch (error) {
           throw new TRPCError({
@@ -485,7 +476,7 @@ export const appRouter = router({
         name: z.string().min(1).max(255),
         description: z.string().min(1),
         category: z.enum(["monitoring", "testing", "analysis", "communication"]),
-        tags: z.array(z.string()),
+        tags: z.array(z.string().max(MAX_TAG_LENGTH)).max(MAX_TAGS_COUNT),
         difficulty: z.enum(["beginner", "intermediate", "advanced"]).optional(),
         parameters: templateParametersSchema,
         command: z.string(),
@@ -519,7 +510,7 @@ export const appRouter = router({
         name: z.string().min(1).max(255).optional(),
         description: z.string().min(1).optional(),
         category: z.enum(["monitoring", "testing", "analysis", "communication"]).optional(),
-        tags: z.array(z.string()).optional(),
+        tags: z.array(z.string().max(MAX_TAG_LENGTH)).max(MAX_TAGS_COUNT).optional(),
         difficulty: z.enum(["beginner", "intermediate", "advanced"]).optional(),
         parameters: templateParametersSchema.optional(),
         command: z.string().optional(),

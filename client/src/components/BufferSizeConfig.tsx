@@ -19,12 +19,11 @@ interface BufferSizeConfigProps {
 
 // Calculate bytes per sample based on data format
 function getBytesPerSample(format: string): number {
-  if (format.includes('ci16') || format.includes('@ci12')) {
-    return 4; // 2 bytes I + 2 bytes Q
-  } else if (format.includes('cf32')) {
-    return 8; // 4 bytes I + 4 bytes Q
-  }
-  return 4; // default to ci16
+  const BYTES_PER_SAMPLE: Record<string, number> = {
+    'ci16': 4, 'ci12': 3, 'cf32': 8, 'cs8': 2,
+    'cs16': 4, 'cf32@ci12': 8, 'cfftlpwri16': 4,
+  };
+  return BYTES_PER_SAMPLE[format] ?? 4;
 }
 
 // Calculate throughput in MB/s

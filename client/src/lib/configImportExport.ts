@@ -265,7 +265,7 @@ export function validateImportedConfiguration(data: any): ImportValidationResult
         severity: 'error',
       });
     }
-    if (!['ci16', 'ci8', 'cf32'].includes(sr.dataFormat)) {
+    if (!['ci16', 'ci12', 'cf32', 'cs8', 'cs16', 'cf32@ci12', 'cfftlpwri16'].includes(sr.dataFormat)) {
       errors.push({
         field: 'sampleRate.dataFormat',
         message: 'Invalid data format',

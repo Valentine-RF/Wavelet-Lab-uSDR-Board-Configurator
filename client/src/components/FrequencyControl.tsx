@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -53,6 +53,13 @@ function FrequencyInput({
   const formatted = formatFrequency(value);
   const [displayValue, setDisplayValue] = useState(formatted.value);
   const [unit, setUnit] = useState<FrequencyUnit>(formatted.unit);
+
+  // Sync display when value prop changes externally (template load, config import)
+  useEffect(() => {
+    const f = formatFrequency(value);
+    setDisplayValue(f.value);
+    setUnit(f.unit);
+  }, [value]);
 
   const handleValueChange = (newValue: string) => {
     setDisplayValue(newValue);

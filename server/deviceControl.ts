@@ -10,6 +10,12 @@ import {
 } from './constants';
 import * as streamingDb from './streamingDb';
 
+/** Bytes per complex sample for each supported data format */
+const BYTES_PER_SAMPLE: Record<string, number> = {
+  'ci16': 4, 'ci12': 3, 'cf32': 8, 'cs8': 2,
+  'cs16': 4, 'cf32@ci12': 8, 'cfftlpwri16': 4,
+};
+
 // SECURITY: Path validation utilities
 const SHELL_METACHARACTERS = /[;&|`$(){}[\]<>\\!"'*?~#\n\r]/;
 const ALLOWED_OUTPUT_DIRECTORIES = ['/tmp', '/var/lib/usdr', '/home'];
@@ -215,11 +221,15 @@ export class DeviceControlService extends EventEmitter {
       }
     }
 
-    // Gain configuration (numeric, safe)
-    args.push('-y', String(config.rxLnaGain));
-    args.push('-u', String(config.rxPgaGain));
-    args.push('-U', String(config.rxVgaGain));
-    args.push('-Y', String(config.txGain));
+    // Gain configuration (numeric, safe) — conditional on mode
+    if (config.mode !== 'tx') {
+      args.push('-y', String(config.rxLnaGain));
+      args.push('-u', String(config.rxPgaGain));
+      args.push('-U', String(config.rxVgaGain));
+    }
+    if (config.mode === 'tx' || config.mode === 'trx') {
+      args.push('-Y', String(config.txGain));
+    }
 
     // Clock configuration
     if (config.clockSource === 'external' && config.externalClockFreq) {
@@ -342,7 +352,7 @@ export class DeviceControlService extends EventEmitter {
         process.stdout.on('data', (data: Buffer) => {
           session.metrics.bytesTransferred += data.length;
           // Calculate samples based on format
-          const bytesPerSample = config.dataFormat === 'ci16' ? 4 : 8;
+          const bytesPerSample = BYTES_PER_SAMPLE[config.dataFormat] ?? 4;
           session.metrics.samplesProcessed += Math.floor(data.length / bytesPerSample);
           
           // Emit data event for WebSocket forwarding
@@ -385,6 +395,9 @@ export class DeviceControlService extends EventEmitter {
 
         this.processes.delete(sessionId);
         this.emit('exit', sessionId, session);
+
+        // Auto-cleanup stopped session from memory after 5 minutes
+        setTimeout(() => this.cleanupSession(sessionId), 5 * 60 * 1000);
 
         // Persist final status to database (best effort)
         const persist = session.status === 'error' && session.errorMessage
@@ -436,28 +449,29 @@ export class DeviceControlService extends EventEmitter {
       throw new Error('Access denied');
     }
 
-    const process = this.processes.get(sessionId);
-    if (process) {
+    // Guard against double-stop
+    if (session.status === 'stopped' || session.status === 'error') {
+      return;
+    }
+
+    const proc = this.processes.get(sessionId);
+    if (proc) {
       // Send SIGTERM for graceful shutdown
-      process.kill('SIGTERM');
+      proc.kill('SIGTERM');
 
       // Wait for process to exit, or force kill after timeout
       const killTimer = setTimeout(() => {
         try {
-          // signal 0 checks if process is still running without sending a signal
-          process.kill(0);
-          // Process still alive — force kill
-          process.kill('SIGKILL');
+          proc.kill(0); // Check if still running
+          proc.kill('SIGKILL');
         } catch {
-          // Process already exited, no action needed
+          // Process already exited
         }
       }, METRICS_UPDATE_INTERVAL_MS);
 
-      process.on('exit', () => clearTimeout(killTimer));
+      proc.on('exit', () => clearTimeout(killTimer));
     }
-
-    session.status = 'stopped';
-    session.stopTime = new Date();
+    // Don't set status here — let the exit handler set final status with accurate metrics
   }
 
   /**
